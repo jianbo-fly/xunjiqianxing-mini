@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.xunjiqianxing</groupId>
+        <artifactId>xunjiqianxing</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>xj-service</artifactId>
+    <packaging>pom</packaging>
+    <description>服务实现模块</description>
+
+    <modules>
+        <module>xj-service-user</module>
+        <module>xj-service-product</module>
+        <module>xj-service-order</module>
+        <module>xj-service-payment</module>
+        <module>xj-service-message</module>
+        <module>xj-service-member</module>
+        <module>xj-service-promotion</module>
+        <module>xj-service-content</module>
+        <module>xj-service-custom</module>
+    </modules>
+
+</project>

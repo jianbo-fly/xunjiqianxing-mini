@@ -1,0 +1,380 @@
+### 寻迹千行 API 测试用例
+### 使用方法: 在 IDEA/VS Code 中直接点击运行，或配合 Knife4j 使用
+### 服务地址: http://localhost:8080
+### Knife4j 文档: http://localhost:8080/doc.html
+
+@baseUrl = http://localhost:8080
+@token = {{$dotenv TOKEN}}
+
+###############################################
+# 1. 用户模块 /api/user
+###############################################
+
+### 1.1 微信小程序登录
+# @name wxLogin
+POST {{baseUrl}}/api/user/loginByCode
+Content-Type: application/json
+
+{
+  "code": "081XDG000YlFfS1NPA300vtpih1XDG0t"
+}
+
+### 保存登录后的Token
+@authToken = {{wxLogin.response.body.data.token}}
+
+### 1.2 获取当前用户信息
+GET {{baseUrl}}/api/user/info
+satoken: {{authToken}}
+
+### 1.3 更新用户信息
+PUT {{baseUrl}}/api/user/info
+Content-Type: application/json
+satoken: {{authToken}}
+
+{
+  "nickname": "寻迹旅行者",
+  "avatar": "https://example.com/avatar.jpg",
+  "gender": 1
+}
+
+### 1.4 退出登录
+POST {{baseUrl}}/api/user/logout
+satoken: {{authToken}}
+
+###############################################
+# 2. 首页模块 /api/home
+###############################################
+
+### 2.1 获取首页数据
+GET {{baseUrl}}/api/home/data
+
+### 2.2 获取轮播图列表
+GET {{baseUrl}}/api/home/banners
+
+### 2.3 获取推荐线路列表
+GET {{baseUrl}}/api/home/recommend
+
+###############################################
+# 3. 线路模块 /api/route
+###############################################
+
+### 3.1 线路列表 - 基础分页
+GET {{baseUrl}}/api/route/list?page=1&pageSize=10
+
+### 3.2 线路列表 - 按分类筛选
+GET {{baseUrl}}/api/route/list?page=1&pageSize=10&category=domestic
+
+### 3.3 线路列表 - 按出发城市筛选
+GET {{baseUrl}}/api/route/list?page=1&pageSize=10&departureCity=028
+
+### 3.4 线路列表 - 关键词搜索
+GET {{baseUrl}}/api/route/list?page=1&pageSize=10&keyword=稻城
+
+### 3.5 线路列表 - 组合筛选
+GET {{baseUrl}}/api/route/list?page=1&pageSize=10&category=domestic&departureCity=028&keyword=亚丁
+
+### 3.6 线路详情
+GET {{baseUrl}}/api/route/1001
+
+### 3.7 线路套餐列表
+GET {{baseUrl}}/api/route/1001/packages
+
+### 3.8 套餐详情
+GET {{baseUrl}}/api/route/package/2001
+
+### 3.9 套餐价格日历
+GET {{baseUrl}}/api/route/package/2001/calendar?startDate=2026-02-01&endDate=2026-02-28
+
+###############################################
+# 4. 订单模块 /api/order
+###############################################
+
+### 4.1 创建订单
+# @name createOrder
+POST {{baseUrl}}/api/order/create
+Content-Type: application/json
+satoken: {{authToken}}
+
+{
+  "skuId": 2001,
+  "startDate": "2026-02-15",
+  "adultCount": 2,
+  "childCount": 1,
+  "contactName": "张三",
+  "contactPhone": "13812345678",
+  "travelers": [
+    {
+      "name": "张三",
+      "idCard": "510123199001011234",
+      "phone": "13812345678",
+      "travelerType": 1
+    },
+    {
+      "name": "李四",
+      "idCard": "510123199205052345",
+      "phone": "13912345678",
+      "travelerType": 1
+    },
+    {
+      "name": "小明",
+      "idCard": "510123201501013456",
+      "phone": "13812345678",
+      "travelerType": 2
+    }
+  ],
+  "couponId": null,
+  "remark": "请安排靠窗座位"
+}
+
+### 保存创建的订单ID
+@orderId = {{createOrder.response.body.data.id}}
+
+### 4.2 订单列表 - 全部
+GET {{baseUrl}}/api/order/list?page=1&pageSize=10
+satoken: {{authToken}}
+
+### 4.3 订单列表 - 待支付
+GET {{baseUrl}}/api/order/list?page=1&pageSize=10&status=pending_pay
+satoken: {{authToken}}
+
+### 4.4 订单列表 - 已完成
+GET {{baseUrl}}/api/order/list?page=1&pageSize=10&status=completed
+satoken: {{authToken}}
+
+### 4.5 订单详情
+GET {{baseUrl}}/api/order/{{orderId}}
+satoken: {{authToken}}
+
+### 4.6 取消订单
+POST {{baseUrl}}/api/order/{{orderId}}/cancel?reason=临时有事
+satoken: {{authToken}}
+
+### 4.7 申请退款
+POST {{baseUrl}}/api/order/5001/refund?reason=行程变更
+satoken: {{authToken}}
+
+###############################################
+# 5. 定制游模块 /api/custom
+###############################################
+
+### 5.1 提交定制需求
+# @name submitCustom
+POST {{baseUrl}}/api/custom/submit
+Content-Type: application/json
+satoken: {{authToken}}
+
+{
+  "phone": "13812345678",
+  "destination": "云南大理、丽江",
+  "travelDateStart": "2026-03-01",
+  "travelDateEnd": "2026-03-07",
+  "travelDateType": "exact",
+  "travelDays": "5-7天",
+  "adultCount": 4,
+  "childCount": 2,
+  "budget": "8000-15000",
+  "requirements": ["亲子游", "摄影跟拍", "民宿体验"],
+  "requirementsText": "希望安排古城内的特色民宿，有小朋友活动空间"
+}
+
+### 保存定制需求ID
+@customId = {{submitCustom.response.body.data.id}}
+
+### 5.2 我的定制需求列表
+GET {{baseUrl}}/api/custom/list?page=1&pageSize=10
+satoken: {{authToken}}
+
+### 5.3 定制需求详情
+GET {{baseUrl}}/api/custom/{{customId}}
+satoken: {{authToken}}
+
+### 5.4 取消定制需求
+POST {{baseUrl}}/api/custom/{{customId}}/cancel
+satoken: {{authToken}}
+
+###############################################
+# 6. 会员模块 /api/member
+###############################################
+
+### 6.1 获取会员信息
+GET {{baseUrl}}/api/member/info
+satoken: {{authToken}}
+
+### 6.2 购买会员 - 12个月
+POST {{baseUrl}}/api/member/buy?months=12
+satoken: {{authToken}}
+
+### 6.3 购买会员 - 6个月
+POST {{baseUrl}}/api/member/buy?months=6
+satoken: {{authToken}}
+
+### 6.4 会员权益说明
+GET {{baseUrl}}/api/member/benefits
+
+###############################################
+# 7. 出行人管理模块 /api/traveler
+###############################################
+
+### 7.1 获取出行人列表
+GET {{baseUrl}}/api/traveler/list
+satoken: {{authToken}}
+
+### 7.2 添加出行人
+# @name addTraveler
+POST {{baseUrl}}/api/traveler/add
+Content-Type: application/json
+satoken: {{authToken}}
+
+{
+  "name": "王五",
+  "idType": 1,
+  "idNo": "510123199503032345",
+  "phone": "13712345678",
+  "gender": 1,
+  "birthday": "1995-03-03",
+  "isDefault": false,
+  "emergencyName": "王父",
+  "emergencyPhone": "13612345678"
+}
+
+### 保存出行人ID
+@travelerId = {{addTraveler.response.body.data.id}}
+
+### 7.3 获取出行人详情
+GET {{baseUrl}}/api/traveler/{{travelerId}}
+satoken: {{authToken}}
+
+### 7.4 更新出行人
+POST {{baseUrl}}/api/traveler/{{travelerId}}/update
+Content-Type: application/json
+satoken: {{authToken}}
+
+{
+  "name": "王五",
+  "idType": 1,
+  "idNo": "510123199503032345",
+  "phone": "13712345678",
+  "gender": 1,
+  "birthday": "1995-03-03",
+  "isDefault": true,
+  "emergencyName": "王母",
+  "emergencyPhone": "13512345678"
+}
+
+### 7.5 设为默认出行人
+POST {{baseUrl}}/api/traveler/{{travelerId}}/setDefault
+satoken: {{authToken}}
+
+### 7.6 删除出行人
+POST {{baseUrl}}/api/traveler/{{travelerId}}/delete
+satoken: {{authToken}}
+
+###############################################
+# 8. 优惠券模块 /api/coupon
+###############################################
+
+### 8.1 获取可领取优惠券列表
+GET {{baseUrl}}/api/coupon/available
+satoken: {{authToken}}
+
+### 8.2 领取优惠券
+POST {{baseUrl}}/api/coupon/receive/3001
+satoken: {{authToken}}
+
+### 8.3 我的优惠券 - 全部
+GET {{baseUrl}}/api/coupon/my
+satoken: {{authToken}}
+
+### 8.4 我的优惠券 - 未使用
+GET {{baseUrl}}/api/coupon/my?status=0
+satoken: {{authToken}}
+
+### 8.5 我的优惠券 - 已使用
+GET {{baseUrl}}/api/coupon/my?status=1
+satoken: {{authToken}}
+
+### 8.6 我的优惠券 - 已过期
+GET {{baseUrl}}/api/coupon/my?status=2
+satoken: {{authToken}}
+
+### 8.7 订单可用优惠券
+GET {{baseUrl}}/api/coupon/usable?routeId=1001&amount=5998
+satoken: {{authToken}}
+
+###############################################
+# 9. 推广员模块 /api/promoter
+###############################################
+
+### 9.1 获取推广员信息
+GET {{baseUrl}}/api/promoter/info
+satoken: {{authToken}}
+
+### 9.2 申请成为推广员
+POST {{baseUrl}}/api/promoter/apply
+Content-Type: application/json
+satoken: {{authToken}}
+
+{
+  "realName": "张三",
+  "phone": "13812345678"
+}
+
+### 9.3 绑定推广员
+POST {{baseUrl}}/api/promoter/bind?promoCode=XJQX2026ABC
+satoken: {{authToken}}
+
+### 9.4 获取佣金记录 - 全部
+GET {{baseUrl}}/api/promoter/commissions
+satoken: {{authToken}}
+
+### 9.5 获取佣金记录 - 待结算
+GET {{baseUrl}}/api/promoter/commissions?status=0
+satoken: {{authToken}}
+
+### 9.6 获取佣金记录 - 已结算
+GET {{baseUrl}}/api/promoter/commissions?status=1
+satoken: {{authToken}}
+
+### 9.7 申请提现 - 微信
+POST {{baseUrl}}/api/promoter/withdraw
+Content-Type: application/json
+satoken: {{authToken}}
+
+{
+  "amount": 500.00,
+  "withdrawType": 1,
+  "account": "oXJQianXing123456",
+  "accountName": "张三"
+}
+
+### 9.8 申请提现 - 支付宝
+POST {{baseUrl}}/api/promoter/withdraw
+Content-Type: application/json
+satoken: {{authToken}}
+
+{
+  "amount": 300.00,
+  "withdrawType": 2,
+  "account": "zhangsan@example.com",
+  "accountName": "张三"
+}
+
+### 9.9 申请提现 - 银行卡
+POST {{baseUrl}}/api/promoter/withdraw
+Content-Type: application/json
+satoken: {{authToken}}
+
+{
+  "amount": 1000.00,
+  "withdrawType": 3,
+  "account": "6222021234567890123",
+  "accountName": "张三"
+}
+
+### 9.10 获取提现记录
+GET {{baseUrl}}/api/promoter/withdraws
+satoken: {{authToken}}
+
+### 9.11 获取推广统计
+GET {{baseUrl}}/api/promoter/statistics
+satoken: {{authToken}}

@@ -1,0 +1,726 @@
+{
+  "info": {
+    "name": "寻迹千行 API",
+    "description": "寻迹千行小程序后端接口测试集合\n\n使用前请先设置环境变量:\n- baseUrl: http://localhost:8080\n- token: 登录后获取的token",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "token",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "1. 用户模块",
+      "item": [
+        {
+          "name": "1.1 微信小程序登录",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.code === 200 && jsonData.data) {",
+                  "    pm.collectionVariables.set('token', jsonData.data.token);",
+                  "    console.log('Token saved: ' + jsonData.data.token);",
+                  "}",
+                  "",
+                  "pm.test('登录成功', function () {",
+                  "    pm.expect(jsonData.code).to.eql(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"081XDG000YlFfS1NPA300vtpih1XDG0t\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/user/loginByCode",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "user", "loginByCode"]
+            }
+          }
+        },
+        {
+          "name": "1.2 获取当前用户信息",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "satoken",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/user/info",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "user", "info"]
+            }
+          }
+        },
+        {
+          "name": "1.3 更新用户信息",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "satoken",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nickname\": \"寻迹旅行者\",\n  \"avatar\": \"https://example.com/avatar.jpg\",\n  \"gender\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/user/info",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "user", "info"]
+            }
+          }
+        },
+        {
+          "name": "1.4 退出登录",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "satoken",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/user/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "user", "logout"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. 首页模块",
+      "item": [
+        {
+          "name": "2.1 获取首页数据",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/home/data",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "home", "data"]
+            }
+          }
+        },
+        {
+          "name": "2.2 获取轮播图列表",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/home/banners",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "home", "banners"]
+            }
+          }
+        },
+        {
+          "name": "2.3 获取推荐线路",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/home/recommend",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "home", "recommend"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. 线路模块",
+      "item": [
+        {
+          "name": "3.1 线路列表",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/route/list?page=1&pageSize=10&category=domestic&departureCity=028&keyword=稻城",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "route", "list"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "pageSize", "value": "10"},
+                {"key": "category", "value": "domestic", "description": "domestic国内游/overseas出境游"},
+                {"key": "departureCity", "value": "028", "description": "出发城市编码"},
+                {"key": "keyword", "value": "稻城", "description": "关键词搜索"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "3.2 线路详情",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/route/1001",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "route", "1001"]
+            }
+          }
+        },
+        {
+          "name": "3.3 线路套餐列表",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/route/1001/packages",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "route", "1001", "packages"]
+            }
+          }
+        },
+        {
+          "name": "3.4 套餐详情",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/route/package/2001",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "route", "package", "2001"]
+            }
+          }
+        },
+        {
+          "name": "3.5 套餐价格日历",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/route/package/2001/calendar?startDate=2026-02-01&endDate=2026-02-28",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "route", "package", "2001", "calendar"],
+              "query": [
+                {"key": "startDate", "value": "2026-02-01"},
+                {"key": "endDate", "value": "2026-02-28"}
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. 订单模块",
+      "item": [
+        {
+          "name": "4.1 创建订单",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "satoken", "value": "{{token}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"skuId\": 2001,\n  \"startDate\": \"2026-02-15\",\n  \"adultCount\": 2,\n  \"childCount\": 1,\n  \"contactName\": \"张三\",\n  \"contactPhone\": \"13812345678\",\n  \"travelers\": [\n    {\n      \"name\": \"张三\",\n      \"idCard\": \"510123199001011234\",\n      \"phone\": \"13812345678\",\n      \"travelerType\": 1\n    },\n    {\n      \"name\": \"李四\",\n      \"idCard\": \"510123199205052345\",\n      \"phone\": \"13912345678\",\n      \"travelerType\": 1\n    },\n    {\n      \"name\": \"小明\",\n      \"idCard\": \"510123201501013456\",\n      \"phone\": \"13812345678\",\n      \"travelerType\": 2\n    }\n  ],\n  \"couponId\": null,\n  \"remark\": \"请安排靠窗座位\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/order/create",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "order", "create"]
+            }
+          }
+        },
+        {
+          "name": "4.2 订单列表",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "satoken", "value": "{{token}}"}
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/order/list?page=1&pageSize=10&status=pending_pay",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "order", "list"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "pageSize", "value": "10"},
+                {"key": "status", "value": "pending_pay", "description": "pending_pay/confirmed/completed/cancelled"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "4.3 订单详情",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "satoken", "value": "{{token}}"}
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/order/5001",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "order", "5001"]
+            }
+          }
+        },
+        {
+          "name": "4.4 取消订单",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "satoken", "value": "{{token}}"}
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/order/5001/cancel?reason=临时有事",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "order", "5001", "cancel"],
+              "query": [
+                {"key": "reason", "value": "临时有事"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "4.5 申请退款",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "satoken", "value": "{{token}}"}
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/order/5001/refund?reason=行程变更",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "order", "5001", "refund"],
+              "query": [
+                {"key": "reason", "value": "行程变更"}
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. 定制游模块",
+      "item": [
+        {
+          "name": "5.1 提交定制需求",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "satoken", "value": "{{token}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"13812345678\",\n  \"destination\": \"云南大理、丽江\",\n  \"travelDateStart\": \"2026-03-01\",\n  \"travelDateEnd\": \"2026-03-07\",\n  \"travelDateType\": \"exact\",\n  \"travelDays\": \"5-7天\",\n  \"adultCount\": 4,\n  \"childCount\": 2,\n  \"budget\": \"8000-15000\",\n  \"requirements\": [\"亲子游\", \"摄影跟拍\", \"民宿体验\"],\n  \"requirementsText\": \"希望安排古城内的特色民宿\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/custom/submit",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "custom", "submit"]
+            }
+          }
+        },
+        {
+          "name": "5.2 定制需求列表",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "satoken", "value": "{{token}}"}
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/custom/list?page=1&pageSize=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "custom", "list"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "pageSize", "value": "10"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "5.3 定制需求详情",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "satoken", "value": "{{token}}"}
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/custom/6001",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "custom", "6001"]
+            }
+          }
+        },
+        {
+          "name": "5.4 取消定制需求",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "satoken", "value": "{{token}}"}
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/custom/6001/cancel",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "custom", "6001", "cancel"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. 会员模块",
+      "item": [
+        {
+          "name": "6.1 获取会员信息",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "satoken", "value": "{{token}}"}
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/member/info",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "member", "info"]
+            }
+          }
+        },
+        {
+          "name": "6.2 购买会员",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "satoken", "value": "{{token}}"}
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/member/buy?months=12",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "member", "buy"],
+              "query": [
+                {"key": "months", "value": "12"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "6.3 会员权益说明",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/member/benefits",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "member", "benefits"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. 出行人管理",
+      "item": [
+        {
+          "name": "7.1 出行人列表",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "satoken", "value": "{{token}}"}
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/traveler/list",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "traveler", "list"]
+            }
+          }
+        },
+        {
+          "name": "7.2 添加出行人",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "satoken", "value": "{{token}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"王五\",\n  \"idType\": 1,\n  \"idNo\": \"510123199503032345\",\n  \"phone\": \"13712345678\",\n  \"gender\": 1,\n  \"birthday\": \"1995-03-03\",\n  \"isDefault\": false,\n  \"emergencyName\": \"王父\",\n  \"emergencyPhone\": \"13612345678\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/traveler/add",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "traveler", "add"]
+            }
+          }
+        },
+        {
+          "name": "7.3 出行人详情",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "satoken", "value": "{{token}}"}
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/traveler/8001",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "traveler", "8001"]
+            }
+          }
+        },
+        {
+          "name": "7.4 更新出行人",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "satoken", "value": "{{token}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"王五\",\n  \"idType\": 1,\n  \"idNo\": \"510123199503032345\",\n  \"phone\": \"13712345678\",\n  \"gender\": 1,\n  \"birthday\": \"1995-03-03\",\n  \"isDefault\": true,\n  \"emergencyName\": \"王母\",\n  \"emergencyPhone\": \"13512345678\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/traveler/8001/update",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "traveler", "8001", "update"]
+            }
+          }
+        },
+        {
+          "name": "7.5 设为默认出行人",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "satoken", "value": "{{token}}"}
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/traveler/8001/setDefault",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "traveler", "8001", "setDefault"]
+            }
+          }
+        },
+        {
+          "name": "7.6 删除出行人",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "satoken", "value": "{{token}}"}
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/traveler/8001/delete",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "traveler", "8001", "delete"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "8. 优惠券模块",
+      "item": [
+        {
+          "name": "8.1 可领取优惠券",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "satoken", "value": "{{token}}"}
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/coupon/available",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "coupon", "available"]
+            }
+          }
+        },
+        {
+          "name": "8.2 领取优惠券",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "satoken", "value": "{{token}}"}
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/coupon/receive/3001",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "coupon", "receive", "3001"]
+            }
+          }
+        },
+        {
+          "name": "8.3 我的优惠券",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "satoken", "value": "{{token}}"}
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/coupon/my?status=0",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "coupon", "my"],
+              "query": [
+                {"key": "status", "value": "0", "description": "0未使用/1已使用/2已过期"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "8.4 订单可用优惠券",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "satoken", "value": "{{token}}"}
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/coupon/usable?routeId=1001&amount=5998",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "coupon", "usable"],
+              "query": [
+                {"key": "routeId", "value": "1001"},
+                {"key": "amount", "value": "5998"}
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "9. 推广员模块",
+      "item": [
+        {
+          "name": "9.1 获取推广员信息",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "satoken", "value": "{{token}}"}
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/promoter/info",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "promoter", "info"]
+            }
+          }
+        },
+        {
+          "name": "9.2 申请成为推广员",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "satoken", "value": "{{token}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"realName\": \"张三\",\n  \"phone\": \"13812345678\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/promoter/apply",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "promoter", "apply"]
+            }
+          }
+        },
+        {
+          "name": "9.3 绑定推广员",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "satoken", "value": "{{token}}"}
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/promoter/bind?promoCode=XJQX2026ABC",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "promoter", "bind"],
+              "query": [
+                {"key": "promoCode", "value": "XJQX2026ABC"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "9.4 佣金记录",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "satoken", "value": "{{token}}"}
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/promoter/commissions?status=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "promoter", "commissions"],
+              "query": [
+                {"key": "status", "value": "1", "description": "0待结算/1已结算/2已取消"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "9.5 申请提现",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "satoken", "value": "{{token}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 500.00,\n  \"withdrawType\": 1,\n  \"account\": \"oXJQianXing123456\",\n  \"accountName\": \"张三\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/promoter/withdraw",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "promoter", "withdraw"]
+            }
+          }
+        },
+        {
+          "name": "9.6 提现记录",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "satoken", "value": "{{token}}"}
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/promoter/withdraws",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "promoter", "withdraws"]
+            }
+          }
+        },
+        {
+          "name": "9.7 推广统计",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "satoken", "value": "{{token}}"}
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/promoter/statistics",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "promoter", "statistics"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

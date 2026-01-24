@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.xunjiqianxing</groupId>
+        <artifactId>xunjiqianxing</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>xj-app</artifactId>
+    <packaging>jar</packaging>
+    <description>小程序后端聚合服务</description>
+
+    <dependencies>
+        <!-- Spring Boot -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- 数据库 -->
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid-spring-boot-3-starter</artifactId>
+        </dependency>
+
+        <!-- Redis -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson-spring-boot-starter</artifactId>
+        </dependency>
+
+        <!-- Sa-Token -->
+        <dependency>
+            <groupId>cn.dev33</groupId>
+            <artifactId>sa-token-spring-boot3-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cn.dev33</groupId>
+            <artifactId>sa-token-redis-jackson</artifactId>
+        </dependency>
+
+        <!-- 微信小程序 -->
+        <dependency>
+            <groupId>com.github.binarywang</groupId>
+            <artifactId>weixin-java-miniapp</artifactId>
+        </dependency>
+
+        <!-- 微信支付 -->
+        <dependency>
+            <groupId>com.github.binarywang</groupId>
+            <artifactId>weixin-java-pay</artifactId>
+        </dependency>
+
+        <!-- 腾讯云COS -->
+        <dependency>
+            <groupId>com.qcloud</groupId>
+            <artifactId>cos_api</artifactId>
+        </dependency>
+
+        <!-- Knife4j -->
+        <dependency>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
+        </dependency>
+
+        <!-- 业务模块 -->
+        <dependency>
+            <groupId>com.xunjiqianxing</groupId>
+            <artifactId>xj-service-user</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.xunjiqianxing</groupId>
+            <artifactId>xj-service-product</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.xunjiqianxing</groupId>
+            <artifactId>xj-service-order</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.xunjiqianxing</groupId>
+            <artifactId>xj-service-payment</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.xunjiqianxing</groupId>
+            <artifactId>xj-service-message</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.xunjiqianxing</groupId>
+            <artifactId>xj-service-member</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.xunjiqianxing</groupId>
+            <artifactId>xj-service-promotion</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.xunjiqianxing</groupId>
+            <artifactId>xj-service-content</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.xunjiqianxing</groupId>
+            <artifactId>xj-service-custom</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.xunjiqianxing</groupId>
+            <artifactId>xj-biz-route</artifactId>
+        </dependency>
+
+        <!-- 测试 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
