@@ -8,6 +8,7 @@ import com.xunjiqianxing.common.result.PageResult;
 import com.xunjiqianxing.common.result.Result;
 import com.xunjiqianxing.service.order.entity.OrderMain;
 import com.xunjiqianxing.service.order.entity.OrderTraveler;
+import com.xunjiqianxing.service.order.enums.OrderStatus;
 import com.xunjiqianxing.service.order.service.OrderService;
 import com.xunjiqianxing.service.product.entity.ProductMain;
 import com.xunjiqianxing.service.product.entity.ProductPriceStock;
@@ -26,9 +27,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -46,17 +45,6 @@ public class OrderController {
     private final ProductService productService;
     private final UserService userService;
 
-    // 订单状态映射
-    private static final Map<String, String> STATUS_TEXT_MAP = new HashMap<>() {{
-        put("pending_pay", "待支付");
-        put("pending_confirm", "待确认");
-        put("confirmed", "已确认");
-        put("in_progress", "出行中");
-        put("completed", "已完成");
-        put("cancelled", "已取消");
-        put("refund_apply", "退款申请中");
-        put("refund_success", "已退款");
-    }};
 
     /**
      * 创建订单
@@ -157,7 +145,8 @@ public class OrderController {
     @GetMapping("/list")
     @Operation(summary = "订单列表", description = "获取用户订单列表")
     public Result<PageResult<OrderListVO>> list(
-            @Parameter(description = "订单状态") @RequestParam(required = false) String status,
+            @Parameter(description = "订单状态: 0待支付 1待确认 2已确认 3出行中 4已完成 5已取消 6退款申请中 7已退款 8已关闭")
+            @RequestParam(required = false) Integer status,
             PageQuery pageQuery) {
 
         Long userId = StpUtil.getLoginIdAsLong();
@@ -226,14 +215,14 @@ public class OrderController {
     private OrderListVO toOrderListVO(OrderMain order) {
         OrderListVO vo = new OrderListVO();
         BeanUtils.copyProperties(order, vo);
-        vo.setStatusText(STATUS_TEXT_MAP.getOrDefault(order.getStatus(), order.getStatus()));
+        vo.setStatusText(OrderStatus.getDesc(order.getStatus()));
         return vo;
     }
 
     private OrderDetailVO toOrderDetailVO(OrderMain order, List<OrderTraveler> travelers) {
         OrderDetailVO vo = new OrderDetailVO();
         BeanUtils.copyProperties(order, vo);
-        vo.setStatusText(STATUS_TEXT_MAP.getOrDefault(order.getStatus(), order.getStatus()));
+        vo.setStatusText(OrderStatus.getDesc(order.getStatus()));
 
         // 转换出行人（脱敏处理）
         if (travelers != null) {
