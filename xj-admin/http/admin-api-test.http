@@ -1,0 +1,844 @@
+### 管理后台API测试
+### 使用前请确保服务运行在 localhost:8081
+
+@baseUrl = http://localhost:8081
+
+### ===========================
+### 认证模块
+### ===========================
+
+### 1. 登录 (管理员)
+# @name login
+POST {{baseUrl}}/admin/auth/login
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "admin123"
+}
+
+### 获取登录返回的token
+@token = {{login.response.body.$.data.token}}
+
+### 2. 获取当前用户信息
+GET {{baseUrl}}/admin/auth/userinfo
+Authorization: {{token}}
+
+### 3. 修改密码
+POST {{baseUrl}}/admin/auth/changePassword
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "oldPassword": "admin123",
+  "newPassword": "newpass123"
+}
+
+### 4. 退出登录
+POST {{baseUrl}}/admin/auth/logout
+Authorization: {{token}}
+
+### ===========================
+### 文件上传
+### ===========================
+
+### 5. 上传文件 (需要替换文件路径)
+# POST {{baseUrl}}/admin/file/upload
+# Content-Type: multipart/form-data; boundary=----WebKitFormBoundary
+# Authorization: {{token}}
+#
+# ------WebKitFormBoundary
+# Content-Disposition: form-data; name="file"; filename="test.png"
+# Content-Type: image/png
+#
+# < ./test.png
+# ------WebKitFormBoundary
+# Content-Disposition: form-data; name="folder"
+#
+# route
+# ------WebKitFormBoundary--
+
+### ===========================
+### 线路管理
+### ===========================
+
+### 6. 线路列表
+GET {{baseUrl}}/admin/route/list?page=1&pageSize=10
+Authorization: {{token}}
+
+### 7. 线路列表(带筛选)
+GET {{baseUrl}}/admin/route/list?page=1&pageSize=10&status=1&auditStatus=1&keyword=云南
+Authorization: {{token}}
+
+### 8. 创建线路
+# @name createRoute
+POST {{baseUrl}}/admin/route
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "name": "云南大理丽江6天5晚深度游",
+  "subtitle": "洱海骑行 | 玉龙雪山 | 古城漫步",
+  "coverImage": "https://example.com/cover.jpg",
+  "images": ["https://example.com/1.jpg", "https://example.com/2.jpg"],
+  "tags": ["网红打卡", "纯玩无购物", "含接机"],
+  "category": "domestic",
+  "cityCode": "530100",
+  "cityName": "昆明",
+  "departureCity": "昆明",
+  "destination": "大理、丽江",
+  "originalPrice": 3999,
+  "minPrice": 2999,
+  "costExclude": "<p>1. 往返大交通费用</p><p>2. 个人消费</p>",
+  "bookingNotice": "<p>1. 请提前3天预订</p><p>2. 满4人成团</p>",
+  "tips": "<p>1. 建议携带防晒用品</p><p>2. 高原地区注意休息</p>",
+  "sortOrder": 100,
+  "isRecommend": 1,
+  "supplierId": 1
+}
+
+### 获取创建的线路ID
+@routeId = {{createRoute.response.body.$.data}}
+
+### 9. 线路详情
+GET {{baseUrl}}/admin/route/{{routeId}}
+Authorization: {{token}}
+
+### 10. 更新线路
+PUT {{baseUrl}}/admin/route
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "id": {{routeId}},
+  "name": "云南大理丽江7天6晚深度游(已更新)",
+  "minPrice": 2888
+}
+
+### 11. 审核线路(通过)
+POST {{baseUrl}}/admin/route/audit
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "id": {{routeId}},
+  "auditStatus": 1,
+  "auditRemark": "审核通过"
+}
+
+### 12. 上架线路
+PUT {{baseUrl}}/admin/route/{{routeId}}/status?status=1
+Authorization: {{token}}
+
+### 13. 下架线路
+PUT {{baseUrl}}/admin/route/{{routeId}}/status?status=0
+Authorization: {{token}}
+
+### ===========================
+### 套餐管理
+### ===========================
+
+### 14. 创建套餐
+# @name createPackage
+POST {{baseUrl}}/admin/route/package
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "productId": {{routeId}},
+  "name": "经济型套餐",
+  "tags": ["高性价比"],
+  "basePrice": 2999,
+  "childPrice": 1999,
+  "sortOrder": 1,
+  "attrs": {
+    "days": 6,
+    "nights": 5
+  }
+}
+
+### 获取创建的套餐ID
+@packageId = {{createPackage.response.body.$.data}}
+
+### 15. 获取套餐列表
+GET {{baseUrl}}/admin/route/{{routeId}}/packages
+Authorization: {{token}}
+
+### 16. 更新套餐
+PUT {{baseUrl}}/admin/route/package
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "id": {{packageId}},
+  "name": "经济型套餐(已更新)",
+  "basePrice": 2888
+}
+
+### ===========================
+### 价格日历
+### ===========================
+
+### 17. 设置价格日历
+POST {{baseUrl}}/admin/route/package/prices
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "skuId": {{packageId}},
+  "prices": [
+    {"date": "2026-02-01", "price": 2999, "childPrice": 1999, "stock": 20, "status": 1},
+    {"date": "2026-02-02", "price": 2999, "childPrice": 1999, "stock": 20, "status": 1},
+    {"date": "2026-02-03", "price": 3199, "childPrice": 2199, "stock": 15, "status": 1},
+    {"date": "2026-02-04", "price": 3199, "childPrice": 2199, "stock": 15, "status": 1},
+    {"date": "2026-02-05", "price": 3499, "childPrice": 2499, "stock": 10, "status": 1}
+  ]
+}
+
+### 18. 获取价格日历
+GET {{baseUrl}}/admin/route/package/{{packageId}}/calendar?startDate=2026-02-01&endDate=2026-02-28
+Authorization: {{token}}
+
+### ===========================
+### 订单管理
+### ===========================
+
+### 21. 订单列表
+GET {{baseUrl}}/admin/order/list?page=1&pageSize=10
+Authorization: {{token}}
+
+### 22. 订单列表(带筛选)
+GET {{baseUrl}}/admin/order/list?page=1&pageSize=10&status=1&startDateBegin=2026-01-01&startDateEnd=2026-12-31
+Authorization: {{token}}
+
+### 23. 订单详情
+GET {{baseUrl}}/admin/order/TEST20260124001
+Authorization: {{token}}
+
+### 24. 确认订单
+POST {{baseUrl}}/admin/order/confirm
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "orderNo": "TEST20260124001",
+  "action": "confirm",
+  "remark": "已确认,请准时出发"
+}
+
+### 25. 驳回订单
+POST {{baseUrl}}/admin/order/confirm
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "orderNo": "TEST20260124002",
+  "action": "reject",
+  "rejectReason": "该日期已满团,建议更换日期",
+  "remark": ""
+}
+
+### 26. 添加订单备注
+POST {{baseUrl}}/admin/order/remark
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "orderNo": "TEST20260124001",
+  "remark": "客户要求接机服务"
+}
+
+### 27. 订单统计
+GET {{baseUrl}}/admin/order/stats
+Authorization: {{token}}
+
+### ===========================
+### 退款管理
+### ===========================
+
+### 28. 退款列表
+GET {{baseUrl}}/admin/refund/list?page=1&pageSize=10
+Authorization: {{token}}
+
+### 29. 退款列表(待审核)
+GET {{baseUrl}}/admin/refund/list?page=1&pageSize=10&status=0
+Authorization: {{token}}
+
+### 30. 退款详情
+GET {{baseUrl}}/admin/refund/1
+Authorization: {{token}}
+
+### 31. 审核通过退款
+POST {{baseUrl}}/admin/refund/audit
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "id": 1,
+  "status": 1,
+  "actualAmount": 2500.00,
+  "auditRemark": "审核通过,按70%比例退款"
+}
+
+### 32. 驳回退款
+POST {{baseUrl}}/admin/refund/audit
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "id": 2,
+  "status": 2,
+  "auditRemark": "已过退款时限,不予退款"
+}
+
+### 33. 待审核退款数量
+GET {{baseUrl}}/admin/refund/pendingCount
+Authorization: {{token}}
+
+### ===========================
+### 用户管理
+### ===========================
+
+### 34. 用户列表
+GET {{baseUrl}}/admin/user/list?page=1&pageSize=10
+Authorization: {{token}}
+
+### 35. 用户列表(带筛选)
+GET {{baseUrl}}/admin/user/list?page=1&pageSize=10&isMember=1&status=1
+Authorization: {{token}}
+
+### 36. 用户详情
+GET {{baseUrl}}/admin/user/1
+Authorization: {{token}}
+
+### 37. 禁用用户
+PUT {{baseUrl}}/admin/user/1/status?status=0
+Authorization: {{token}}
+
+### 38. 启用用户
+PUT {{baseUrl}}/admin/user/1/status?status=1
+Authorization: {{token}}
+
+### 39. 调整积分
+POST {{baseUrl}}/admin/user/points/adjust
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "userId": 1,
+  "amount": 100,
+  "reason": "活动赠送积分"
+}
+
+### ===========================
+### 会员管理
+### ===========================
+
+### 40. 会员列表
+GET {{baseUrl}}/admin/member/list?page=1&pageSize=10
+Authorization: {{token}}
+
+### 41. 会员列表(有效会员)
+GET {{baseUrl}}/admin/member/list?page=1&pageSize=10&memberStatus=1
+Authorization: {{token}}
+
+### 42. 延长会员时间
+POST {{baseUrl}}/admin/member/extend
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "userId": 1,
+  "days": 30,
+  "reason": "客诉补偿"
+}
+
+### 43. 会员统计
+GET {{baseUrl}}/admin/member/stats
+Authorization: {{token}}
+
+### ===========================
+### 领队管理
+### ===========================
+
+### 44. 领队申请列表
+GET {{baseUrl}}/admin/leader/applies?page=1&pageSize=10
+Authorization: {{token}}
+
+### 45. 领队申请列表(待审核)
+GET {{baseUrl}}/admin/leader/applies?page=1&pageSize=10&status=0
+Authorization: {{token}}
+
+### 46. 申请详情
+GET {{baseUrl}}/admin/leader/applies/1
+Authorization: {{token}}
+
+### 47. 待审核申请数量
+GET {{baseUrl}}/admin/leader/applies/pendingCount
+Authorization: {{token}}
+
+### 48. 审核通过申请
+POST {{baseUrl}}/admin/leader/applies/audit
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "id": 1,
+  "status": 1,
+  "auditRemark": "资质齐全,审核通过"
+}
+
+### 49. 驳回申请
+POST {{baseUrl}}/admin/leader/applies/audit
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "id": 2,
+  "status": 2,
+  "auditRemark": "证书照片不清晰,请重新上传"
+}
+
+### 50. 领队列表
+GET {{baseUrl}}/admin/leader/list?page=1&pageSize=10
+Authorization: {{token}}
+
+### 51. 禁用领队
+PUT {{baseUrl}}/admin/leader/1/status?status=0
+Authorization: {{token}}
+
+### 52. 启用领队
+PUT {{baseUrl}}/admin/leader/1/status?status=1
+Authorization: {{token}}
+
+### ===========================
+### 推广员管理
+### ===========================
+
+### 53. 推广员申请列表
+GET {{baseUrl}}/admin/promoter/applies?page=1&pageSize=10
+Authorization: {{token}}
+
+### 54. 待审核申请数量
+GET {{baseUrl}}/admin/promoter/applies/pendingCount
+Authorization: {{token}}
+
+### 55. 审核通过申请
+POST {{baseUrl}}/admin/promoter/applies/audit
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "id": 1,
+  "status": 1,
+  "commissionRate": 0.05,
+  "level": 1,
+  "remark": "审核通过"
+}
+
+### 56. 驳回申请
+POST {{baseUrl}}/admin/promoter/applies/audit
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "id": 2,
+  "status": 2,
+  "remark": "申请资料不完整"
+}
+
+### 57. 推广员列表
+GET {{baseUrl}}/admin/promoter/list?page=1&pageSize=10
+Authorization: {{token}}
+
+### 58. 推广员列表(筛选)
+GET {{baseUrl}}/admin/promoter/list?page=1&pageSize=10&status=1&level=1
+Authorization: {{token}}
+
+### 59. 推广员详情
+GET {{baseUrl}}/admin/promoter/1
+Authorization: {{token}}
+
+### 60. 更新推广员
+PUT {{baseUrl}}/admin/promoter
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "id": 1,
+  "level": 2,
+  "commissionRate": 0.08,
+  "remark": "升级为银牌"
+}
+
+### 61. 禁用推广员
+PUT {{baseUrl}}/admin/promoter/1/status?status=2
+Authorization: {{token}}
+
+### 62. 启用推广员
+PUT {{baseUrl}}/admin/promoter/1/status?status=1
+Authorization: {{token}}
+
+### 63. 绑定用户记录
+GET {{baseUrl}}/admin/promoter/1/bindLogs?page=1&pageSize=10
+Authorization: {{token}}
+
+### 64. 佣金记录
+GET {{baseUrl}}/admin/promoter/1/commissions?page=1&pageSize=10
+Authorization: {{token}}
+
+### ===========================
+### 优惠券管理
+### ===========================
+
+### 65. 优惠券模板列表
+GET {{baseUrl}}/admin/coupon/templates?page=1&pageSize=10
+Authorization: {{token}}
+
+### 66. 优惠券模板列表(筛选)
+GET {{baseUrl}}/admin/coupon/templates?page=1&pageSize=10&type=1&status=1
+Authorization: {{token}}
+
+### 67. 创建满减券模板
+# @name createCoupon
+POST {{baseUrl}}/admin/coupon/template
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "name": "满500减100",
+  "type": 1,
+  "threshold": 500,
+  "amount": 100,
+  "scope": 0,
+  "validType": 1,
+  "validStart": "2026-01-01T00:00:00",
+  "validEnd": "2026-12-31T23:59:59",
+  "totalCount": 1000,
+  "perLimit": 3,
+  "memberOnly": 0,
+  "description": "满500元可用"
+}
+
+### 获取创建的优惠券ID
+@couponId = {{createCoupon.response.body.$.data}}
+
+### 68. 创建折扣券模板
+POST {{baseUrl}}/admin/coupon/template
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "name": "9折券",
+  "type": 2,
+  "discount": 0.9,
+  "maxAmount": 200,
+  "scope": 0,
+  "validType": 2,
+  "validDays": 30,
+  "totalCount": 500,
+  "perLimit": 1,
+  "memberOnly": 1,
+  "description": "9折优惠,最高减200"
+}
+
+### 69. 优惠券详情
+GET {{baseUrl}}/admin/coupon/template/{{couponId}}
+Authorization: {{token}}
+
+### 70. 更新优惠券模板
+PUT {{baseUrl}}/admin/coupon/template
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "id": {{couponId}},
+  "totalCount": 2000,
+  "description": "满500元可用,限时特惠"
+}
+
+### 71. 停用优惠券
+PUT {{baseUrl}}/admin/coupon/template/{{couponId}}/status?status=0
+Authorization: {{token}}
+
+### 72. 启用优惠券
+PUT {{baseUrl}}/admin/coupon/template/{{couponId}}/status?status=1
+Authorization: {{token}}
+
+### 73. 发放优惠券(指定用户)
+POST {{baseUrl}}/admin/coupon/issue
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "couponId": {{couponId}},
+  "issueType": 1,
+  "userIds": [1, 2, 3],
+  "count": 1,
+  "reason": "活动赠送"
+}
+
+### 74. 发放优惠券(全部会员)
+POST {{baseUrl}}/admin/coupon/issue
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "couponId": {{couponId}},
+  "issueType": 2,
+  "count": 1,
+  "reason": "会员专属福利"
+}
+
+### 75. 发放记录
+GET {{baseUrl}}/admin/coupon/records?page=1&pageSize=10
+Authorization: {{token}}
+
+### 76. 发放记录(按优惠券筛选)
+GET {{baseUrl}}/admin/coupon/records?page=1&pageSize=10&couponId={{couponId}}
+Authorization: {{token}}
+
+### 77. 优惠券统计
+GET {{baseUrl}}/admin/coupon/stats
+Authorization: {{token}}
+
+### 78. 删除优惠券模板
+DELETE {{baseUrl}}/admin/coupon/template/{{couponId}}
+Authorization: {{token}}
+
+### ===========================
+### Banner管理
+### ===========================
+
+### 79. Banner列表
+GET {{baseUrl}}/admin/banner/list?page=1&pageSize=10
+Authorization: {{token}}
+
+### 80. Banner列表(全部)
+GET {{baseUrl}}/admin/banner/listAll
+Authorization: {{token}}
+
+### 81. 创建Banner
+# @name createBanner
+POST {{baseUrl}}/admin/banner
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "title": "春季特惠活动",
+  "imageUrl": "https://example.com/banner1.jpg",
+  "linkType": 1,
+  "linkValue": "12345",
+  "sortOrder": 100
+}
+
+### 获取创建的Banner ID
+@bannerId = {{createBanner.response.body.$.data}}
+
+### 82. Banner详情
+GET {{baseUrl}}/admin/banner/{{bannerId}}
+Authorization: {{token}}
+
+### 83. 更新Banner
+PUT {{baseUrl}}/admin/banner
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "id": {{bannerId}},
+  "title": "春季特惠活动(已更新)",
+  "sortOrder": 200
+}
+
+### 84. 禁用Banner
+PUT {{baseUrl}}/admin/banner/{{bannerId}}/status?status=0
+Authorization: {{token}}
+
+### 85. 启用Banner
+PUT {{baseUrl}}/admin/banner/{{bannerId}}/status?status=1
+Authorization: {{token}}
+
+### 86. 调整Banner排序
+PUT {{baseUrl}}/admin/banner/sort
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "ids": [1, 2, 3]
+}
+
+### 87. 删除Banner
+DELETE {{baseUrl}}/admin/banner/{{bannerId}}
+Authorization: {{token}}
+
+### ===========================
+### 分类管理
+### ===========================
+
+### 88. 分类列表
+GET {{baseUrl}}/admin/category/list
+Authorization: {{token}}
+
+### 89. 分类列表(按业务类型)
+GET {{baseUrl}}/admin/category/list?bizType=route
+Authorization: {{token}}
+
+### 90. 创建分类
+# @name createCategory
+POST {{baseUrl}}/admin/category
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "name": "亲子游",
+  "icon": "https://example.com/icon-family.png",
+  "bizType": "route",
+  "sortOrder": 10
+}
+
+### 获取创建的分类ID
+@categoryId = {{createCategory.response.body.$.data}}
+
+### 91. 分类详情
+GET {{baseUrl}}/admin/category/{{categoryId}}
+Authorization: {{token}}
+
+### 92. 更新分类
+PUT {{baseUrl}}/admin/category
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "id": {{categoryId}},
+  "name": "亲子出游",
+  "sortOrder": 20
+}
+
+### 93. 禁用分类
+PUT {{baseUrl}}/admin/category/{{categoryId}}/status?status=0
+Authorization: {{token}}
+
+### 94. 启用分类
+PUT {{baseUrl}}/admin/category/{{categoryId}}/status?status=1
+Authorization: {{token}}
+
+### 95. 删除分类
+DELETE {{baseUrl}}/admin/category/{{categoryId}}
+Authorization: {{token}}
+
+### ===========================
+### 供应商管理
+### ===========================
+
+### 96. 供应商列表
+GET {{baseUrl}}/admin/supplier/list?page=1&pageSize=10
+Authorization: {{token}}
+
+### 97. 供应商列表(筛选)
+GET {{baseUrl}}/admin/supplier/list?page=1&pageSize=10&status=1
+Authorization: {{token}}
+
+### 98. 创建供应商
+# @name createSupplier
+POST {{baseUrl}}/admin/supplier
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "name": "云南旅游公司",
+  "phone": "13800138000",
+  "intro": "专业云南地接服务商",
+  "username": "yunnan001",
+  "password": "123456"
+}
+
+### 获取创建的供应商ID
+@supplierId = {{createSupplier.response.body.$.data}}
+
+### 99. 供应商详情
+GET {{baseUrl}}/admin/supplier/{{supplierId}}
+Authorization: {{token}}
+
+### 100. 更新供应商
+PUT {{baseUrl}}/admin/supplier
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "id": {{supplierId}},
+  "name": "云南旅游集团",
+  "intro": "云南最大的旅游服务商"
+}
+
+### 101. 禁用供应商
+PUT {{baseUrl}}/admin/supplier/{{supplierId}}/status?status=0
+Authorization: {{token}}
+
+### 102. 启用供应商
+PUT {{baseUrl}}/admin/supplier/{{supplierId}}/status?status=1
+Authorization: {{token}}
+
+### 103. 重置供应商密码
+POST {{baseUrl}}/admin/supplier/{{supplierId}}/resetPassword
+Authorization: {{token}}
+
+### 104. 删除供应商
+DELETE {{baseUrl}}/admin/supplier/{{supplierId}}
+Authorization: {{token}}
+
+### ===========================
+### 系统配置
+### ===========================
+
+### 105. 配置列表
+GET {{baseUrl}}/admin/config/list
+Authorization: {{token}}
+
+### 106. 配置Map
+GET {{baseUrl}}/admin/config/map
+Authorization: {{token}}
+
+### 107. 获取配置值
+GET {{baseUrl}}/admin/config/value?key=member_price
+Authorization: {{token}}
+
+### 108. 更新配置
+PUT {{baseUrl}}/admin/config
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "configKey": "member_price",
+  "configValue": "99",
+  "configType": "number",
+  "remark": "会员月费"
+}
+
+### 109. 批量更新配置
+PUT {{baseUrl}}/admin/config/batch
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "configs": [
+    {"configKey": "member_price", "configValue": "99", "configType": "number"},
+    {"configKey": "service_phone", "configValue": "400-123-4567", "configType": "string"},
+    {"configKey": "promoter_default_rate", "configValue": "0.05", "configType": "number"}
+  ]
+}
+
+### 110. 删除配置
+DELETE {{baseUrl}}/admin/config?key=test_key
+Authorization: {{token}}
+
+### ===========================
+### 清理测试数据
+### ===========================
+
+### 99. 删除套餐
+DELETE {{baseUrl}}/admin/route/package/{{packageId}}
+Authorization: {{token}}
+
+### 100. 删除线路
+DELETE {{baseUrl}}/admin/route/{{routeId}}
+Authorization: {{token}}

@@ -1,0 +1,89 @@
+<view class="page-member">
+  <!-- 头部用户信息 -->
+  <view class="header" style="background-image: url('{{assets.bg.memberHeader}}');">
+    <view class="user-info" bindtap="handleAvatarTap">
+      <image
+        class="avatar"
+        src="{{userInfo.avatar || assets.placeholder.avatar}}"
+        mode="aspectFill"
+      />
+      <view class="user-detail">
+        <text class="nickname">{{isLogin ? (userInfo.nickname || '用户') : '点击登录'}}</text>
+        <text wx:if="{{isLogin && userInfo.phone}}" class="phone">{{userInfo.phone}}</text>
+      </view>
+      <view class="arrow">›</view>
+    </view>
+  </view>
+
+  <!-- 订单入口 -->
+  <view class="order-section">
+    <view class="section-header">
+      <text class="section-title">我的订单</text>
+      <view class="section-more" data-status="" bindtap="handleOrderTap">
+        <text>全部订单</text>
+        <text class="arrow">›</text>
+      </view>
+    </view>
+    <view class="order-tabs">
+      <view class="order-tab" data-status="0" bindtap="handleOrderTap">
+        <text class="order-tab-icon">💰</text>
+        <text class="order-tab-text">待支付</text>
+      </view>
+      <view class="order-tab" data-status="1" bindtap="handleOrderTap">
+        <text class="order-tab-icon">⏳</text>
+        <text class="order-tab-text">待确认</text>
+      </view>
+      <view class="order-tab" data-status="2" bindtap="handleOrderTap">
+        <text class="order-tab-icon">✅</text>
+        <text class="order-tab-text">已确认</text>
+      </view>
+      <view class="order-tab" data-status="4" bindtap="handleOrderTap">
+        <text class="order-tab-icon">⭐</text>
+        <text class="order-tab-text">待评价</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 功能菜单 -->
+  <view class="menu-section">
+    <view
+      class="menu-item"
+      wx:for="{{menuList}}"
+      wx:key="path"
+      data-path="{{item.path}}"
+      bindtap="handleMenuTap"
+    >
+      <text class="menu-icon">{{item.icon}}</text>
+      <text class="menu-title">{{item.title}}</text>
+      <text class="menu-arrow">›</text>
+    </view>
+  </view>
+
+  <!-- 推广员入口 -->
+  <view wx:if="{{features.promoter.enabled}}" class="menu-section">
+    <view class="menu-item" bindtap="handlePromoterTap">
+      <text class="menu-icon">💼</text>
+      <text class="menu-title">{{userInfo.isPromoter ? '推广中心' : '成为推广员'}}</text>
+      <text class="menu-arrow">›</text>
+    </view>
+  </view>
+
+  <!-- 设置和客服 -->
+  <view class="menu-section">
+    <button class="menu-item menu-btn" open-type="contact" bindtap="handleServiceTap">
+      <text class="menu-icon">💬</text>
+      <text class="menu-title">联系客服</text>
+      <text class="menu-arrow">›</text>
+    </button>
+    <view class="menu-item" bindtap="handleSettingsTap">
+      <text class="menu-icon">⚙️</text>
+      <text class="menu-title">设置</text>
+      <text class="menu-arrow">›</text>
+    </view>
+  </view>
+
+  <!-- 退出登录 -->
+  <view wx:if="{{isLogin}}" class="logout-section">
+    <button class="logout-btn" bindtap="handleLogout">退出登录</button>
+  </view>
+</view>

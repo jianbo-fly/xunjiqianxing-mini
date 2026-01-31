@@ -1,0 +1,4 @@
+<view class="xj-loading {{vertical ? 'xj-loading--vertical' : ''}} xj-loading--{{size}}">
+  <view class="xj-loading__spinner"></view>
+  <text class="xj-loading__text" wx:if="{{text}}">{{text}}</text>
+</view>

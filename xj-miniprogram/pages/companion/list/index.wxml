@@ -1,0 +1,13 @@
+<!--
+  搭子列表页
+  TODO: 待开发 - 用户结伴同行功能
+-->
+<view class="page-companion">
+  <!-- 占位提示 -->
+  <view class="placeholder">
+    <view class="placeholder__icon">🤝</view>
+    <view class="placeholder__title">搭子功能开发中</view>
+    <view class="placeholder__desc">即将推出结伴同行功能</view>
+    <view class="placeholder__desc">敬请期待...</view>
+  </view>
+</view>

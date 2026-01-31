@@ -1,0 +1,2524 @@
+{
+  "info": {
+    "_postman_id": "xunjiqianxing-admin-api",
+    "name": "寻迹千行-管理后台API",
+    "description": "寻迹千行管理后台接口测试集合\n\n使用前请确保服务运行在 localhost:8081",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8081",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "routeId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "packageId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "couponId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "bannerId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "categoryId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "supplierId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "认证模块",
+      "item": [
+        {
+          "name": "1. 登录",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.data && jsonData.data.token) {",
+                  "    pm.collectionVariables.set('token', jsonData.data.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "2. 获取当前用户信息",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/auth/userinfo",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "auth", "userinfo"]
+            }
+          }
+        },
+        {
+          "name": "3. 修改密码",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"oldPassword\": \"admin123\",\n  \"newPassword\": \"newpass123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/auth/changePassword",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "auth", "changePassword"]
+            }
+          }
+        },
+        {
+          "name": "4. 退出登录",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/auth/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "auth", "logout"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "线路管理",
+      "item": [
+        {
+          "name": "6. 线路列表",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/route/list?page=1&pageSize=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "route", "list"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "pageSize", "value": "10"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "7. 线路列表(带筛选)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/route/list?page=1&pageSize=10&status=1&auditStatus=1&keyword=云南",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "route", "list"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "pageSize", "value": "10"},
+                {"key": "status", "value": "1"},
+                {"key": "auditStatus", "value": "1"},
+                {"key": "keyword", "value": "云南"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "8. 创建线路",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.data) {",
+                  "    pm.collectionVariables.set('routeId', jsonData.data);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"云南大理丽江6天5晚深度游\",\n  \"subtitle\": \"洱海骑行 | 玉龙雪山 | 古城漫步\",\n  \"coverImage\": \"https://example.com/cover.jpg\",\n  \"images\": [\"https://example.com/1.jpg\", \"https://example.com/2.jpg\"],\n  \"tags\": [\"网红打卡\", \"纯玩无购物\", \"含接机\"],\n  \"category\": \"domestic\",\n  \"cityCode\": \"530100\",\n  \"cityName\": \"昆明\",\n  \"departureCity\": \"昆明\",\n  \"destination\": \"大理、丽江\",\n  \"originalPrice\": 3999,\n  \"minPrice\": 2999,\n  \"costExclude\": \"<p>1. 往返大交通费用</p><p>2. 个人消费</p>\",\n  \"bookingNotice\": \"<p>1. 请提前3天预订</p><p>2. 满4人成团</p>\",\n  \"tips\": \"<p>1. 建议携带防晒用品</p><p>2. 高原地区注意休息</p>\",\n  \"sortOrder\": 100,\n  \"isRecommend\": 1,\n  \"supplierId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/route",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "route"]
+            }
+          }
+        },
+        {
+          "name": "9. 线路详情",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/route/{{routeId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "route", "{{routeId}}"]
+            }
+          }
+        },
+        {
+          "name": "10. 更新线路",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": {{routeId}},\n  \"name\": \"云南大理丽江7天6晚深度游(已更新)\",\n  \"minPrice\": 2888\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/route",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "route"]
+            }
+          }
+        },
+        {
+          "name": "11. 审核线路(通过)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": {{routeId}},\n  \"auditStatus\": 1,\n  \"auditRemark\": \"审核通过\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/route/audit",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "route", "audit"]
+            }
+          }
+        },
+        {
+          "name": "12. 上架线路",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/route/{{routeId}}/status?status=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "route", "{{routeId}}", "status"],
+              "query": [
+                {"key": "status", "value": "1"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "13. 下架线路",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/route/{{routeId}}/status?status=0",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "route", "{{routeId}}", "status"],
+              "query": [
+                {"key": "status", "value": "0"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "删除线路",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/route/{{routeId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "route", "{{routeId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "套餐管理",
+      "item": [
+        {
+          "name": "14. 创建套餐",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.data) {",
+                  "    pm.collectionVariables.set('packageId', jsonData.data);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productId\": {{routeId}},\n  \"name\": \"经济型套餐\",\n  \"tags\": [\"高性价比\"],\n  \"basePrice\": 2999,\n  \"childPrice\": 1999,\n  \"sortOrder\": 1,\n  \"attrs\": {\n    \"days\": 6,\n    \"nights\": 5\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/route/package",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "route", "package"]
+            }
+          }
+        },
+        {
+          "name": "15. 获取套餐列表",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/route/{{routeId}}/packages",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "route", "{{routeId}}", "packages"]
+            }
+          }
+        },
+        {
+          "name": "16. 更新套餐",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": {{packageId}},\n  \"name\": \"经济型套餐(已更新)\",\n  \"basePrice\": 2888\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/route/package",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "route", "package"]
+            }
+          }
+        },
+        {
+          "name": "删除套餐",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/route/package/{{packageId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "route", "package", "{{packageId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "价格日历",
+      "item": [
+        {
+          "name": "17. 设置价格日历",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"skuId\": {{packageId}},\n  \"prices\": [\n    {\"date\": \"2026-02-01\", \"price\": 2999, \"childPrice\": 1999, \"stock\": 20, \"status\": 1},\n    {\"date\": \"2026-02-02\", \"price\": 2999, \"childPrice\": 1999, \"stock\": 20, \"status\": 1},\n    {\"date\": \"2026-02-03\", \"price\": 3199, \"childPrice\": 2199, \"stock\": 15, \"status\": 1},\n    {\"date\": \"2026-02-04\", \"price\": 3199, \"childPrice\": 2199, \"stock\": 15, \"status\": 1},\n    {\"date\": \"2026-02-05\", \"price\": 3499, \"childPrice\": 2499, \"stock\": 10, \"status\": 1}\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/route/package/prices",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "route", "package", "prices"]
+            }
+          }
+        },
+        {
+          "name": "18. 获取价格日历",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/route/package/{{packageId}}/calendar?startDate=2026-02-01&endDate=2026-02-28",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "route", "package", "{{packageId}}", "calendar"],
+              "query": [
+                {"key": "startDate", "value": "2026-02-01"},
+                {"key": "endDate", "value": "2026-02-28"}
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "订单管理",
+      "item": [
+        {
+          "name": "21. 订单列表",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/order/list?page=1&pageSize=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "order", "list"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "pageSize", "value": "10"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "22. 订单列表(带筛选)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/order/list?page=1&pageSize=10&status=1&startDateBegin=2026-01-01&startDateEnd=2026-12-31",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "order", "list"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "pageSize", "value": "10"},
+                {"key": "status", "value": "1"},
+                {"key": "startDateBegin", "value": "2026-01-01"},
+                {"key": "startDateEnd", "value": "2026-12-31"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "23. 订单详情",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/order/TEST20260124001",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "order", "TEST20260124001"]
+            }
+          }
+        },
+        {
+          "name": "24. 确认订单",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orderNo\": \"TEST20260124001\",\n  \"action\": \"confirm\",\n  \"remark\": \"已确认,请准时出发\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/order/confirm",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "order", "confirm"]
+            }
+          }
+        },
+        {
+          "name": "25. 驳回订单",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orderNo\": \"TEST20260124002\",\n  \"action\": \"reject\",\n  \"rejectReason\": \"该日期已满团,建议更换日期\",\n  \"remark\": \"\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/order/confirm",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "order", "confirm"]
+            }
+          }
+        },
+        {
+          "name": "26. 添加订单备注",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orderNo\": \"TEST20260124001\",\n  \"remark\": \"客户要求接机服务\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/order/remark",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "order", "remark"]
+            }
+          }
+        },
+        {
+          "name": "27. 订单统计",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/order/stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "order", "stats"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "退款管理",
+      "item": [
+        {
+          "name": "28. 退款列表",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/refund/list?page=1&pageSize=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "refund", "list"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "pageSize", "value": "10"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "29. 退款列表(待审核)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/refund/list?page=1&pageSize=10&status=0",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "refund", "list"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "pageSize", "value": "10"},
+                {"key": "status", "value": "0"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "30. 退款详情",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/refund/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "refund", "1"]
+            }
+          }
+        },
+        {
+          "name": "31. 审核通过退款",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"status\": 1,\n  \"actualAmount\": 2500.00,\n  \"auditRemark\": \"审核通过,按70%比例退款\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/refund/audit",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "refund", "audit"]
+            }
+          }
+        },
+        {
+          "name": "32. 驳回退款",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 2,\n  \"status\": 2,\n  \"auditRemark\": \"已过退款时限,不予退款\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/refund/audit",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "refund", "audit"]
+            }
+          }
+        },
+        {
+          "name": "33. 待审核退款数量",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/refund/pendingCount",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "refund", "pendingCount"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "用户管理",
+      "item": [
+        {
+          "name": "34. 用户列表",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/user/list?page=1&pageSize=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "user", "list"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "pageSize", "value": "10"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "35. 用户列表(带筛选)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/user/list?page=1&pageSize=10&isMember=1&status=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "user", "list"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "pageSize", "value": "10"},
+                {"key": "isMember", "value": "1"},
+                {"key": "status", "value": "1"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "36. 用户详情",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/user/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "user", "1"]
+            }
+          }
+        },
+        {
+          "name": "37. 禁用用户",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/user/1/status?status=0",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "user", "1", "status"],
+              "query": [
+                {"key": "status", "value": "0"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "38. 启用用户",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/user/1/status?status=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "user", "1", "status"],
+              "query": [
+                {"key": "status", "value": "1"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "39. 调整积分",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": 1,\n  \"amount\": 100,\n  \"reason\": \"活动赠送积分\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/user/points/adjust",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "user", "points", "adjust"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "会员管理",
+      "item": [
+        {
+          "name": "40. 会员列表",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/member/list?page=1&pageSize=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "member", "list"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "pageSize", "value": "10"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "41. 会员列表(有效会员)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/member/list?page=1&pageSize=10&memberStatus=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "member", "list"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "pageSize", "value": "10"},
+                {"key": "memberStatus", "value": "1"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "42. 延长会员时间",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": 1,\n  \"days\": 30,\n  \"reason\": \"客诉补偿\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/member/extend",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "member", "extend"]
+            }
+          }
+        },
+        {
+          "name": "43. 会员统计",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/member/stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "member", "stats"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "领队管理",
+      "item": [
+        {
+          "name": "44. 领队申请列表",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/leader/applies?page=1&pageSize=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "leader", "applies"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "pageSize", "value": "10"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "45. 领队申请列表(待审核)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/leader/applies?page=1&pageSize=10&status=0",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "leader", "applies"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "pageSize", "value": "10"},
+                {"key": "status", "value": "0"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "46. 申请详情",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/leader/applies/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "leader", "applies", "1"]
+            }
+          }
+        },
+        {
+          "name": "47. 待审核申请数量",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/leader/applies/pendingCount",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "leader", "applies", "pendingCount"]
+            }
+          }
+        },
+        {
+          "name": "48. 审核通过申请",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"status\": 1,\n  \"auditRemark\": \"资质齐全,审核通过\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/leader/applies/audit",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "leader", "applies", "audit"]
+            }
+          }
+        },
+        {
+          "name": "49. 驳回申请",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 2,\n  \"status\": 2,\n  \"auditRemark\": \"证书照片不清晰,请重新上传\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/leader/applies/audit",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "leader", "applies", "audit"]
+            }
+          }
+        },
+        {
+          "name": "50. 领队列表",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/leader/list?page=1&pageSize=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "leader", "list"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "pageSize", "value": "10"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "51. 禁用领队",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/leader/1/status?status=0",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "leader", "1", "status"],
+              "query": [
+                {"key": "status", "value": "0"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "52. 启用领队",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/leader/1/status?status=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "leader", "1", "status"],
+              "query": [
+                {"key": "status", "value": "1"}
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "推广员管理",
+      "item": [
+        {
+          "name": "53. 推广员申请列表",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/promoter/applies?page=1&pageSize=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "promoter", "applies"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "pageSize", "value": "10"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "54. 待审核申请数量",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/promoter/applies/pendingCount",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "promoter", "applies", "pendingCount"]
+            }
+          }
+        },
+        {
+          "name": "55. 审核通过申请",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"status\": 1,\n  \"commissionRate\": 0.05,\n  \"level\": 1,\n  \"remark\": \"审核通过\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/promoter/applies/audit",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "promoter", "applies", "audit"]
+            }
+          }
+        },
+        {
+          "name": "56. 驳回申请",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 2,\n  \"status\": 2,\n  \"remark\": \"申请资料不完整\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/promoter/applies/audit",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "promoter", "applies", "audit"]
+            }
+          }
+        },
+        {
+          "name": "57. 推广员列表",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/promoter/list?page=1&pageSize=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "promoter", "list"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "pageSize", "value": "10"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "58. 推广员列表(筛选)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/promoter/list?page=1&pageSize=10&status=1&level=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "promoter", "list"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "pageSize", "value": "10"},
+                {"key": "status", "value": "1"},
+                {"key": "level", "value": "1"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "59. 推广员详情",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/promoter/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "promoter", "1"]
+            }
+          }
+        },
+        {
+          "name": "60. 更新推广员",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"level\": 2,\n  \"commissionRate\": 0.08,\n  \"remark\": \"升级为银牌\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/promoter",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "promoter"]
+            }
+          }
+        },
+        {
+          "name": "61. 禁用推广员",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/promoter/1/status?status=2",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "promoter", "1", "status"],
+              "query": [
+                {"key": "status", "value": "2"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "62. 启用推广员",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/promoter/1/status?status=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "promoter", "1", "status"],
+              "query": [
+                {"key": "status", "value": "1"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "63. 绑定用户记录",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/promoter/1/bindLogs?page=1&pageSize=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "promoter", "1", "bindLogs"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "pageSize", "value": "10"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "64. 佣金记录",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/promoter/1/commissions?page=1&pageSize=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "promoter", "1", "commissions"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "pageSize", "value": "10"}
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "优惠券管理",
+      "item": [
+        {
+          "name": "65. 优惠券模板列表",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/coupon/templates?page=1&pageSize=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "coupon", "templates"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "pageSize", "value": "10"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "66. 优惠券模板列表(筛选)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/coupon/templates?page=1&pageSize=10&type=1&status=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "coupon", "templates"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "pageSize", "value": "10"},
+                {"key": "type", "value": "1"},
+                {"key": "status", "value": "1"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "67. 创建满减券模板",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.data) {",
+                  "    pm.collectionVariables.set('couponId', jsonData.data);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"满500减100\",\n  \"type\": 1,\n  \"threshold\": 500,\n  \"amount\": 100,\n  \"scope\": 0,\n  \"validType\": 1,\n  \"validStart\": \"2026-01-01T00:00:00\",\n  \"validEnd\": \"2026-12-31T23:59:59\",\n  \"totalCount\": 1000,\n  \"perLimit\": 3,\n  \"memberOnly\": 0,\n  \"description\": \"满500元可用\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/coupon/template",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "coupon", "template"]
+            }
+          }
+        },
+        {
+          "name": "68. 创建折扣券模板",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"9折券\",\n  \"type\": 2,\n  \"discount\": 0.9,\n  \"maxAmount\": 200,\n  \"scope\": 0,\n  \"validType\": 2,\n  \"validDays\": 30,\n  \"totalCount\": 500,\n  \"perLimit\": 1,\n  \"memberOnly\": 1,\n  \"description\": \"9折优惠,最高减200\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/coupon/template",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "coupon", "template"]
+            }
+          }
+        },
+        {
+          "name": "69. 优惠券详情",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/coupon/template/{{couponId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "coupon", "template", "{{couponId}}"]
+            }
+          }
+        },
+        {
+          "name": "70. 更新优惠券模板",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": {{couponId}},\n  \"totalCount\": 2000,\n  \"description\": \"满500元可用,限时特惠\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/coupon/template",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "coupon", "template"]
+            }
+          }
+        },
+        {
+          "name": "71. 停用优惠券",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/coupon/template/{{couponId}}/status?status=0",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "coupon", "template", "{{couponId}}", "status"],
+              "query": [
+                {"key": "status", "value": "0"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "72. 启用优惠券",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/coupon/template/{{couponId}}/status?status=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "coupon", "template", "{{couponId}}", "status"],
+              "query": [
+                {"key": "status", "value": "1"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "73. 发放优惠券(指定用户)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"couponId\": {{couponId}},\n  \"issueType\": 1,\n  \"userIds\": [1, 2, 3],\n  \"count\": 1,\n  \"reason\": \"活动赠送\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/coupon/issue",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "coupon", "issue"]
+            }
+          }
+        },
+        {
+          "name": "74. 发放优惠券(全部会员)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"couponId\": {{couponId}},\n  \"issueType\": 2,\n  \"count\": 1,\n  \"reason\": \"会员专属福利\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/coupon/issue",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "coupon", "issue"]
+            }
+          }
+        },
+        {
+          "name": "75. 发放记录",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/coupon/records?page=1&pageSize=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "coupon", "records"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "pageSize", "value": "10"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "76. 发放记录(按优惠券筛选)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/coupon/records?page=1&pageSize=10&couponId={{couponId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "coupon", "records"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "pageSize", "value": "10"},
+                {"key": "couponId", "value": "{{couponId}}"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "77. 优惠券统计",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/coupon/stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "coupon", "stats"]
+            }
+          }
+        },
+        {
+          "name": "78. 删除优惠券模板",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/coupon/template/{{couponId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "coupon", "template", "{{couponId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Banner管理",
+      "item": [
+        {
+          "name": "79. Banner列表",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/banner/list?page=1&pageSize=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "banner", "list"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "pageSize", "value": "10"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "80. Banner列表(全部)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/banner/listAll",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "banner", "listAll"]
+            }
+          }
+        },
+        {
+          "name": "81. 创建Banner",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.data) {",
+                  "    pm.collectionVariables.set('bannerId', jsonData.data);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"春季特惠活动\",\n  \"imageUrl\": \"https://example.com/banner1.jpg\",\n  \"linkType\": 1,\n  \"linkValue\": \"12345\",\n  \"sortOrder\": 100\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/banner",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "banner"]
+            }
+          }
+        },
+        {
+          "name": "82. Banner详情",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/banner/{{bannerId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "banner", "{{bannerId}}"]
+            }
+          }
+        },
+        {
+          "name": "83. 更新Banner",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": {{bannerId}},\n  \"title\": \"春季特惠活动(已更新)\",\n  \"sortOrder\": 200\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/banner",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "banner"]
+            }
+          }
+        },
+        {
+          "name": "84. 禁用Banner",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/banner/{{bannerId}}/status?status=0",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "banner", "{{bannerId}}", "status"],
+              "query": [
+                {"key": "status", "value": "0"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "85. 启用Banner",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/banner/{{bannerId}}/status?status=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "banner", "{{bannerId}}", "status"],
+              "query": [
+                {"key": "status", "value": "1"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "86. 调整Banner排序",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ids\": [1, 2, 3]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/banner/sort",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "banner", "sort"]
+            }
+          }
+        },
+        {
+          "name": "87. 删除Banner",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/banner/{{bannerId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "banner", "{{bannerId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "分类管理",
+      "item": [
+        {
+          "name": "88. 分类列表",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/category/list",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "category", "list"]
+            }
+          }
+        },
+        {
+          "name": "89. 分类列表(按业务类型)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/category/list?bizType=route",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "category", "list"],
+              "query": [
+                {"key": "bizType", "value": "route"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "90. 创建分类",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.data) {",
+                  "    pm.collectionVariables.set('categoryId', jsonData.data);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"亲子游\",\n  \"icon\": \"https://example.com/icon-family.png\",\n  \"bizType\": \"route\",\n  \"sortOrder\": 10\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/category",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "category"]
+            }
+          }
+        },
+        {
+          "name": "91. 分类详情",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/category/{{categoryId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "category", "{{categoryId}}"]
+            }
+          }
+        },
+        {
+          "name": "92. 更新分类",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": {{categoryId}},\n  \"name\": \"亲子出游\",\n  \"sortOrder\": 20\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/category",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "category"]
+            }
+          }
+        },
+        {
+          "name": "93. 禁用分类",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/category/{{categoryId}}/status?status=0",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "category", "{{categoryId}}", "status"],
+              "query": [
+                {"key": "status", "value": "0"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "94. 启用分类",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/category/{{categoryId}}/status?status=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "category", "{{categoryId}}", "status"],
+              "query": [
+                {"key": "status", "value": "1"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "95. 删除分类",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/category/{{categoryId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "category", "{{categoryId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "供应商管理",
+      "item": [
+        {
+          "name": "96. 供应商列表",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/supplier/list?page=1&pageSize=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "supplier", "list"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "pageSize", "value": "10"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "97. 供应商列表(筛选)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/supplier/list?page=1&pageSize=10&status=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "supplier", "list"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "pageSize", "value": "10"},
+                {"key": "status", "value": "1"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "98. 创建供应商",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.data) {",
+                  "    pm.collectionVariables.set('supplierId', jsonData.data);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"云南旅游公司\",\n  \"phone\": \"13800138000\",\n  \"intro\": \"专业云南地接服务商\",\n  \"username\": \"yunnan001\",\n  \"password\": \"123456\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/supplier",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "supplier"]
+            }
+          }
+        },
+        {
+          "name": "99. 供应商详情",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/supplier/{{supplierId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "supplier", "{{supplierId}}"]
+            }
+          }
+        },
+        {
+          "name": "100. 更新供应商",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": {{supplierId}},\n  \"name\": \"云南旅游集团\",\n  \"intro\": \"云南最大的旅游服务商\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/supplier",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "supplier"]
+            }
+          }
+        },
+        {
+          "name": "101. 禁用供应商",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/supplier/{{supplierId}}/status?status=0",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "supplier", "{{supplierId}}", "status"],
+              "query": [
+                {"key": "status", "value": "0"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "102. 启用供应商",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/supplier/{{supplierId}}/status?status=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "supplier", "{{supplierId}}", "status"],
+              "query": [
+                {"key": "status", "value": "1"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "103. 重置供应商密码",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/supplier/{{supplierId}}/resetPassword",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "supplier", "{{supplierId}}", "resetPassword"]
+            }
+          }
+        },
+        {
+          "name": "104. 删除供应商",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/supplier/{{supplierId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "supplier", "{{supplierId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "系统配置",
+      "item": [
+        {
+          "name": "105. 配置列表",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/config/list",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "config", "list"]
+            }
+          }
+        },
+        {
+          "name": "106. 配置Map",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/config/map",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "config", "map"]
+            }
+          }
+        },
+        {
+          "name": "107. 获取配置值",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/config/value?key=member_price",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "config", "value"],
+              "query": [
+                {"key": "key", "value": "member_price"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "108. 更新配置",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"configKey\": \"member_price\",\n  \"configValue\": \"99\",\n  \"configType\": \"number\",\n  \"remark\": \"会员月费\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/config",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "config"]
+            }
+          }
+        },
+        {
+          "name": "109. 批量更新配置",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"configs\": [\n    {\"configKey\": \"member_price\", \"configValue\": \"99\", \"configType\": \"number\"},\n    {\"configKey\": \"service_phone\", \"configValue\": \"400-123-4567\", \"configType\": \"string\"},\n    {\"configKey\": \"promoter_default_rate\", \"configValue\": \"0.05\", \"configType\": \"number\"}\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/config/batch",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "config", "batch"]
+            }
+          }
+        },
+        {
+          "name": "110. 删除配置",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/config?key=test_key",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "config"],
+              "query": [
+                {"key": "key", "value": "test_key"}
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

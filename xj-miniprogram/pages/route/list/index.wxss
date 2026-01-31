@@ -1,0 +1,89 @@
+/**
+ * 线路列表页样式
+ * TODO: 待完善
+ */
+
+.page-route-list {
+  min-height: 100vh;
+  background: var(--color-bg-page);
+}
+
+/* 搜索栏 */
+.search-bar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  padding: var(--spacing-md) var(--page-padding);
+  background: var(--color-bg-card);
+}
+
+.search-bar__input {
+  display: flex;
+  align-items: center;
+  height: 72rpx;
+  padding: 0 var(--spacing-md);
+  background: var(--color-bg-gray);
+  border-radius: var(--radius-full);
+}
+
+.search-bar__icon {
+  font-size: 28rpx;
+  margin-right: var(--spacing-sm);
+}
+
+.search-bar__field {
+  flex: 1;
+  font-size: var(--font-size-md);
+  color: var(--color-text-primary);
+}
+
+/* 筛选栏 */
+.filter-bar {
+  display: flex;
+  padding: var(--spacing-sm) var(--page-padding);
+  background: var(--color-bg-card);
+  border-bottom: 2rpx solid var(--color-divider);
+}
+
+.filter-item {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: var(--spacing-sm) 0;
+  font-size: var(--font-size-md);
+  color: var(--color-text-secondary);
+}
+
+.filter-item.active {
+  color: var(--color-primary);
+  font-weight: var(--font-weight-medium);
+}
+
+/* 占位提示 */
+.placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  padding: var(--spacing-xl);
+}
+
+.placeholder__icon {
+  font-size: 120rpx;
+  margin-bottom: var(--spacing-lg);
+}
+
+.placeholder__title {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-md);
+}
+
+.placeholder__desc {
+  font-size: var(--font-size-md);
+  color: var(--color-text-tertiary);
+  line-height: 1.6;
+}

@@ -1,0 +1,32 @@
+<view class="xj-input {{disabled ? 'xj-input--disabled' : ''}} {{error ? 'xj-input--error' : ''}} {{customClass}}">
+  <view wx:if="{{label}}" class="xj-input__label">
+    <text wx:if="{{required}}" class="xj-input__required">*</text>
+    <text>{{label}}</text>
+  </view>
+  <view class="xj-input__body">
+    <input
+      class="xj-input__input"
+      type="{{type}}"
+      value="{{inputValue}}"
+      placeholder="{{placeholder}}"
+      placeholder-class="xj-input__placeholder"
+      maxlength="{{maxlength}}"
+      disabled="{{disabled}}"
+      focus="{{focus}}"
+      password="{{password}}"
+      bindinput="handleInput"
+      bindfocus="handleFocus"
+      bindblur="handleBlur"
+      bindconfirm="handleConfirm"
+    />
+    <view
+      wx:if="{{clearable && inputValue}}"
+      class="xj-input__clear"
+      bindtap="handleClear"
+    >
+      <text class="xj-input__clear-icon">×</text>
+    </view>
+    <slot name="suffix"></slot>
+  </view>
+  <view wx:if="{{error}}" class="xj-input__error">{{error}}</view>
+</view>

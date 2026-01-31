@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "寻迹千行",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "route-card": "/components/business/route-card/index"
+  }
+}

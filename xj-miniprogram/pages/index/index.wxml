@@ -1,0 +1,99 @@
+<view class="page-index">
+  <!-- 顶部栏 -->
+  <view class="top-bar">
+    <image class="top-bar__logo" src="/assets/images/logo.png" mode="aspectFit" />
+    <view class="top-bar__right">
+      <!-- 积分 -->
+      <view class="top-bar__points">
+        <text class="points-value">{{points}}</text>
+        <text class="points-label">积分</text>
+      </view>
+      <!-- 消息入口 -->
+      <view class="top-bar__message" bindtap="handleMessageTap">
+        <image class="message-icon" src="/assets/icons/common/message.png" mode="aspectFit" />
+        <view wx:if="{{unreadCount > 0}}" class="message-badge">
+          <text wx:if="{{unreadCount < 100}}">{{unreadCount}}</text>
+          <text wx:else>99+</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 轮播图 -->
+  <view class="banner-section">
+    <swiper
+      class="banner-swiper"
+      indicator-dots
+      autoplay
+      circular
+      indicator-color="rgba(255,255,255,0.5)"
+      indicator-active-color="#FFFFFF"
+    >
+      <swiper-item
+        wx:for="{{banners}}"
+        wx:key="id"
+        data-item="{{item}}"
+        bindtap="handleBannerTap"
+      >
+        <image class="banner-image" src="{{item.imageUrl}}" mode="aspectFill" />
+      </swiper-item>
+      <!-- 无数据时显示占位图 -->
+      <swiper-item wx:if="{{!banners.length}}">
+        <view class="banner-placeholder">
+          <text>暂无活动</text>
+        </view>
+      </swiper-item>
+    </swiper>
+  </view>
+
+  <!-- 功能入口 - 8个 -->
+  <view class="entry-section">
+    <view class="entry-grid">
+      <view
+        class="entry-item {{item.disabled ? 'entry-item--disabled' : ''}}"
+        wx:for="{{entries}}"
+        wx:key="id"
+        data-item="{{item}}"
+        bindtap="handleEntryTap"
+      >
+        <view class="entry-icon-wrap">
+          <image class="entry-icon" src="{{item.icon}}" mode="aspectFit" />
+          <view wx:if="{{item.tag}}" class="entry-tag">{{item.tag}}</view>
+        </view>
+        <text class="entry-name">{{item.name}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 热门线路 -->
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">热门线路</text>
+      <view class="section-more" bindtap="handleMoreTap">
+        <text>更多</text>
+        <text class="section-more-icon">›</text>
+      </view>
+    </view>
+    <view class="route-list" wx:if="{{hotRoutes.length}}">
+      <view class="route-item" wx:for="{{hotRoutes}}" wx:key="id">
+        <route-card
+          route="{{item}}"
+          mode="normal"
+          bind:tap="handleRouteTap"
+        />
+      </view>
+    </view>
+    <view wx:else class="empty-tip">
+      <text>暂无热门线路</text>
+    </view>
+  </view>
+
+  <!-- 底部占位（避免被悬浮按钮遮挡） -->
+  <view class="bottom-placeholder"></view>
+
+  <!-- 在线客服悬浮按钮 -->
+  <view class="customer-service" bindtap="handleServiceTap">
+    <image class="service-icon" src="/assets/icons/common/service.png" mode="aspectFit" />
+    <text class="service-text">客服</text>
+  </view>
+</view>

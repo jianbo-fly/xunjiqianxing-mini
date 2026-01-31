@@ -1,0 +1,48 @@
+<view class="order-card {{customClass}}" bindtap="handleTap">
+  <!-- 头部：订单状态 -->
+  <view class="order-card__header">
+    <text class="order-card__order-no">订单号：{{order.orderNo}}</text>
+    <text class="order-card__status" style="color: {{statusColor}}">{{statusText}}</text>
+  </view>
+
+  <!-- 内容：商品信息 -->
+  <view class="order-card__body">
+    <image
+      class="order-card__image"
+      src="{{order.routeImage || '/assets/images/placeholder/route.png'}}"
+      mode="aspectFill"
+    />
+    <view class="order-card__info">
+      <view class="order-card__title">{{order.routeTitle}}</view>
+      <view class="order-card__meta">
+        <text>出行日期：{{order.travelDate}}</text>
+      </view>
+      <view class="order-card__meta">
+        <text>{{order.quantity}}人 | {{order.skuName}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部：金额和操作 -->
+  <view class="order-card__footer">
+    <view class="order-card__amount">
+      <text class="order-card__amount-label">实付：</text>
+      <text class="order-card__amount-value">¥{{order.payAmount}}</text>
+    </view>
+    <view wx:if="{{showActions}}" class="order-card__actions" catchtap="">
+      <!-- 待支付 -->
+      <block wx:if="{{order.status === 0}}">
+        <xj-button type="text" size="sm" catchtap="handleCancel">取消订单</xj-button>
+        <xj-button type="primary" size="sm" catchtap="handlePay">去支付</xj-button>
+      </block>
+      <!-- 已确认 -->
+      <block wx:elif="{{order.status === 2}}">
+        <xj-button type="text" size="sm" catchtap="handleRefund">申请退款</xj-button>
+      </block>
+      <!-- 已完成 -->
+      <block wx:elif="{{order.status === 4 && !order.isReviewed}}">
+        <xj-button type="primary" size="sm" catchtap="handleReview">去评价</xj-button>
+      </block>
+    </view>
+  </view>
+</view>

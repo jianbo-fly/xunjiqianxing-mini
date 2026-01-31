@@ -1,0 +1,7 @@
+<view class="xj-empty {{customClass}}">
+  <image class="xj-empty__image" src="{{emptyImage}}" mode="aspectFit" />
+  <view class="xj-empty__description">{{emptyText}}</view>
+  <view class="xj-empty__action">
+    <slot></slot>
+  </view>
+</view>

@@ -1,0 +1,63 @@
+.xj-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 4rpx 12rpx;
+  font-size: var(--font-size-xs);
+  border-radius: var(--radius-xs);
+  white-space: nowrap;
+}
+
+/* 尺寸 */
+.xj-tag--sm {
+  padding: 2rpx 8rpx;
+  font-size: 18rpx;
+}
+
+.xj-tag--md {
+  padding: 4rpx 12rpx;
+  font-size: var(--font-size-xs);
+}
+
+/* 类型 */
+.xj-tag--default {
+  background: var(--color-bg-gray);
+  color: var(--color-text-secondary);
+}
+
+.xj-tag--primary {
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+.xj-tag--success {
+  background: var(--color-success-light);
+  color: var(--color-success);
+}
+
+.xj-tag--warning {
+  background: var(--color-warning-light);
+  color: var(--color-warning);
+}
+
+.xj-tag--error {
+  background: var(--color-error-light);
+  color: var(--color-error);
+}
+
+/* 镂空 */
+.xj-tag--plain {
+  background: transparent;
+  border: 2rpx solid currentColor;
+}
+
+/* 圆角 */
+.xj-tag--round {
+  border-radius: var(--radius-full);
+}
+
+/* 关闭按钮 */
+.xj-tag__close {
+  margin-left: 8rpx;
+  font-size: 20rpx;
+  line-height: 1;
+}

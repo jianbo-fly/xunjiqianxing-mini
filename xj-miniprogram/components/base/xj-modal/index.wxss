@@ -1,0 +1,88 @@
+.xj-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: var(--z-index-modal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.xj-modal__overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--color-bg-mask);
+}
+
+.xj-modal__container {
+  position: relative;
+  width: 560rpx;
+  background: var(--color-bg-card);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  animation: xj-modal-scale-in var(--duration-normal) ease;
+}
+
+@keyframes xj-modal-scale-in {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.xj-modal__header {
+  padding: var(--spacing-lg) var(--spacing-lg) 0;
+  text-align: center;
+}
+
+.xj-modal__title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+}
+
+.xj-modal__body {
+  padding: var(--spacing-lg);
+  font-size: var(--font-size-md);
+  color: var(--color-text-secondary);
+  text-align: center;
+  line-height: var(--line-height-normal);
+}
+
+.xj-modal__footer {
+  display: flex;
+  border-top: 2rpx solid var(--color-divider);
+}
+
+.xj-modal__btn {
+  flex: 1;
+  height: 96rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-lg);
+  transition: background var(--duration-fast);
+}
+
+.xj-modal__btn:active {
+  background: var(--color-bg-gray);
+}
+
+.xj-modal__btn--cancel {
+  color: var(--color-text-secondary);
+  border-right: 2rpx solid var(--color-divider);
+}
+
+.xj-modal__btn--confirm {
+  color: var(--color-primary);
+  font-weight: var(--font-weight-medium);
+}

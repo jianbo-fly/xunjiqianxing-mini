@@ -1,0 +1,7 @@
+<view class="xj-loading {{vertical ? 'xj-loading--vertical' : ''}} {{customClass}}">
+  <view
+    class="xj-loading__spinner xj-loading__spinner--{{type}} xj-loading__spinner--{{size}}"
+    style="{{color ? 'border-color: ' + color + '; border-top-color: transparent;' : ''}}"
+  ></view>
+  <view wx:if="{{text}}" class="xj-loading__text">{{text}}</view>
+</view>

@@ -1,0 +1,21 @@
+<view wx:if="{{visible}}" class="xj-popup xj-popup--{{position}} {{customClass}}">
+  <view
+    wx:if="{{overlay}}"
+    class="xj-popup__overlay"
+    bindtap="handleOverlayTap"
+  ></view>
+  <view
+    class="xj-popup__container {{round ? 'xj-popup__container--round' : ''}}"
+    catchtap="noop"
+  >
+    <view wx:if="{{title || closable}}" class="xj-popup__header">
+      <text class="xj-popup__title">{{title}}</text>
+      <view wx:if="{{closable}}" class="xj-popup__close" bindtap="handleClose">
+        <text>×</text>
+      </view>
+    </view>
+    <view class="xj-popup__body">
+      <slot></slot>
+    </view>
+  </view>
+</view>

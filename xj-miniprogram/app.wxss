@@ -1,0 +1,34 @@
+/**
+ * 全局样式
+ * 引入CSS变量和通用样式
+ */
+
+@import './styles/variables.wxss';
+@import './styles/reset.wxss';
+@import './styles/mixins.wxss';
+
+/* 页面通用样式 */
+page {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC',
+               'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica,
+               Arial, sans-serif;
+  font-size: var(--font-size-md);
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-page);
+  line-height: var(--line-height-normal);
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 盒模型 */
+view, text, image, scroll-view, swiper, swiper-item {
+  box-sizing: border-box;
+}
+
+/* 隐藏滚动条 */
+::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+  color: transparent;
+}

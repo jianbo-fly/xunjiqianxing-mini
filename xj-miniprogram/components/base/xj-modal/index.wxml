@@ -1,0 +1,25 @@
+<view wx:if="{{visible}}" class="xj-modal {{customClass}}" bindtap="handleOverlayTap">
+  <view class="xj-modal__overlay"></view>
+  <view class="xj-modal__container" catchtap="noop">
+    <view wx:if="{{title}}" class="xj-modal__header">
+      <text class="xj-modal__title">{{title}}</text>
+    </view>
+    <view class="xj-modal__body">
+      <slot>
+        <text wx:if="{{content}}">{{content}}</text>
+      </slot>
+    </view>
+    <view class="xj-modal__footer">
+      <view
+        wx:if="{{showCancel}}"
+        class="xj-modal__btn xj-modal__btn--cancel"
+        bindtap="handleCancel"
+      >{{cancelText}}</view>
+      <view
+        class="xj-modal__btn xj-modal__btn--confirm"
+        style="{{confirmColor ? 'color: ' + confirmColor + ';' : ''}}"
+        bindtap="handleConfirm"
+      >{{confirmText}}</view>
+    </view>
+  </view>
+</view>

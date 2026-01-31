@@ -1,0 +1,51 @@
+/**
+ * Reset Styles - 样式重置
+ */
+
+/* 清除默认边距 */
+view, text, image, scroll-view, swiper, swiper-item,
+button, input, textarea, form, navigator {
+  margin: 0;
+  padding: 0;
+}
+
+/* 按钮重置 */
+button {
+  padding: 0;
+  margin: 0;
+  background: none;
+  border: none;
+  border-radius: 0;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+}
+
+button::after {
+  border: none;
+}
+
+/* 输入框重置 */
+input {
+  padding: 0;
+  margin: 0;
+}
+
+/* 图片默认块级 */
+image {
+  display: block;
+}
+
+/* 清除navigator默认样式 */
+navigator {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* 滚动条隐藏 */
+::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+  color: transparent;
+}

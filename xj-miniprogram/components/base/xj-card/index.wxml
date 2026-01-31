@@ -1,0 +1,10 @@
+<view
+  class="xj-card xj-card--shadow-{{shadow}} xj-card--padding-{{padding}} xj-card--radius-{{radius}} {{bordered ? 'xj-card--bordered' : ''}} {{clickable ? 'xj-card--clickable' : ''}} {{customClass}}"
+  bindtap="handleTap"
+>
+  <slot name="header"></slot>
+  <view class="xj-card__body">
+    <slot></slot>
+  </view>
+  <slot name="footer"></slot>
+</view>

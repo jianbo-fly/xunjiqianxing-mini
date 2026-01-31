@@ -1,0 +1,8 @@
+<view
+  class="xj-tag xj-tag--{{type}} xj-tag--{{size}} {{plain ? 'xj-tag--plain' : ''}} {{round ? 'xj-tag--round' : ''}} {{customClass}}"
+  style="{{color ? 'background-color: ' + color + ';' : ''}}"
+  bindtap="handleTap"
+>
+  <slot></slot>
+  <view wx:if="{{closable}}" class="xj-tag__close" catchtap="handleClose">×</view>
+</view>

@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "线路列表",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "route-card": "/components/business/route-card/index"
+  }
+}

@@ -1,0 +1,27 @@
+<view class="page-custom-list">
+  <view class="list" wx:if="{{list.length}}">
+    <view class="item" wx:for="{{list}}" wx:key="id" data-id="{{item.id}}" bindtap="handleItemTap">
+      <view class="item-header">
+        <text class="item-dest">{{item.destination}}</text>
+        <text class="item-status item-status--{{item.status}}">{{getStatusText(item.status)}}</text>
+      </view>
+      <view class="item-info">
+        <text>{{item.travelTime}} · {{item.travelDays}}</text>
+      </view>
+      <view class="item-info">
+        <text>{{item.adultCount}}成人 {{item.childCount > 0 ? item.childCount + '儿童' : ''}} · 预算{{item.budget}}/人</text>
+      </view>
+      <view class="item-footer">
+        <text class="item-time">{{item.createdAt}}</text>
+        <view class="item-actions" wx:if="{{item.status === 0}}">
+          <text class="item-cancel" catchtap="handleCancel" data-id="{{item.id}}">取消</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="loading-tip" wx:if="{{loading}}">加载中...</view>
+  <view class="loading-tip" wx:elif="{{finished && list.length}}">没有更多了</view>
+
+  <xj-empty wx:if="{{!loading && !list.length}}" description="暂无定制需求" />
+</view>

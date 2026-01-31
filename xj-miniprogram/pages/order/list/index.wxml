@@ -1,0 +1,26 @@
+<!--
+  订单列表页
+  TODO: 待完善 - 订单管理功能
+-->
+<view class="page-order-list">
+  <!-- Tab栏 -->
+  <view class="tab-bar">
+    <view
+      class="tab-item {{currentStatus === item.status ? 'active' : ''}}"
+      wx:for="{{tabs}}"
+      wx:key="status"
+      data-status="{{item.status}}"
+      bindtap="handleTabChange"
+    >
+      <text>{{item.label}}</text>
+    </view>
+  </view>
+
+  <!-- 占位提示 -->
+  <view class="placeholder">
+    <view class="placeholder__icon">📋</view>
+    <view class="placeholder__title">订单列表开发中</view>
+    <view class="placeholder__desc">即将展示订单信息</view>
+    <view class="placeholder__desc">敬请期待...</view>
+  </view>
+</view>

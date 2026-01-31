@@ -1,0 +1,20 @@
+<button
+  class="xj-btn xj-btn--{{type}} xj-btn--{{size}} {{block ? 'xj-btn--block' : ''}} {{shape === 'round' ? 'xj-btn--round' : ''}} {{shape === 'square' ? 'xj-btn--square' : ''}} {{disabled ? 'xj-btn--disabled' : ''}} {{loading ? 'xj-btn--loading' : ''}} {{customClass}}"
+  disabled="{{disabled || loading}}"
+  open-type="{{disabled ? '' : openType}}"
+  bindtap="handleTap"
+  bindgetuserinfo="handleGetUserInfo"
+  bindcontact="handleContact"
+  bindgetphonenumber="handleGetPhoneNumber"
+  binderror="handleError"
+  bindopensetting="handleOpenSetting"
+  bindlaunchapp="handleLaunchApp"
+>
+  <view class="xj-btn__content">
+    <view wx:if="{{loading}}" class="xj-btn__loading"></view>
+    <slot name="icon"></slot>
+    <view class="xj-btn__text">
+      <slot></slot>
+    </view>
+  </view>
+</button>

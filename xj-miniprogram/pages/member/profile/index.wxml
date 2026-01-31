@@ -1,0 +1,5 @@
+<view class="placeholder-container">
+  <view class="placeholder-icon">🚧</view>
+  <view class="placeholder-title">{{pageTitle}}</view>
+  <view class="placeholder-text">页面开发中...</view>
+</view>

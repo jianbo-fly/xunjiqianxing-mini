@@ -1,0 +1,26 @@
+<!--
+  网页容器页
+  用于加载外部H5页面
+-->
+<view class="page-webview">
+  <!-- WebView -->
+  <web-view
+    wx:if="{{url}}"
+    src="{{url}}"
+    bindload="handleLoad"
+    binderror="handleError"
+  />
+
+  <!-- 无URL占位 -->
+  <view wx:if="{{!url}}" class="placeholder">
+    <view class="placeholder__icon">🌐</view>
+    <view class="placeholder__title">无效的链接</view>
+    <view class="placeholder__desc">请检查链接地址是否正确</view>
+  </view>
+
+  <!-- 加载中 -->
+  <view wx:if="{{loading && url}}" class="loading">
+    <view class="loading__spinner"></view>
+    <text class="loading__text">加载中...</text>
+  </view>
+</view>

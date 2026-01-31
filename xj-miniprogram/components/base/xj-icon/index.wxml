@@ -1,0 +1,8 @@
+<image
+  wx:if="{{name}}"
+  class="xj-icon {{customClass}}"
+  src="{{name}}"
+  style="width: {{iconSize}}; height: {{iconSize}};"
+  mode="aspectFit"
+  bindtap="handleTap"
+/>

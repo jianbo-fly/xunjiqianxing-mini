@@ -1,0 +1,83 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/login/index",
+    "pages/travel/index/index",
+    "pages/custom/list/index",
+    "pages/route/list/index",
+    "pages/route/detail/index",
+    "pages/companion/list/index",
+    "pages/companion/detail/index",
+    "pages/trip/list/index",
+    "pages/member/index/index",
+    "pages/member/profile/index",
+    "pages/member/travelers/index",
+    "pages/member/favorite/index",
+    "pages/member/coupon/index",
+    "pages/member/settings/index",
+    "pages/order/confirm/index",
+    "pages/order/list/index",
+    "pages/order/detail/index",
+    "pages/order/refund/index",
+    "pages/promoter/apply/index",
+    "pages/promoter/center/index",
+    "pages/promoter/bindList/index",
+    "pages/message/list/index",
+    "pages/webview/index"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#FFFFFF",
+    "navigationBarTitleText": "寻迹千行",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#F5F5F5"
+  },
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#1890FF",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "assets/icons/tabbar/home.png",
+        "selectedIconPath": "assets/icons/tabbar/home-active.png"
+      },
+      {
+        "pagePath": "pages/companion/list/index",
+        "text": "搭子",
+        "iconPath": "assets/icons/tabbar/companion.png",
+        "selectedIconPath": "assets/icons/tabbar/companion-active.png"
+      },
+      {
+        "pagePath": "pages/trip/list/index",
+        "text": "行程",
+        "iconPath": "assets/icons/tabbar/trip.png",
+        "selectedIconPath": "assets/icons/tabbar/trip-active.png"
+      },
+      {
+        "pagePath": "pages/member/index/index",
+        "text": "我的",
+        "iconPath": "assets/icons/tabbar/member.png",
+        "selectedIconPath": "assets/icons/tabbar/member-active.png"
+      }
+    ]
+  },
+  "usingComponents": {
+    "xj-button": "/components/base/xj-button/index",
+    "xj-card": "/components/base/xj-card/index",
+    "xj-icon": "/components/base/xj-icon/index",
+    "xj-image": "/components/base/xj-image/index",
+    "xj-input": "/components/base/xj-input/index",
+    "xj-tag": "/components/base/xj-tag/index",
+    "xj-empty": "/components/base/xj-empty/index",
+    "xj-loading": "/components/base/xj-loading/index",
+    "xj-modal": "/components/base/xj-modal/index",
+    "xj-popup": "/components/base/xj-popup/index",
+    "nav-bar": "/components/layout/nav-bar/index",
+    "safe-area": "/components/layout/safe-area/index"
+  },
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

@@ -1,0 +1,154 @@
+.route-card {
+  background: var(--color-bg-card);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Normal 模式（垂直布局） */
+.route-card--normal .route-card__image-wrap {
+  position: relative;
+  width: 100%;
+  height: 360rpx;
+}
+
+.route-card--normal .route-card__image {
+  width: 100%;
+  height: 100%;
+}
+
+/* Compact 模式（紧凑垂直） */
+.route-card--compact .route-card__image-wrap {
+  height: 280rpx;
+}
+
+/* Horizontal 模式（水平布局） */
+.route-card--horizontal {
+  display: flex;
+  flex-direction: row;
+}
+
+.route-card--horizontal .route-card__image-wrap {
+  position: relative;
+  width: 240rpx;
+  height: 180rpx;
+  flex-shrink: 0;
+}
+
+.route-card--horizontal .route-card__image {
+  width: 100%;
+  height: 100%;
+}
+
+.route-card--horizontal .route-card__content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* 图片 */
+.route-card__image {
+  width: 100%;
+  height: 100%;
+}
+
+/* 标签 */
+.route-card__tags {
+  position: absolute;
+  top: var(--spacing-sm);
+  left: var(--spacing-sm);
+  display: flex;
+  gap: var(--spacing-xs);
+}
+
+.route-card__tag {
+  padding: 4rpx 12rpx;
+  background: rgba(0, 0, 0, 0.5);
+  color: var(--color-text-inverse);
+  font-size: var(--font-size-xs);
+  border-radius: var(--radius-xs);
+}
+
+/* 收藏按钮 */
+.route-card__favorite {
+  position: absolute;
+  top: var(--spacing-sm);
+  right: var(--spacing-sm);
+  width: 56rpx;
+  height: 56rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+}
+
+.route-card__favorite-icon {
+  font-size: 32rpx;
+  color: var(--color-text-tertiary);
+}
+
+.route-card__favorite.is-active .route-card__favorite-icon {
+  color: var(--color-error);
+}
+
+/* 内容区域 */
+.route-card__content {
+  padding: var(--card-padding);
+}
+
+.route-card__title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  line-height: var(--line-height-tight);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.route-card__info {
+  margin-top: var(--spacing-sm);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-tertiary);
+}
+
+.route-card__bottom {
+  margin-top: var(--spacing-md);
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing-sm);
+}
+
+.route-card__price {
+  display: flex;
+  align-items: baseline;
+  color: var(--color-error);
+}
+
+.route-card__price-symbol {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.route-card__price-value {
+  font-size: var(--font-size-price);
+  font-weight: var(--font-weight-bold);
+}
+
+.route-card__price-unit {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-tertiary);
+  margin-left: 4rpx;
+}
+
+.route-card__origin-price {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-placeholder);
+  text-decoration: line-through;
+}

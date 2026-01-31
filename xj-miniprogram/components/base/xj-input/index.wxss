@@ -1,0 +1,72 @@
+.xj-input {
+  background: var(--color-bg-card);
+}
+
+.xj-input__label {
+  display: flex;
+  align-items: center;
+  margin-bottom: var(--spacing-xs);
+  font-size: var(--font-size-md);
+  color: var(--color-text-primary);
+}
+
+.xj-input__required {
+  color: var(--color-error);
+  margin-right: 4rpx;
+}
+
+.xj-input__body {
+  display: flex;
+  align-items: center;
+  height: var(--input-height);
+  padding: 0 var(--spacing-md);
+  background: var(--color-bg-gray);
+  border-radius: var(--radius-sm);
+  border: 2rpx solid transparent;
+  transition: border-color var(--duration-fast);
+}
+
+.xj-input__body:focus-within {
+  border-color: var(--color-primary);
+}
+
+.xj-input__input {
+  flex: 1;
+  height: 100%;
+  font-size: var(--font-size-md);
+  color: var(--color-text-primary);
+}
+
+.xj-input__placeholder {
+  color: var(--color-text-placeholder);
+}
+
+.xj-input__clear {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40rpx;
+  height: 40rpx;
+  margin-left: var(--spacing-xs);
+}
+
+.xj-input__clear-icon {
+  font-size: 32rpx;
+  color: var(--color-text-tertiary);
+}
+
+.xj-input__error {
+  margin-top: var(--spacing-xs);
+  font-size: var(--font-size-sm);
+  color: var(--color-error);
+}
+
+/* 禁用状态 */
+.xj-input--disabled .xj-input__body {
+  opacity: 0.6;
+}
+
+/* 错误状态 */
+.xj-input--error .xj-input__body {
+  border-color: var(--color-error);
+}

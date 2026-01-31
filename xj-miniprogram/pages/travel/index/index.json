@@ -1,0 +1,6 @@
+{
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "route-card": "/components/business/route-card/index"
+  }
+}

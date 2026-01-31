@@ -1,0 +1,283 @@
+<view class="page-route-detail">
+  <!-- 顶部导航（透明悬浮） -->
+  <view class="nav-header" style="padding-top: {{statusBarHeight}}px;">
+    <view class="nav-btn nav-btn--back" bindtap="handleBack">
+      <text>‹</text>
+    </view>
+    <view class="nav-btn nav-btn--share" bindtap="onShareAppMessage">
+      <image src="/assets/icons/common/share.png" mode="aspectFit" />
+    </view>
+  </view>
+
+  <!-- 加载中 -->
+  <view class="loading-container" wx:if="{{loading}}">
+    <xj-loading text="加载中..." vertical />
+  </view>
+
+  <!-- 主内容 -->
+  <scroll-view class="main-scroll" scroll-y wx:if="{{!loading && route}}">
+    <!-- 图片轮播 -->
+    <view class="banner-section">
+      <swiper
+        class="banner-swiper"
+        autoplay
+        circular
+        bindchange="handleSwiperChange"
+      >
+        <swiper-item
+          wx:for="{{bannerImages}}"
+          wx:key="index"
+          data-index="{{index}}"
+          bindtap="handlePreviewImage"
+        >
+          <image class="banner-image" src="{{item}}" mode="aspectFill" />
+        </swiper-item>
+      </swiper>
+      <view class="banner-indicator">{{swiperIndex + 1}}/{{bannerImages.length}}</view>
+    </view>
+
+    <!-- 基本信息 -->
+    <view class="info-section">
+      <view class="route-name">{{route.name}}</view>
+      <view class="route-subtitle" wx:if="{{route.subtitle}}">{{route.subtitle}}</view>
+
+      <view class="route-tags" wx:if="{{route.tags && route.tags.length}}">
+        <view class="route-tag" wx:for="{{route.tags}}" wx:key="index">{{item}}</view>
+      </view>
+
+      <view class="route-meta">
+        <view class="route-rating" wx:if="{{route.score}}">
+          <text class="rating-star">★</text>
+          <text class="rating-value">{{route.score}}</text>
+        </view>
+        <text class="route-sales" wx:if="{{route.salesCount}}">已售{{route.salesCount}}人</text>
+        <text class="route-city" wx:if="{{route.departureCity}}">{{route.departureCity}}出发</text>
+      </view>
+
+      <view class="route-price">
+        <text class="price-symbol">¥</text>
+        <text class="price-value">{{selectedPrice || route.minPrice}}</text>
+        <text class="price-unit">/人起</text>
+      </view>
+    </view>
+
+    <!-- 行程亮点 -->
+    <view class="highlight-section" wx:if="{{route.highlights && route.highlights.length}}">
+      <view class="section-title">行程亮点</view>
+      <view class="highlight-list">
+        <view class="highlight-item" wx:for="{{route.highlights}}" wx:key="index">
+          <text class="highlight-icon">✓</text>
+          <text class="highlight-text">{{item}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 选择套餐和日期 -->
+    <view class="select-section">
+      <view class="select-item" bindtap="handleShowPackage">
+        <text class="select-label">套餐</text>
+        <view class="select-value">
+          <text>{{selectedPackage ? selectedPackage.name : '请选择套餐'}}</text>
+          <text class="select-arrow">›</text>
+        </view>
+      </view>
+      <view class="select-item" bindtap="handleShowCalendar">
+        <text class="select-label">日期</text>
+        <view class="select-value">
+          <text>{{selectedDate || '请选择出行日期'}}</text>
+          <text class="select-arrow">›</text>
+        </view>
+      </view>
+      <view class="select-item" wx:if="{{selectedDate}}">
+        <text class="select-label">数量</text>
+        <view class="quantity-picker">
+          <view class="quantity-btn {{quantity <= 1 ? 'quantity-btn--disabled' : ''}}" bindtap="handleQuantityMinus">-</view>
+          <text class="quantity-value">{{quantity}}</text>
+          <view class="quantity-btn" bindtap="handleQuantityPlus">+</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 内容Tab -->
+    <view class="content-section">
+      <view class="content-tabs">
+        <view
+          class="content-tab {{contentTab === index ? 'content-tab--active' : ''}}"
+          wx:for="{{contentTabs}}"
+          wx:key="index"
+          data-index="{{index}}"
+          bindtap="handleContentTabChange"
+        >
+          <text>{{item}}</text>
+          <view class="content-tab__line" wx:if="{{contentTab === index}}"></view>
+        </view>
+      </view>
+
+      <!-- 行程安排 -->
+      <view class="content-panel" wx:if="{{contentTab === 0}}">
+        <view class="itinerary-list" wx:if="{{route.itinerary && route.itinerary.length}}">
+          <view class="itinerary-day-card" wx:for="{{route.itinerary}}" wx:key="index">
+            <!-- 日期标题 -->
+            <view class="day-header">
+              <view class="day-badge">D{{item.day || index + 1}}</view>
+              <view class="day-title">{{item.title}}</view>
+            </view>
+
+            <!-- 时间轴活动列表 -->
+            <view class="timeline" wx:if="{{item.activities && item.activities.length}}">
+              <view class="timeline-item" wx:for="{{item.activities}}" wx:for-item="act" wx:key="idx">
+                <view class="timeline-dot">
+                  <image class="timeline-icon" src="/assets/icons/itinerary/{{act.icon || 'default'}}.png" mode="aspectFit" />
+                </view>
+                <view class="timeline-content">
+                  <text class="timeline-time" wx:if="{{act.time}}">{{act.time}}</text>
+                  <text class="timeline-text">{{act.content}}</text>
+                </view>
+              </view>
+            </view>
+
+            <!-- 餐食和住宿 -->
+            <view class="day-footer">
+              <view class="day-info" wx:if="{{item.meals}}">
+                <text class="info-icon">🍽️</text>
+                <text class="info-text">{{item.meals}}</text>
+              </view>
+              <view class="day-info" wx:if="{{item.hotel}}">
+                <text class="info-icon">🏨</text>
+                <text class="info-text">{{item.hotel}}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+        <view class="empty-content" wx:else>
+          <text>暂无行程安排</text>
+        </view>
+      </view>
+
+      <!-- 费用说明 -->
+      <view class="content-panel" wx:if="{{contentTab === 1}}">
+        <view class="fee-section" wx:if="{{route.costExclude}}">
+          <view class="fee-title">费用不含</view>
+          <view class="fee-content">
+            <rich-text nodes="{{route.costExclude}}"></rich-text>
+          </view>
+        </view>
+        <view class="fee-section" wx:if="{{route.tips}}">
+          <view class="fee-title">温馨提示</view>
+          <view class="fee-content">
+            <rich-text nodes="{{route.tips}}"></rich-text>
+          </view>
+        </view>
+        <view class="empty-content" wx:if="{{!route.costExclude && !route.tips}}">
+          <text>暂无费用说明</text>
+        </view>
+      </view>
+
+      <!-- 预订须知 -->
+      <view class="content-panel" wx:if="{{contentTab === 2}}">
+        <view class="notice-content" wx:if="{{route.bookingNotice}}">
+          <rich-text nodes="{{route.bookingNotice}}"></rich-text>
+        </view>
+        <view class="notice-list" wx:elif="{{route.notices && route.notices.length}}">
+          <view class="notice-item" wx:for="{{route.notices}}" wx:key="index">
+            <text class="notice-num">{{index + 1}}.</text>
+            <text>{{item}}</text>
+          </view>
+        </view>
+        <view class="empty-content" wx:else>
+          <text>暂无预订须知</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 底部占位 -->
+    <view class="bottom-placeholder"></view>
+  </scroll-view>
+
+  <!-- 底部操作栏 -->
+  <view class="action-bar" wx:if="{{!loading}}">
+    <view class="action-bar__left">
+      <view class="action-btn" bindtap="handleFavorite">
+        <image class="action-btn__icon" src="/assets/icons/common/{{isFavorite ? 'favorite-active' : 'favorite'}}.png" mode="aspectFit" />
+        <text class="action-btn__text">{{isFavorite ? '已收藏' : '收藏'}}</text>
+      </view>
+      <view class="action-btn" bindtap="handleService">
+        <image class="action-btn__icon" src="/assets/icons/common/service.png" mode="aspectFit" />
+        <text class="action-btn__text">客服</text>
+      </view>
+    </view>
+    <view class="action-bar__right">
+      <view class="book-btn" bindtap="handleBook">
+        <text>立即预订</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 套餐选择弹窗 -->
+  <view class="popup-mask" wx:if="{{showPackagePopup}}" bindtap="handleClosePackage"></view>
+  <view class="popup-container popup-container--package {{showPackagePopup ? 'popup-container--show' : ''}}">
+    <view class="popup-header">
+      <text class="popup-title">选择套餐</text>
+      <text class="popup-close" bindtap="handleClosePackage">×</text>
+    </view>
+    <scroll-view class="popup-scroll" scroll-y>
+      <view
+        class="package-item {{selectedPackage && selectedPackage.id === item.id ? 'package-item--active' : ''}}"
+        wx:for="{{packages}}"
+        wx:key="id"
+        data-index="{{index}}"
+        bindtap="handlePackageSelect"
+      >
+        <view class="package-header">
+          <view class="package-name">{{item.name}}</view>
+          <view class="package-tags" wx:if="{{item.tags && item.tags.length}}">
+            <text class="package-tag" wx:for="{{item.tags}}" wx:for-item="tag" wx:key="*this">{{tag}}</text>
+          </view>
+        </view>
+        <view class="package-attrs" wx:if="{{item.attrsDisplay && item.attrsDisplay.length}}">
+          <text class="package-attr" wx:for="{{item.attrsDisplay}}" wx:for-item="attr" wx:key="*this">{{attr}}</text>
+        </view>
+        <view class="package-price">¥{{item.basePrice}}<text class="package-price-unit">/人</text></view>
+      </view>
+      <view class="empty-content" wx:if="{{!packages.length}}">
+        <text>暂无可选套餐</text>
+      </view>
+    </scroll-view>
+    <view class="popup-footer">
+      <button class="popup-btn" bindtap="handleClosePackage">确定</button>
+    </view>
+  </view>
+
+  <!-- 日期选择弹窗 -->
+  <view class="popup-mask" wx:if="{{showCalendarPopup}}" bindtap="handleCloseCalendar"></view>
+  <view class="popup-container popup-container--calendar {{showCalendarPopup ? 'popup-container--show' : ''}}">
+    <view class="popup-header">
+      <text class="popup-title">选择出行日期</text>
+      <text class="popup-close" bindtap="handleCloseCalendar">×</text>
+    </view>
+    <view class="calendar-month-switcher">
+      <view class="month-btn {{!canGoPrevMonth ? 'month-btn--disabled' : ''}}" bindtap="handlePrevMonth">
+        <text>‹</text>
+      </view>
+      <text class="calendar-month-text">{{currentMonth}}</text>
+      <view class="month-btn" bindtap="handleNextMonth">
+        <text>›</text>
+      </view>
+    </view>
+    <scroll-view class="popup-scroll calendar-scroll" scroll-y>
+      <view class="calendar-grid">
+        <view
+          class="calendar-item {{item.stock <= 0 ? 'calendar-item--disabled' : ''}} {{selectedDate === item.date ? 'calendar-item--active' : ''}} {{item.isWeekend ? 'calendar-item--weekend' : ''}}"
+          wx:for="{{calendar}}"
+          wx:key="date"
+          data-item="{{item}}"
+          bindtap="handleDateSelect"
+        >
+          <text class="calendar-date">{{item.day}}日</text>
+          <text class="calendar-price" wx:if="{{item.stock > 0}}">¥{{item.price}}</text>
+          <text class="calendar-sold" wx:else>售罄</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+</view>

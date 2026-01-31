@@ -1,0 +1,254 @@
+<view class="page-travel">
+  <!-- 顶部导航 -->
+  <view class="nav-header" style="padding-top: {{statusBarHeight}}px; height: {{statusBarHeight + 44}}px;">
+    <view class="nav-header__left" bindtap="handleBack">
+      <text class="nav-back-text">‹</text>
+    </view>
+    <view class="nav-header__title">旅游</view>
+    <view class="nav-header__right" bindtap="handleSearch">
+      <image class="nav-search-icon" src="/assets/icons/common/search.png" mode="aspectFit" />
+    </view>
+  </view>
+
+  <!-- 顶部Tab（固定在导航栏下方） -->
+  <view class="top-tabs-placeholder" style="height: {{statusBarHeight + 44 + 44}}px;"></view>
+  <view class="top-tabs" style="top: {{statusBarHeight + 44}}px;">
+    <view
+      class="top-tab {{currentTab === index ? 'top-tab--active' : ''}}"
+      wx:for="{{tabs}}"
+      wx:key="index"
+      data-index="{{index}}"
+      bindtap="handleTabChange"
+    >
+      <text>{{item}}</text>
+      <view class="top-tab__line" wx:if="{{currentTab === index}}"></view>
+    </view>
+  </view>
+
+  <!-- 跟团游内容 -->
+  <view class="tab-content" wx:if="{{currentTab === 0}}">
+    <!-- 二级分类 -->
+    <view class="sub-category">
+      <view
+        class="sub-category__item {{categoryIndex === index ? 'sub-category__item--active' : ''}}"
+        wx:for="{{categories}}"
+        wx:key="index"
+        data-index="{{index}}"
+        bindtap="handleCategoryChange"
+      >{{item}}</view>
+      <view class="sub-category__filter" bindtap="handleShowFilter">
+        <image src="/assets/icons/common/filter.png" mode="aspectFit" />
+        <text>筛选</text>
+      </view>
+    </view>
+
+    <!-- 线路列表 -->
+    <scroll-view class="route-scroll" scroll-y enhanced show-scrollbar="{{false}}" bindscrolltolower="onReachBottom">
+      <view class="route-list">
+        <view class="route-item" wx:for="{{routeList}}" wx:key="id">
+          <route-card route="{{item}}" mode="normal" bind:tap="handleRouteTap" />
+        </view>
+      </view>
+
+      <!-- 加载状态 -->
+      <view class="loading-tip" wx:if="{{routeLoading}}">
+        <text>加载中...</text>
+      </view>
+      <view class="loading-tip" wx:elif="{{routeFinished && routeList.length}}">
+        <text>没有更多了</text>
+      </view>
+      <view class="empty-tip" wx:elif="{{!routeLoading && !routeList.length}}">
+        <text>暂无线路</text>
+      </view>
+    </scroll-view>
+
+    <!-- 筛选弹窗 -->
+    <view class="filter-mask" wx:if="{{showFilter}}" bindtap="handleCloseFilter"></view>
+    <view class="filter-popup {{showFilter ? 'filter-popup--show' : ''}}">
+      <view class="filter-header">
+        <text class="filter-title">筛选</text>
+        <text class="filter-reset" bindtap="handleResetFilter">重置</text>
+      </view>
+
+      <view class="filter-item">
+        <text class="filter-label">出发地</text>
+        <picker mode="selector" range="{{departures}}" bindchange="handleDepartureChange">
+          <view class="filter-picker">
+            <text>{{filters.departure || '不限'}}</text>
+            <text class="picker-arrow">›</text>
+          </view>
+        </picker>
+      </view>
+
+      <view class="filter-item">
+        <text class="filter-label">行程天数</text>
+        <picker mode="selector" range="{{daysOptions}}" bindchange="handleDaysChange">
+          <view class="filter-picker">
+            <text>{{filters.days || '不限'}}</text>
+            <text class="picker-arrow">›</text>
+          </view>
+        </picker>
+      </view>
+
+      <view class="filter-item">
+        <text class="filter-label">价格区间</text>
+        <view class="filter-price-range">
+          <input class="price-input" type="number" placeholder="最低" value="{{filters.priceMin}}" bindinput="e => this.setData({'filters.priceMin': e.detail.value})" />
+          <text class="price-separator">-</text>
+          <input class="price-input" type="number" placeholder="最高" value="{{filters.priceMax}}" bindinput="e => this.setData({'filters.priceMax': e.detail.value})" />
+        </view>
+      </view>
+
+      <view class="filter-footer">
+        <button class="filter-btn filter-btn--confirm" bindtap="handleConfirmFilter">确定</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 定制游内容 -->
+  <view class="tab-content custom-content" wx:if="{{currentTab === 1}}">
+    <scroll-view class="custom-scroll" scroll-y enhanced show-scrollbar="{{false}}">
+      <!-- 目的地 -->
+      <view class="form-section">
+        <view class="form-title">想去哪里？</view>
+        <view class="card-grid">
+          <view
+            class="card-item {{selectedDest === item ? 'card-item--active' : ''}}"
+            wx:for="{{destinations}}"
+            wx:key="index"
+            data-dest="{{item}}"
+            bindtap="handleDestSelect"
+          >{{item}}</view>
+        </view>
+        <input
+          wx:if="{{selectedDest === '其他'}}"
+          class="custom-input"
+          placeholder="请输入目的地"
+          value="{{customDest}}"
+          bindinput="handleCustomDestInput"
+        />
+      </view>
+
+      <!-- 出行时间 -->
+      <view class="form-section">
+        <view class="form-title">什么时候出发？</view>
+        <view class="card-grid">
+          <view
+            class="card-item {{selectedTime === item ? 'card-item--active' : ''}}"
+            wx:for="{{timeOptions}}"
+            wx:key="index"
+            data-time="{{item}}"
+            bindtap="handleTimeSelect"
+          >{{item === '选日期' && customDate ? customDate : item}}</view>
+        </view>
+        <picker wx:if="{{showDatePicker}}" mode="date" start="{{today}}" bindchange="handleDateChange">
+          <view class="date-picker-trigger">选择日期</view>
+        </picker>
+      </view>
+
+      <!-- 出行天数 -->
+      <view class="form-section">
+        <view class="form-title">玩几天？</view>
+        <view class="card-grid">
+          <view
+            class="card-item {{selectedDays === item ? 'card-item--active' : ''}}"
+            wx:for="{{daysChoices}}"
+            wx:key="index"
+            data-days="{{item}}"
+            bindtap="handleDaysSelect"
+          >{{item}}</view>
+        </view>
+      </view>
+
+      <!-- 出行人数 -->
+      <view class="form-section">
+        <view class="form-title">几个人去？</view>
+        <view class="people-row">
+          <view class="people-item">
+            <text class="people-label">成人</text>
+            <view class="people-counter">
+              <view class="counter-btn {{adultCount <= 1 ? 'counter-btn--disabled' : ''}}" data-type="minus" bindtap="handleAdultChange">-</view>
+              <text class="counter-value">{{adultCount}}</text>
+              <view class="counter-btn" data-type="plus" bindtap="handleAdultChange">+</view>
+            </view>
+          </view>
+          <view class="people-item">
+            <text class="people-label">儿童</text>
+            <view class="people-counter">
+              <view class="counter-btn {{childCount <= 0 ? 'counter-btn--disabled' : ''}}" data-type="minus" bindtap="handleChildChange">-</view>
+              <text class="counter-value">{{childCount}}</text>
+              <view class="counter-btn" data-type="plus" bindtap="handleChildChange">+</view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 预算范围 -->
+      <view class="form-section">
+        <view class="form-title">预算多少？（每人）</view>
+        <view class="card-grid card-grid--5">
+          <view
+            class="card-item {{selectedBudget === item ? 'card-item--active' : ''}}"
+            wx:for="{{budgetOptions}}"
+            wx:key="index"
+            data-budget="{{item}}"
+            bindtap="handleBudgetSelect"
+          >{{item}}</view>
+        </view>
+      </view>
+
+      <!-- 其他需求 -->
+      <view class="form-section">
+        <view class="form-title">其他需求</view>
+        <view class="need-tags">
+          <view
+            class="need-tag {{item.selected ? 'need-tag--active' : ''}}"
+            wx:for="{{needTags}}"
+            wx:key="id"
+            data-index="{{index}}"
+            bindtap="handleNeedTagTap"
+          >{{item.name}}</view>
+        </view>
+        <textarea
+          class="extra-note"
+          placeholder="补充说明（选填）"
+          value="{{extraNote}}"
+          bindinput="handleExtraNoteInput"
+          maxlength="200"
+        />
+      </view>
+
+      <!-- 联系方式 -->
+      <view class="form-section">
+        <view class="form-title">联系方式</view>
+        <input
+          class="phone-input"
+          type="number"
+          placeholder="请输入手机号"
+          value="{{phone}}"
+          bindinput="handlePhoneInput"
+          maxlength="11"
+        />
+      </view>
+
+      <!-- 提交按钮 -->
+      <view class="submit-area">
+        <button class="submit-btn" bindtap="handleSubmitCustom" loading="{{submitting}}" disabled="{{submitting}}">
+          提交定制需求
+        </button>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 提交成功弹窗 -->
+  <view class="success-mask" wx:if="{{showSuccess}}" bindtap="handleCloseSuccess"></view>
+  <view class="success-popup" wx:if="{{showSuccess}}">
+    <view class="success-icon">✅</view>
+    <view class="success-title">提交成功！</view>
+    <view class="success-desc">专属旅行顾问将在30分钟内联系您</view>
+    <view class="success-actions">
+      <button class="success-btn success-btn--secondary" bindtap="handleBackHome">返回首页</button>
+      <button class="success-btn success-btn--primary" bindtap="handleViewMyCustom">查看我的定制</button>
+    </view>
+  </view>
+</view>

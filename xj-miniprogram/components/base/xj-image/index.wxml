@@ -1,0 +1,17 @@
+<view
+  class="xj-image {{customClass}}"
+  style="width: {{width}}; height: {{height}}; border-radius: {{radius}};"
+  bindtap="handleTap"
+>
+  <image
+    class="xj-image__img"
+    src="{{currentSrc}}"
+    mode="{{mode}}"
+    lazy-load="{{lazyLoad}}"
+    bindload="handleLoad"
+    binderror="handleError"
+  />
+  <view wx:if="{{loading && showLoading}}" class="xj-image__loading">
+    <view class="xj-image__loading-icon"></view>
+  </view>
+</view>

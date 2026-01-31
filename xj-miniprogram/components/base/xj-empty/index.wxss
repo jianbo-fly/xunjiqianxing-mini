@@ -1,0 +1,23 @@
+.xj-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xxl) var(--spacing-lg);
+}
+
+.xj-empty__image {
+  width: 240rpx;
+  height: 240rpx;
+  margin-bottom: var(--spacing-md);
+}
+
+.xj-empty__description {
+  font-size: var(--font-size-md);
+  color: var(--color-text-tertiary);
+  text-align: center;
+}
+
+.xj-empty__action {
+  margin-top: var(--spacing-lg);
+}

@@ -1,0 +1,70 @@
+.xj-card {
+  background: var(--color-bg-card);
+  box-sizing: border-box;
+}
+
+/* 阴影 */
+.xj-card--shadow-none {
+  box-shadow: none;
+}
+
+.xj-card--shadow-sm {
+  box-shadow: var(--shadow-sm);
+}
+
+.xj-card--shadow-md {
+  box-shadow: var(--shadow-md);
+}
+
+.xj-card--shadow-lg {
+  box-shadow: var(--shadow-lg);
+}
+
+/* 内边距 */
+.xj-card--padding-none {
+  padding: 0;
+}
+
+.xj-card--padding-sm {
+  padding: var(--spacing-sm);
+}
+
+.xj-card--padding-md {
+  padding: var(--card-padding);
+}
+
+.xj-card--padding-lg {
+  padding: var(--spacing-lg);
+}
+
+/* 圆角 */
+.xj-card--radius-none {
+  border-radius: 0;
+}
+
+.xj-card--radius-sm {
+  border-radius: var(--radius-sm);
+}
+
+.xj-card--radius-md {
+  border-radius: var(--radius-md);
+}
+
+.xj-card--radius-lg {
+  border-radius: var(--radius-lg);
+}
+
+/* 边框 */
+.xj-card--bordered {
+  border: 2rpx solid var(--color-border);
+}
+
+/* 可点击 */
+.xj-card--clickable {
+  transition: transform var(--duration-fast);
+}
+
+.xj-card--clickable:active {
+  transform: scale(0.98);
+  opacity: 0.9;
+}

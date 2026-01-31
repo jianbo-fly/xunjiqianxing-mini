@@ -1,0 +1,51 @@
+.xj-loading {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.xj-loading--vertical {
+  flex-direction: column;
+}
+
+.xj-loading__spinner {
+  border: 4rpx solid var(--color-primary);
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: xj-loading-spin 0.8s linear infinite;
+}
+
+/* 尺寸 */
+.xj-loading__spinner--sm {
+  width: 28rpx;
+  height: 28rpx;
+  border-width: 3rpx;
+}
+
+.xj-loading__spinner--md {
+  width: 40rpx;
+  height: 40rpx;
+}
+
+.xj-loading__spinner--lg {
+  width: 56rpx;
+  height: 56rpx;
+  border-width: 5rpx;
+}
+
+.xj-loading__text {
+  margin-left: var(--spacing-sm);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.xj-loading--vertical .xj-loading__text {
+  margin-left: 0;
+  margin-top: var(--spacing-sm);
+}
+
+@keyframes xj-loading-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

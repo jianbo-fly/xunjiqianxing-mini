@@ -1,0 +1,45 @@
+<view class="route-card route-card--{{mode}} {{customClass}}" bindtap="handleTap">
+  <!-- 图片区域 -->
+  <view class="route-card__image-wrap">
+    <image
+      class="route-card__image"
+      src="{{route.coverImage || '/assets/images/placeholder/route.png'}}"
+      mode="aspectFill"
+      lazy-load
+    />
+    <view wx:if="{{route.tags && route.tags.length}}" class="route-card__tags">
+      <view
+        wx:for="{{route.tags}}"
+        wx:key="index"
+        wx:if="{{index < 2}}"
+        class="route-card__tag"
+      >{{item}}</view>
+    </view>
+    <view
+      wx:if="{{showFavorite}}"
+      class="route-card__favorite {{route.isFavorite ? 'is-active' : ''}}"
+      catchtap="handleFavorite"
+    >
+      <text class="route-card__favorite-icon">{{route.isFavorite ? '♥' : '♡'}}</text>
+    </view>
+  </view>
+
+  <!-- 内容区域 -->
+  <view class="route-card__content">
+    <view class="route-card__title">{{route.name || '线路名称'}}</view>
+    <view class="route-card__info">
+      <text wx:if="{{route.subtitle}}" class="route-card__subtitle">{{route.subtitle}}</text>
+      <text class="route-card__sales">已售{{route.salesCount || 0}}人</text>
+    </view>
+    <view class="route-card__bottom">
+      <view class="route-card__price">
+        <text class="route-card__price-symbol">¥</text>
+        <text class="route-card__price-value">{{route.minPrice || 0}}</text>
+        <text class="route-card__price-unit">/人起</text>
+      </view>
+      <view wx:if="{{route.originalPrice && route.originalPrice > route.minPrice}}" class="route-card__origin-price">
+        ¥{{route.originalPrice}}
+      </view>
+    </view>
+  </view>
+</view>
