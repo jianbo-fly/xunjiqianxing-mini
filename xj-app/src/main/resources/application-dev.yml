@@ -35,8 +35,8 @@ spring:
 # 微信小程序配置
 wechat:
   miniapp:
-    appid: ${WECHAT_APPID:your-appid}
-    secret: ${WECHAT_SECRET:your-secret}
+    appid: ${WECHAT_APPID:wx02e0737068f03dac}
+    secret: ${WECHAT_SECRET:4cb241b8c72ea4d9746dd3b31f0c6cf1}
 
 # 微信支付配置
 wechat-pay:

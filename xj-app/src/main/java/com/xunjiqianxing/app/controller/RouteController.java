@@ -142,8 +142,44 @@ public class RouteController {
             vo.setDepartureCity(routeExt.getDepartureCity());
             vo.setDestination(routeExt.getDestination());
             vo.setCostExclude(routeExt.getCostExclude());
+            vo.setCostInclude(routeExt.getCostInclude());
             vo.setBookingNotice(routeExt.getBookingNotice());
             vo.setTips(routeExt.getTips());
+
+            // 转换行程数据 (处理 LinkedHashMap 反序列化问题)
+            if (routeExt.getItinerary() != null && !routeExt.getItinerary().isEmpty()) {
+                List<RouteDetailVO.ItineraryDay> itinerary = routeExt.getItinerary().stream()
+                        .map(dayObj -> {
+                            RouteDetailVO.ItineraryDay dayVO = new RouteDetailVO.ItineraryDay();
+                            if (dayObj instanceof java.util.Map) {
+                                @SuppressWarnings("unchecked")
+                                java.util.Map<String, Object> dayMap = (java.util.Map<String, Object>) dayObj;
+                                dayVO.setDay(dayMap.get("day") != null ? Integer.valueOf(dayMap.get("day").toString()) : null);
+                                dayVO.setTitle((String) dayMap.get("title"));
+                                dayVO.setMeals((String) dayMap.get("meals"));
+                                dayVO.setHotel((String) dayMap.get("hotel"));
+
+                                Object activitiesObj = dayMap.get("activities");
+                                if (activitiesObj instanceof java.util.List) {
+                                    @SuppressWarnings("unchecked")
+                                    java.util.List<java.util.Map<String, Object>> actList =
+                                            (java.util.List<java.util.Map<String, Object>>) activitiesObj;
+                                    dayVO.setActivities(actList.stream()
+                                            .map(actMap -> {
+                                                RouteDetailVO.Activity actVO = new RouteDetailVO.Activity();
+                                                actVO.setIcon((String) actMap.get("icon"));
+                                                actVO.setTime((String) actMap.get("time"));
+                                                actVO.setContent((String) actMap.get("content"));
+                                                return actVO;
+                                            })
+                                            .collect(Collectors.toList()));
+                                }
+                            }
+                            return dayVO;
+                        })
+                        .collect(Collectors.toList());
+                vo.setItinerary(itinerary);
+            }
         }
 
         return vo;

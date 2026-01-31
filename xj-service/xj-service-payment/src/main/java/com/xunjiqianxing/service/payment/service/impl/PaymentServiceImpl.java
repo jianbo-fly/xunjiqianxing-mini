@@ -16,6 +16,7 @@ import com.xunjiqianxing.service.payment.mapper.PaymentRecordMapper;
 import com.xunjiqianxing.service.payment.service.PaymentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +32,7 @@ import java.util.Map;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@ConditionalOnBean(WxPayService.class)
 public class PaymentServiceImpl implements PaymentService {
 
     private final PaymentRecordMapper paymentRecordMapper;

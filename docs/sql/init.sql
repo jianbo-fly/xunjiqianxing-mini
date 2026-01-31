@@ -847,10 +847,17 @@ INSERT INTO system_config (id, config_key, config_value, config_type, remark) VA
 (9, 'points_rule_promote', '10', 'number', '推广积分比例(每成交1单得x积分)');
 
 -- 初始化超级管理员 (密码: admin123, 使用BCrypt加密)
+-- 如果密码不正确，可通过 POST /admin/auth/initAdmin 重置
 INSERT INTO system_admin (id, username, password, nickname, role, status) VALUES
-(1, 'admin', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8ioctR5S8c6HYJy8k/MZFCX3wVqFq', '超级管理员', 'super_admin', 1);
+(1, 'admin', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '超级管理员', 'super_admin', 1);
 
 -- =============================================
 -- 完成
 -- =============================================
 SELECT '数据库初始化完成!' AS result;
+
+
+-- 添加行程安排和费用包含字段到 product_route 表
+ALTER TABLE product_route
+    ADD COLUMN itinerary JSON COMMENT '行程安排(JSON数组)',
+  ADD COLUMN cost_include TEXT COMMENT '费用包含(富文本)';

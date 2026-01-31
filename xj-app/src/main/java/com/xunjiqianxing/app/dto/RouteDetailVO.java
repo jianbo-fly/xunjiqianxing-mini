@@ -67,4 +67,48 @@ public class RouteDetailVO {
 
     @Schema(description = "温馨提示")
     private String tips;
+
+    @Schema(description = "费用包含")
+    private String costInclude;
+
+    @Schema(description = "行程安排")
+    private List<ItineraryDay> itinerary;
+
+    /**
+     * 行程天
+     */
+    @Data
+    @Schema(description = "行程天")
+    public static class ItineraryDay {
+        @Schema(description = "第几天")
+        private Integer day;
+
+        @Schema(description = "标题")
+        private String title;
+
+        @Schema(description = "活动列表")
+        private List<Activity> activities;
+
+        @Schema(description = "餐食说明")
+        private String meals;
+
+        @Schema(description = "住宿说明")
+        private String hotel;
+    }
+
+    /**
+     * 活动项
+     */
+    @Data
+    @Schema(description = "活动项")
+    public static class Activity {
+        @Schema(description = "图标类型")
+        private String icon;
+
+        @Schema(description = "时间")
+        private String time;
+
+        @Schema(description = "内容")
+        private String content;
+    }
 }

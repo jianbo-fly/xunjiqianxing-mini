@@ -142,4 +142,86 @@ public class UserController {
         StpUtil.logout();
         return Result.success();
     }
+
+    /**
+     * 微信一键绑定手机号
+     */
+    @PostMapping("/bindPhoneByWx")
+    @Operation(summary = "微信一键绑定手机号", description = "通过微信getPhoneNumber获取手机号")
+    public Result<Void> bindPhoneByWx(@Valid @RequestBody BindPhoneByWxRequest request) {
+        Long userId = StpUtil.getLoginIdAsLong();
+        UserInfo user = userService.getById(userId);
+
+        if (user == null) {
+            throw new BizException("用户不存在");
+        }
+
+        try {
+            // 通过code获取手机号
+            var phoneInfo = wxMaService.getUserService().getPhoneNoInfo(request.getCode());
+            String phoneNumber = phoneInfo.getPhoneNumber();
+
+            if (phoneNumber == null || phoneNumber.isEmpty()) {
+                throw new BizException("获取手机号失败");
+            }
+
+            // 检查手机号是否已被绑定
+            UserInfo existUser = userService.getByPhone(phoneNumber);
+            if (existUser != null && !existUser.getId().equals(userId)) {
+                throw new BizException("该手机号已被其他账号绑定");
+            }
+
+            // 更新手机号
+            user.setPhone(phoneNumber);
+            userService.update(user);
+
+            log.info("用户绑定手机号成功, userId: {}, phone: {}", userId, phoneNumber);
+            return Result.success();
+        } catch (WxErrorException e) {
+            log.error("获取微信手机号失败: {}", e.getMessage(), e);
+            throw new BizException("获取手机号失败: " + e.getMessage());
+        }
+    }
+
+    /**
+     * 验证码绑定手机号
+     */
+    @PostMapping("/bindPhone")
+    @Operation(summary = "验证码绑定手机号")
+    public Result<Void> bindPhone(@Valid @RequestBody BindPhoneRequest request) {
+        Long userId = StpUtil.getLoginIdAsLong();
+        UserInfo user = userService.getById(userId);
+
+        if (user == null) {
+            throw new BizException("用户不存在");
+        }
+
+        // TODO: 验证短信验证码
+        // smsService.verifyCode(request.getPhone(), request.getCode());
+
+        // 检查手机号是否已被绑定
+        UserInfo existUser = userService.getByPhone(request.getPhone());
+        if (existUser != null && !existUser.getId().equals(userId)) {
+            throw new BizException("该手机号已被其他账号绑定");
+        }
+
+        // 更新手机号
+        user.setPhone(request.getPhone());
+        userService.update(user);
+
+        log.info("用户绑定手机号成功, userId: {}, phone: {}", userId, request.getPhone());
+        return Result.success();
+    }
+
+    /**
+     * 发送验证码
+     */
+    @PostMapping("/sendCode")
+    @Operation(summary = "发送短信验证码")
+    public Result<Void> sendCode(@Valid @RequestBody SendCodeRequest request) {
+        // TODO: 实现短信发送
+        // smsService.sendVerifyCode(request.getPhone());
+        log.info("发送验证码到手机号: {}", request.getPhone());
+        return Result.success();
+    }
 }
