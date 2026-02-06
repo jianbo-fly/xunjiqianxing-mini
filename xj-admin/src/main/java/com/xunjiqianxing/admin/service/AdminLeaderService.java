@@ -23,6 +23,7 @@ import org.springframework.util.StringUtils;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -232,6 +233,72 @@ public class AdminLeaderService {
                 new LambdaQueryWrapper<LeaderApply>()
                         .eq(LeaderApply::getStatus, 0)
         );
+    }
+
+    /**
+     * 获取领队详情
+     */
+    public LeaderDetailVO getLeaderDetail(Long id) {
+        LeaderInfo leader = leaderInfoMapper.selectById(id);
+        if (leader == null) {
+            throw new BizException("领队不存在");
+        }
+
+        LeaderDetailVO vo = new LeaderDetailVO();
+        vo.setId(leader.getId());
+        vo.setUserId(leader.getUserId());
+        vo.setName(leader.getRealName());
+        vo.setPhone(leader.getPhone());
+        vo.setAvatar(leader.getAvatar());
+        vo.setIntro(leader.getIntro());
+        vo.setExpertise(leader.getExpertise());
+        vo.setCertificate(leader.getCertificateImages());
+        vo.setLeadCount(leader.getTripCount());
+        vo.setTotalCommission(leader.getTotalCommission());
+        vo.setStatus(leader.getStatus());
+        vo.setStatusDesc(leader.getStatus() == 1 ? "正常" : "禁用");
+        vo.setCreatedAt(leader.getCreatedAt());
+        vo.setUpdatedAt(leader.getUpdatedAt());
+
+        return vo;
+    }
+
+    /**
+     * 获取带队记录
+     */
+    public PageResult<LeadRecordVO> getLeadRecords(Long leaderId, Integer page, Integer pageSize) {
+        // TODO: 实际实现需要关联订单表查询领队带队的订单记录
+        // 这里返回空列表作为示例
+        return PageResult.of(List.of(), 0L, page, pageSize);
+    }
+
+    /**
+     * 获取佣金记录
+     */
+    public PageResult<LeaderCommissionVO> getCommissions(Long leaderId, Integer page, Integer pageSize) {
+        // TODO: 实际实现需要关联佣金记录表
+        // 这里返回空列表作为示例
+        return PageResult.of(List.of(), 0L, page, pageSize);
+    }
+
+    /**
+     * 获取领队配置
+     */
+    public LeaderConfigVO getConfig() {
+        LeaderConfigVO config = new LeaderConfigVO();
+        // 从系统配置中读取
+        // TODO: 实际实现需要从配置表读取
+        config.setPrice(new BigDecimal("2000"));
+        config.setCommissionRate(new BigDecimal("10"));
+        return config;
+    }
+
+    /**
+     * 更新领队配置
+     */
+    public void updateConfig(LeaderConfigRequest request) {
+        // TODO: 实际实现需要更新配置表
+        log.info("更新领队配置: price={}, commissionRate={}", request.getPrice(), request.getCommissionRate());
     }
 
     // ==================== 私有方法 ====================

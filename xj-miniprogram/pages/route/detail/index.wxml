@@ -88,13 +88,44 @@
           <text class="select-arrow">›</text>
         </view>
       </view>
-      <view class="select-item" wx:if="{{selectedDate}}">
-        <text class="select-label">数量</text>
-        <view class="quantity-picker">
-          <view class="quantity-btn {{quantity <= 1 ? 'quantity-btn--disabled' : ''}}" bindtap="handleQuantityMinus">-</view>
-          <text class="quantity-value">{{quantity}}</text>
-          <view class="quantity-btn" bindtap="handleQuantityPlus">+</view>
+    </view>
+
+    <!-- 选择人数（选择日期后显示） -->
+    <view class="people-section" wx:if="{{selectedDate}}">
+      <view class="section-title">选择人数</view>
+
+      <!-- 成人 -->
+      <view class="people-item">
+        <view class="people-info">
+          <view class="people-type">成人</view>
+          <view class="people-price">¥{{selectedPrice}}/人</view>
+          <view class="people-desc">12周岁及以上</view>
         </view>
+        <view class="quantity-picker">
+          <view class="quantity-btn {{adultCount <= 1 ? 'quantity-btn--disabled' : ''}}" bindtap="handleAdultMinus">-</view>
+          <text class="quantity-value">{{adultCount}}</text>
+          <view class="quantity-btn" bindtap="handleAdultPlus">+</view>
+        </view>
+      </view>
+
+      <!-- 儿童 -->
+      <view class="people-item">
+        <view class="people-info">
+          <view class="people-type">儿童</view>
+          <view class="people-price">¥{{selectedChildPrice}}/人</view>
+          <view class="people-desc">2-12周岁，不占床</view>
+        </view>
+        <view class="quantity-picker">
+          <view class="quantity-btn {{childCount <= 0 ? 'quantity-btn--disabled' : ''}}" bindtap="handleChildMinus">-</view>
+          <text class="quantity-value">{{childCount}}</text>
+          <view class="quantity-btn {{childCount >= adultCount ? 'quantity-btn--disabled' : ''}}" bindtap="handleChildPlus">+</view>
+        </view>
+      </view>
+
+      <!-- 合计金额 -->
+      <view class="total-amount">
+        <text class="total-label">💰 合计：</text>
+        <text class="total-value">¥{{totalAmount}}</text>
       </view>
     </view>
 

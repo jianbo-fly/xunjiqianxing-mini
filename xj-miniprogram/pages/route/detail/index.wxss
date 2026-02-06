@@ -811,3 +811,67 @@
   font-size: var(--font-size-xs);
   color: var(--color-text-disabled);
 }
+
+/* 选择人数区域 */
+.people-section {
+  margin-top: var(--section-gap);
+  padding: var(--spacing-lg) var(--page-padding);
+  background: var(--color-bg-card);
+}
+
+.people-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-md) 0;
+  border-bottom: 1rpx solid var(--color-border);
+}
+
+.people-item:last-of-type {
+  border-bottom: none;
+}
+
+.people-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.people-type {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.people-price {
+  font-size: var(--font-size-sm);
+  color: var(--color-error);
+  font-weight: var(--font-weight-semibold);
+}
+
+.people-desc {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-tertiary);
+}
+
+/* 合计金额 */
+.total-amount {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: var(--spacing-lg);
+  padding-top: var(--spacing-md);
+  border-top: 1rpx solid var(--color-border);
+}
+
+.total-label {
+  font-size: var(--font-size-md);
+  color: var(--color-text-secondary);
+}
+
+.total-value {
+  font-size: 40rpx;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-error);
+  margin-left: var(--spacing-xs);
+}

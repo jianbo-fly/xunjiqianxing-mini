@@ -36,11 +36,21 @@ const payApi = {
    */
   wxPay(payParams) {
     return new Promise((resolve, reject) => {
+      // 检测是否是mock支付（开发环境）
+      if (payParams.package && payParams.package.includes('mock_prepay_')) {
+        console.log('检测到Mock支付，模拟支付成功');
+        // 模拟支付成功，延迟一下更真实
+        setTimeout(() => {
+          resolve({ errMsg: 'requestPayment:ok (mock)' });
+        }, 500);
+        return;
+      }
+
       wx.requestPayment({
         timeStamp: payParams.timeStamp,
         nonceStr: payParams.nonceStr,
         package: payParams.package,
-        signType: payParams.signType || 'MD5',
+        signType: payParams.signType || 'RSA',
         paySign: payParams.paySign,
         success: (res) => {
           resolve(res);

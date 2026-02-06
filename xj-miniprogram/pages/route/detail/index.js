@@ -47,8 +47,16 @@ Page({
     calendarMonth: 0,
     // 是否可以切换到上个月
     canGoPrevMonth: false,
-    // 购买数量
-    quantity: 1,
+    // 成人数量
+    adultCount: 1,
+    // 儿童数量
+    childCount: 0,
+    // 选中日期的儿童价
+    selectedChildPrice: 0,
+    // 当日剩余库存
+    selectedStock: 0,
+    // 合计金额
+    totalAmount: 0,
   },
 
   onLoad(options) {
@@ -413,30 +421,97 @@ Page({
       wx.showToast({ title: '该日期已售罄', icon: 'none' });
       return;
     }
+
+    // 重置人数
+    const adultCount = 1;
+    const childCount = 0;
+
     this.setData({
       selectedDate: item.date,
       selectedPrice: item.price,
+      selectedChildPrice: item.childPrice || Math.floor(item.price * 0.7), // 儿童价，默认成人价的70%
+      selectedStock: item.stock,
+      adultCount,
+      childCount,
       showCalendarPopup: false,
     });
+
+    // 计算合计金额
+    this.calcTotalAmount();
   },
 
   /**
-   * 数量减少
+   * 计算合计金额
    */
-  handleQuantityMinus() {
-    if (this.data.quantity > 1) {
-      this.setData({ quantity: this.data.quantity - 1 });
+  calcTotalAmount() {
+    const { selectedPrice, selectedChildPrice, adultCount, childCount } = this.data;
+    const totalAmount = (selectedPrice * adultCount) + (selectedChildPrice * childCount);
+    this.setData({ totalAmount });
+  },
+
+  /**
+   * 成人数量减少
+   */
+  handleAdultMinus() {
+    const { adultCount, childCount } = this.data;
+    if (adultCount > 1) {
+      // 成人减少时，如果儿童超过成人数量，也要减少儿童
+      const newAdultCount = adultCount - 1;
+      const newChildCount = Math.min(childCount, newAdultCount);
+      this.setData({
+        adultCount: newAdultCount,
+        childCount: newChildCount,
+      });
+      this.calcTotalAmount();
     }
   },
 
   /**
-   * 数量增加
+   * 成人数量增加
    */
-  handleQuantityPlus() {
-    const maxStock = this.data.calendar.find(c => c.date === this.data.selectedDate)?.stock || 99;
-    if (this.data.quantity < maxStock) {
-      this.setData({ quantity: this.data.quantity + 1 });
+  handleAdultPlus() {
+    const { adultCount, childCount, selectedStock } = this.data;
+    const totalCount = adultCount + childCount;
+    if (totalCount < selectedStock) {
+      this.setData({ adultCount: adultCount + 1 });
+      this.calcTotalAmount();
+    } else {
+      wx.showToast({ title: '库存不足', icon: 'none' });
     }
+  },
+
+  /**
+   * 儿童数量减少
+   */
+  handleChildMinus() {
+    const { childCount } = this.data;
+    if (childCount > 0) {
+      this.setData({ childCount: childCount - 1 });
+      this.calcTotalAmount();
+    }
+  },
+
+  /**
+   * 儿童数量增加
+   */
+  handleChildPlus() {
+    const { adultCount, childCount, selectedStock } = this.data;
+    const totalCount = adultCount + childCount;
+
+    // 儿童数量不能超过成人数量
+    if (childCount >= adultCount) {
+      wx.showToast({ title: '儿童数量不能超过成人', icon: 'none' });
+      return;
+    }
+
+    // 检查库存
+    if (totalCount >= selectedStock) {
+      wx.showToast({ title: '库存不足', icon: 'none' });
+      return;
+    }
+
+    this.setData({ childCount: childCount + 1 });
+    this.calcTotalAmount();
   },
 
   /**
@@ -493,10 +568,16 @@ Page({
       this.setData({ showCalendarPopup: true });
       return;
     }
+    if (this.data.adultCount < 1) {
+      wx.showToast({ title: '至少选择1位成人', icon: 'none' });
+      return;
+    }
+
+    const { routeId, selectedPackage, selectedDate, adultCount, childCount, selectedPrice, selectedChildPrice } = this.data;
 
     // 跳转订单确认页
     wx.navigateTo({
-      url: `/pages/order/confirm/index?routeId=${this.data.routeId}&packageId=${this.data.selectedPackage.id}&date=${this.data.selectedDate}&quantity=${this.data.quantity}`,
+      url: `/pages/order/confirm/index?routeId=${routeId}&packageId=${selectedPackage.id}&date=${selectedDate}&adultCount=${adultCount}&childCount=${childCount}&adultPrice=${selectedPrice}&childPrice=${selectedChildPrice}`,
     });
   },
 

@@ -1,5 +1,68 @@
-<view class="placeholder-container">
-  <view class="placeholder-icon">🚧</view>
-  <view class="placeholder-title">{{pageTitle}}</view>
-  <view class="placeholder-text">页面开发中...</view>
+<view class="page-traveler-list">
+  <!-- 加载中 -->
+  <view class="loading-container" wx:if="{{loading}}">
+    <xj-loading text="加载中..." vertical />
+  </view>
+
+  <!-- 出行人列表 -->
+  <view class="traveler-list" wx:if="{{!loading}}">
+    <view class="traveler-card" wx:for="{{travelers}}" wx:key="id">
+      <view class="traveler-header">
+        <view class="traveler-name">{{item.name}}</view>
+        <view class="traveler-default" wx:if="{{item.isDefault}}">默认</view>
+      </view>
+
+      <view class="traveler-info">
+        <view class="info-row">
+          <text class="info-label">{{item.idTypeName || '身份证'}}</text>
+          <text class="info-value">{{item.idNoMask || item.idNo}}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-label">手机号</text>
+          <text class="info-value">{{item.phoneMask || item.phone}}</text>
+        </view>
+      </view>
+
+      <view class="traveler-actions">
+        <view
+          class="action-btn action-btn--default"
+          wx:if="{{!item.isDefault}}"
+          data-id="{{item.id}}"
+          bindtap="handleSetDefault"
+        >
+          设为默认
+        </view>
+        <view
+          class="action-btn action-btn--edit"
+          data-id="{{item.id}}"
+          bindtap="handleEdit"
+        >
+          编辑
+        </view>
+        <view
+          class="action-btn action-btn--delete"
+          data-id="{{item.id}}"
+          data-name="{{item.name}}"
+          bindtap="handleDelete"
+        >
+          删除
+        </view>
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-container" wx:if="{{!travelers.length}}">
+      <view class="empty-icon">👤</view>
+      <view class="empty-text">暂无常用出行人</view>
+      <view class="empty-hint">添加出行人后可快速填写订单信息</view>
+    </view>
+  </view>
+
+  <!-- 底部添加按钮 -->
+  <view class="add-bar">
+    <view class="add-btn" bindtap="handleAdd">
+      <text class="add-icon">+</text>
+      <text>添加出行人</text>
+    </view>
+  </view>
 </view>

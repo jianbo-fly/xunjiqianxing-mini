@@ -10,9 +10,10 @@ const orderApi = {
    * 获取订单确认信息
    * @param {Object} params
    * @param {number} params.routeId - 线路ID
-   * @param {number} params.skuId - SKU ID
+   * @param {number} params.packageId - 套餐ID
    * @param {string} params.date - 出行日期
-   * @param {number} params.quantity - 数量
+   * @param {number} params.adultCount - 成人数量
+   * @param {number} params.childCount - 儿童数量
    */
   getConfirmInfo(params) {
     return get(paths.order.confirm, params);
@@ -22,10 +23,13 @@ const orderApi = {
    * 创建订单
    * @param {Object} params
    * @param {number} params.routeId - 线路ID
-   * @param {number} params.skuId - SKU ID
+   * @param {number} params.packageId - 套餐ID
    * @param {string} params.date - 出行日期
-   * @param {number} params.quantity - 数量
-   * @param {Array} params.travelers - 出行人信息
+   * @param {number} params.adultCount - 成人数量
+   * @param {number} params.childCount - 儿童数量
+   * @param {Array} params.adultTravelers - 成人出行人列表
+   * @param {Array} params.childTravelers - 儿童出行人列表
+   * @param {Object} params.contact - 联系人信息
    * @param {number} params.couponId - 优惠券ID
    * @param {string} params.remark - 备注
    */
@@ -55,20 +59,20 @@ const orderApi = {
   /**
    * 取消订单
    * @param {number} id - 订单ID
+   * @param {string} reason - 取消原因
    */
-  cancel(id) {
-    return post(`${paths.order.cancel}/${id}/cancel`);
+  cancel(id, reason) {
+    const params = reason ? { reason } : {};
+    return post(`${paths.order.detail}/${id}/cancel`, params);
   },
 
   /**
    * 申请退款
    * @param {number} id - 订单ID
-   * @param {Object} params
-   * @param {string} params.reason - 退款原因
-   * @param {string} params.description - 退款说明
+   * @param {string} reason - 退款原因
    */
-  refund(id, params) {
-    return post(`${paths.order.refund}/${id}/refund`, params);
+  refund(id, reason) {
+    return post(`${paths.order.detail}/${id}/refund`, { reason });
   },
 };
 

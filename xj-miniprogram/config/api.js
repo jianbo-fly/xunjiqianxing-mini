@@ -56,6 +56,7 @@ module.exports = {
 
     // 订单模块 /api/order
     order: {
+      confirm: '/api/order/confirm',  // 订单确认信息
       create: '/api/order/create',
       list: '/api/order/list',
       detail: '/api/order',  // /api/order/{id}

@@ -1,5 +1,71 @@
-<view class="placeholder-container">
-  <view class="placeholder-icon">🚧</view>
-  <view class="placeholder-title">{{pageTitle}}</view>
-  <view class="placeholder-text">页面开发中...</view>
+<!--
+  退款申请页
+-->
+<view class="page-refund" wx:if="{{!loading}}">
+  <!-- 订单信息 -->
+  <view class="order-card" wx:if="{{order}}">
+    <image class="order-image" src="{{order.productImage}}" mode="aspectFill"></image>
+    <view class="order-info">
+      <view class="order-name">{{order.productName}}</view>
+      <view class="order-sku">{{order.skuName}}</view>
+      <view class="order-amount">
+        <text class="amount-label">实付金额</text>
+        <text class="amount-value">¥{{order.payAmountText}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 退款金额 -->
+  <view class="section refund-amount-section">
+    <view class="section-title">退款金额</view>
+    <view class="refund-amount">¥{{order.payAmountText}}</view>
+    <view class="refund-tip">退款将原路退回，预计1-7个工作日到账</view>
+  </view>
+
+  <!-- 退款原因 -->
+  <view class="section reason-section">
+    <view class="section-title">退款原因</view>
+    <view class="reason-list">
+      <view
+        class="reason-item {{selectedReasonIndex === index ? 'active' : ''}}"
+        wx:for="{{reasonOptions}}"
+        wx:key="index"
+        data-index="{{index}}"
+        bindtap="handleSelectReason"
+      >
+        <view class="reason-radio">
+          <view class="radio-inner" wx:if="{{selectedReasonIndex === index}}"></view>
+        </view>
+        <text class="reason-text">{{item}}</text>
+      </view>
+    </view>
+
+    <!-- 其他原因输入框 -->
+    <view class="custom-reason" wx:if="{{selectedReasonIndex === reasonOptions.length - 1}}">
+      <textarea
+        class="custom-input"
+        placeholder="请填写具体原因"
+        maxlength="200"
+        value="{{customReason}}"
+        bindinput="handleCustomReasonInput"
+      ></textarea>
+      <view class="input-count">{{customReason.length}}/200</view>
+    </view>
+  </view>
+
+  <!-- 提交按钮 -->
+  <view class="submit-section">
+    <view
+      class="submit-btn {{submitting ? 'disabled' : ''}}"
+      bindtap="handleSubmit"
+    >
+      {{submitting ? '提交中...' : '提交申请'}}
+    </view>
+  </view>
+</view>
+
+<!-- 加载中 -->
+<view class="loading-container" wx:if="{{loading}}">
+  <view class="loading-spinner"></view>
+  <text class="loading-text">加载中...</text>
 </view>

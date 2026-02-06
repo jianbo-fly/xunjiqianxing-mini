@@ -1,5 +1,257 @@
-<view class="placeholder-container">
-  <view class="placeholder-icon">🚧</view>
-  <view class="placeholder-title">{{pageTitle}}</view>
-  <view class="placeholder-text">页面开发中...</view>
+<view class="page-order-confirm">
+  <!-- 加载中 -->
+  <view class="loading-container" wx:if="{{loading}}">
+    <xj-loading text="加载中..." vertical />
+  </view>
+
+  <!-- 主内容 -->
+  <scroll-view class="main-scroll" scroll-y wx:if="{{!loading}}">
+    <!-- 订单信息 -->
+    <view class="section">
+      <view class="section-title">订单信息</view>
+      <view class="order-info-card">
+        <view class="route-name">{{route.name}}</view>
+        <view class="package-name" wx:if="{{packageInfo}}">{{packageInfo.name}}</view>
+        <view class="travel-date">出发日期：{{date}}</view>
+
+        <view class="price-detail">
+          <view class="price-row" wx:if="{{adultCount > 0}}">
+            <text class="price-label">成人</text>
+            <text class="price-calc">¥{{adultPrice}} × {{adultCount}}</text>
+            <text class="price-amount">= ¥{{adultAmount}}</text>
+          </view>
+          <view class="price-row" wx:if="{{childCount > 0}}">
+            <text class="price-label">儿童</text>
+            <text class="price-calc">¥{{childPrice}} × {{childCount}}</text>
+            <text class="price-amount">= ¥{{childAmount}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 出行人信息 -->
+    <view class="section">
+      <view class="section-title">出行人信息</view>
+
+      <!-- 成人出行人 -->
+      <view class="traveler-group" wx:if="{{adultCount > 0}}">
+        <view class="traveler-group-title">成人 ({{adultCount}}人)</view>
+        <view
+          class="traveler-card {{item ? '' : 'traveler-card--empty'}}"
+          wx:for="{{adultTravelers}}"
+          wx:key="index"
+        >
+          <block wx:if="{{item}}">
+            <view class="traveler-info">
+              <view class="traveler-name">{{item.name}}</view>
+              <view class="traveler-id">{{item.idTypeName || '身份证'}}：{{item.idNoMask || item.idNo}}</view>
+              <view class="traveler-phone">手机号：{{item.phoneMask || item.phone}}</view>
+            </view>
+            <view class="traveler-action" data-type="adult" data-index="{{index}}" bindtap="handleRemoveTraveler">
+              <text class="action-delete">删除</text>
+            </view>
+          </block>
+          <block wx:else>
+            <view
+              class="traveler-add"
+              data-type="adult"
+              data-index="{{index}}"
+              bindtap="handleShowTravelerPopup"
+            >
+              <text class="add-icon">+</text>
+              <text class="add-text">添加成人{{index + 1}}</text>
+            </view>
+          </block>
+        </view>
+      </view>
+
+      <!-- 儿童出行人 -->
+      <view class="traveler-group" wx:if="{{childCount > 0}}">
+        <view class="traveler-group-title">儿童 ({{childCount}}人)</view>
+        <view
+          class="traveler-card {{item ? '' : 'traveler-card--empty'}}"
+          wx:for="{{childTravelers}}"
+          wx:key="index"
+        >
+          <block wx:if="{{item}}">
+            <view class="traveler-info">
+              <view class="traveler-name">{{item.name}}</view>
+              <view class="traveler-id">{{item.idTypeName || '身份证'}}：{{item.idNoMask || item.idNo}}</view>
+              <view class="traveler-phone">手机号：{{item.phoneMask || item.phone}}</view>
+            </view>
+            <view class="traveler-action" data-type="child" data-index="{{index}}" bindtap="handleRemoveTraveler">
+              <text class="action-delete">删除</text>
+            </view>
+          </block>
+          <block wx:else>
+            <view
+              class="traveler-add"
+              data-type="child"
+              data-index="{{index}}"
+              bindtap="handleShowTravelerPopup"
+            >
+              <text class="add-icon">+</text>
+              <text class="add-text">添加儿童{{index + 1}}</text>
+            </view>
+          </block>
+        </view>
+      </view>
+    </view>
+
+    <!-- 联系人信息 -->
+    <view class="section">
+      <view class="section-title">联系人信息</view>
+      <view class="contact-card">
+        <view class="contact-row">
+          <text class="contact-label">姓名</text>
+          <input
+            class="contact-input"
+            value="{{contact.name}}"
+            placeholder="请输入联系人姓名"
+            data-field="name"
+            bindinput="handleContactInput"
+            disabled="{{!useOtherContact}}"
+          />
+        </view>
+        <view class="contact-row">
+          <text class="contact-label">手机</text>
+          <input
+            class="contact-input"
+            type="number"
+            maxlength="11"
+            value="{{contact.phone}}"
+            placeholder="请输入手机号"
+            data-field="phone"
+            bindinput="handleContactInput"
+            disabled="{{!useOtherContact}}"
+          />
+        </view>
+        <view class="contact-toggle" bindtap="handleToggleContact">
+          <view class="toggle-checkbox {{useOtherContact ? 'toggle-checkbox--checked' : ''}}">
+            <text wx:if="{{useOtherContact}}">✓</text>
+          </view>
+          <text class="toggle-text">使用其他联系人</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 优惠券 -->
+    <view class="section section--row" bindtap="handleShowCouponPopup">
+      <text class="section-title">优惠券</text>
+      <view class="section-value">
+        <text wx:if="{{selectedCoupon}}" class="coupon-selected">-¥{{selectedCoupon.discount}}</text>
+        <text wx:elif="{{coupons.length > 0}}" class="coupon-available">{{coupons.length}}张可用</text>
+        <text wx:else class="coupon-none">暂无可用</text>
+        <text class="section-arrow">›</text>
+      </view>
+    </view>
+
+    <!-- 退改规则 -->
+    <view class="section section--row">
+      <text class="section-title">退改规则</text>
+      <view class="section-value">
+        <text class="rule-text">出发前7天以上可全额退款</text>
+        <text class="section-arrow">›</text>
+      </view>
+    </view>
+
+    <!-- 金额明细 -->
+    <view class="section amount-section">
+      <view class="amount-row">
+        <text class="amount-label">商品金额</text>
+        <text class="amount-value">¥{{totalAmount}}</text>
+      </view>
+      <view class="amount-row" wx:if="{{couponDiscount > 0}}">
+        <text class="amount-label">优惠券</text>
+        <text class="amount-value amount-value--discount">-¥{{couponDiscount}}</text>
+      </view>
+      <view class="amount-divider"></view>
+      <view class="amount-row amount-row--total">
+        <text class="amount-label">合计</text>
+        <text class="amount-value amount-value--total">¥{{payAmount}}</text>
+      </view>
+    </view>
+
+    <!-- 底部占位 -->
+    <view class="bottom-placeholder"></view>
+  </scroll-view>
+
+  <!-- 底部操作栏 -->
+  <view class="action-bar" wx:if="{{!loading}}">
+    <view class="action-bar__left">
+      <text class="pay-amount">¥{{payAmount}}</text>
+    </view>
+    <view class="action-bar__right">
+      <view class="submit-btn {{submitting ? 'submit-btn--disabled' : ''}}" bindtap="handleSubmit">
+        <text>{{submitting ? '提交中...' : '提交订单'}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 出行人选择弹窗 -->
+  <view class="popup-mask" wx:if="{{showTravelerPopup}}" bindtap="handleCloseTravelerPopup"></view>
+  <view class="popup-container {{showTravelerPopup ? 'popup-container--show' : ''}}">
+    <view class="popup-header">
+      <text class="popup-title">选择出行人</text>
+      <text class="popup-close" bindtap="handleCloseTravelerPopup">×</text>
+    </view>
+    <scroll-view class="popup-scroll" scroll-y>
+      <view
+        class="traveler-option"
+        wx:for="{{travelerList}}"
+        wx:key="id"
+        data-traveler="{{item}}"
+        bindtap="handleSelectTraveler"
+      >
+        <view class="option-info">
+          <view class="option-name">{{item.name}}</view>
+          <view class="option-detail">{{item.idTypeName || '身份证'}} | {{item.phone}}</view>
+        </view>
+        <view class="option-check" wx:if="{{item.isDefault}}">默认</view>
+      </view>
+      <view class="empty-list" wx:if="{{!travelerList.length}}">
+        <text>暂无常用出行人</text>
+      </view>
+    </scroll-view>
+    <view class="popup-footer">
+      <view class="add-traveler-btn" bindtap="handleShowAddTraveler">
+        <text>+ 新增出行人</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 优惠券选择弹窗 -->
+  <view class="popup-mask" wx:if="{{showCouponPopup}}" bindtap="handleCloseCouponPopup"></view>
+  <view class="popup-container {{showCouponPopup ? 'popup-container--show' : ''}}">
+    <view class="popup-header">
+      <text class="popup-title">选择优惠券</text>
+      <text class="popup-close" bindtap="handleCloseCouponPopup">×</text>
+    </view>
+    <scroll-view class="popup-scroll" scroll-y>
+      <view
+        class="coupon-item {{selectedCoupon && selectedCoupon.id === item.id ? 'coupon-item--active' : ''}}"
+        wx:for="{{coupons}}"
+        wx:key="id"
+        data-coupon="{{item}}"
+        bindtap="handleSelectCoupon"
+      >
+        <view class="coupon-left">
+          <text class="coupon-amount">¥{{item.discount}}</text>
+          <text class="coupon-condition">满{{item.minAmount}}可用</text>
+        </view>
+        <view class="coupon-right">
+          <view class="coupon-name">{{item.name}}</view>
+          <view class="coupon-expire">{{item.expireTime}}到期</view>
+        </view>
+      </view>
+      <view class="empty-list" wx:if="{{!coupons.length}}">
+        <text>暂无可用优惠券</text>
+      </view>
+    </scroll-view>
+    <view class="popup-footer">
+      <view class="no-coupon-btn" bindtap="handleNoCoupon">
+        <text>不使用优惠券</text>
+      </view>
+    </view>
+  </view>
 </view>

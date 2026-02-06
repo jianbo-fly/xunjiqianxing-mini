@@ -65,4 +65,41 @@ public class LeaderController {
         adminLeaderService.updateStatus(id, status);
         return Result.success();
     }
+
+    @Operation(summary = "领队详情")
+    @GetMapping("/{id}")
+    public Result<LeaderDetailVO> detail(@PathVariable Long id) {
+        return Result.success(adminLeaderService.getLeaderDetail(id));
+    }
+
+    @Operation(summary = "带队记录")
+    @GetMapping("/{id}/leads")
+    public Result<PageResult<LeadRecordVO>> leads(
+            @PathVariable Long id,
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "10") Integer pageSize) {
+        return Result.success(adminLeaderService.getLeadRecords(id, page, pageSize));
+    }
+
+    @Operation(summary = "佣金记录")
+    @GetMapping("/{id}/commissions")
+    public Result<PageResult<LeaderCommissionVO>> commissions(
+            @PathVariable Long id,
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "10") Integer pageSize) {
+        return Result.success(adminLeaderService.getCommissions(id, page, pageSize));
+    }
+
+    @Operation(summary = "获取领队配置")
+    @GetMapping("/config")
+    public Result<LeaderConfigVO> getConfig() {
+        return Result.success(adminLeaderService.getConfig());
+    }
+
+    @Operation(summary = "更新领队配置")
+    @PostMapping("/config")
+    public Result<Void> updateConfig(@Valid @RequestBody LeaderConfigRequest request) {
+        adminLeaderService.updateConfig(request);
+        return Result.success();
+    }
 }

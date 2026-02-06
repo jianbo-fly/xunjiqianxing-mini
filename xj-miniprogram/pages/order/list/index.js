@@ -1,14 +1,17 @@
 /**
  * 订单列表页
- * TODO: 待完善 - 订单管理功能
  */
-const { go } = require('../../../utils/router');
+const orderApi = require('../../../services/order');
+const payApi = require('../../../services/pay');
+const { go, redirectTo, routes } = require('../../../utils/router');
 const { checkLogin } = require('../../../utils/auth');
 
 Page({
   data: {
     // 页面状态
-    loading: false,
+    loading: true,
+    refreshing: false,
+    loadingMore: false,
     // 订单列表
     list: [],
     // 分页
@@ -23,8 +26,10 @@ Page({
       { status: '0', label: '待支付' },
       { status: '1', label: '待确认' },
       { status: '2', label: '已确认' },
-      { status: '4', label: '待评价' },
+      { status: '4', label: '已完成' },
     ],
+    // 空状态
+    isEmpty: false,
   },
 
   onLoad(options) {
@@ -32,22 +37,131 @@ Page({
     if (options.status !== undefined) {
       this.setData({ currentStatus: options.status });
     }
-    // TODO: 加载订单列表
   },
 
   onShow() {
     // 检查登录状态
     if (!checkLogin()) return;
-    // TODO: 刷新列表
+    // 刷新列表
+    this.refreshList();
   },
 
   onPullDownRefresh() {
-    // TODO: 下拉刷新
-    wx.stopPullDownRefresh();
+    this.refreshList();
   },
 
   onReachBottom() {
-    // TODO: 加载更多
+    this.loadMore();
+  },
+
+  /**
+   * 刷新列表
+   */
+  async refreshList() {
+    this.setData({
+      page: 1,
+      hasMore: true,
+      refreshing: true,
+    });
+
+    await this.loadList(true);
+
+    this.setData({ refreshing: false });
+    wx.stopPullDownRefresh();
+  },
+
+  /**
+   * 加载更多
+   */
+  async loadMore() {
+    if (this.data.loadingMore || !this.data.hasMore) return;
+
+    this.setData({
+      loadingMore: true,
+      page: this.data.page + 1,
+    });
+
+    await this.loadList(false);
+
+    this.setData({ loadingMore: false });
+  },
+
+  /**
+   * 加载订单列表
+   */
+  async loadList(isRefresh = false) {
+    try {
+      const { currentStatus, page, pageSize } = this.data;
+
+      const params = { page, pageSize };
+      if (currentStatus !== '') {
+        params.status = parseInt(currentStatus);
+      }
+
+      const result = await orderApi.getList(params);
+      const newList = (result.list || []).map(item => this.formatOrder(item));
+
+      this.setData({
+        list: isRefresh ? newList : [...this.data.list, ...newList],
+        hasMore: newList.length >= pageSize,
+        loading: false,
+        isEmpty: isRefresh && newList.length === 0,
+      });
+    } catch (err) {
+      console.error('加载订单列表失败', err);
+      wx.showToast({ title: '加载失败', icon: 'none' });
+      this.setData({ loading: false });
+    }
+  },
+
+  /**
+   * 格式化订单数据
+   */
+  formatOrder(order) {
+    return {
+      ...order,
+      // 格式化日期
+      startDateText: this.formatDate(order.startDate),
+      createdAtText: this.formatDateTime(order.createdAt),
+      // 格式化金额
+      payAmountText: (order.payAmount || 0).toFixed(2),
+      // 人数文本
+      peopleText: this.getPeopleText(order.adultCount, order.childCount),
+      // 按钮状态
+      showPayBtn: order.status === 0,
+      showCancelBtn: order.status === 0,
+      showRefundBtn: [1, 2, 3].includes(order.status),
+      showBuyAgainBtn: [4, 5, 7, 8].includes(order.status),
+    };
+  },
+
+  /**
+   * 格式化日期
+   */
+  formatDate(dateStr) {
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    return `${month}月${day}日`;
+  },
+
+  /**
+   * 格式化日期时间
+   */
+  formatDateTime(dateStr) {
+    if (!dateStr) return '';
+    return dateStr.replace('T', ' ').substring(0, 16);
+  },
+
+  /**
+   * 获取人数文本
+   */
+  getPeopleText(adultCount, childCount) {
+    const parts = [];
+    if (adultCount > 0) parts.push(`${adultCount}成人`);
+    if (childCount > 0) parts.push(`${childCount}儿童`);
+    return parts.join(' ');
   },
 
   /**
@@ -55,12 +169,17 @@ Page({
    */
   handleTabChange(e) {
     const { status } = e.currentTarget.dataset;
+    if (status === this.data.currentStatus) return;
+
     this.setData({
       currentStatus: status,
       page: 1,
       list: [],
+      loading: true,
+      isEmpty: false,
     });
-    // TODO: 重新加载数据
+
+    this.loadList(true);
   },
 
   /**
@@ -76,15 +195,57 @@ Page({
    */
   handleCancel(e) {
     const { id } = e.currentTarget.dataset;
-    // TODO: 取消订单
+
+    wx.showModal({
+      title: '提示',
+      content: '确定要取消此订单吗？',
+      success: async (res) => {
+        if (res.confirm) {
+          try {
+            wx.showLoading({ title: '取消中...' });
+            await orderApi.cancel(id);
+            wx.hideLoading();
+            wx.showToast({ title: '已取消', icon: 'success' });
+            this.refreshList();
+          } catch (err) {
+            wx.hideLoading();
+            wx.showToast({ title: err.message || '取消失败', icon: 'none' });
+          }
+        }
+      },
+    });
   },
 
   /**
    * 去支付
    */
-  handlePay(e) {
+  async handlePay(e) {
     const { id } = e.currentTarget.dataset;
-    // TODO: 去支付
+
+    try {
+      wx.showLoading({ title: '正在支付...' });
+
+      // 创建支付
+      const payParams = await payApi.createOrderPayment(id);
+      wx.hideLoading();
+
+      // 调起微信支付
+      await payApi.wxPay(payParams);
+
+      // 支付成功
+      wx.showToast({ title: '支付成功', icon: 'success' });
+      this.refreshList();
+
+    } catch (err) {
+      wx.hideLoading();
+
+      if (err.code === -2) {
+        // 用户取消支付
+        wx.showToast({ title: '已取消支付', icon: 'none' });
+      } else {
+        wx.showToast({ title: err.message || '支付失败', icon: 'none' });
+      }
+    }
   },
 
   /**
@@ -92,6 +253,23 @@ Page({
    */
   handleRefund(e) {
     const { id } = e.currentTarget.dataset;
-    // TODO: 申请退款
+    go.orderRefund(id);
+  },
+
+  /**
+   * 再次购买
+   */
+  handleBuyAgain(e) {
+    const { productId } = e.currentTarget.dataset;
+    if (productId) {
+      go.routeDetail(productId);
+    }
+  },
+
+  /**
+   * 去逛逛（空状态）
+   */
+  goExplore() {
+    go.home();
   },
 });

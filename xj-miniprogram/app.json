@@ -12,6 +12,7 @@
     "pages/member/index/index",
     "pages/member/profile/index",
     "pages/member/travelers/index",
+    "pages/member/travelers/edit",
     "pages/member/favorite/index",
     "pages/member/coupon/index",
     "pages/member/settings/index",

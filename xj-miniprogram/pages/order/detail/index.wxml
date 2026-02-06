@@ -1,5 +1,161 @@
-<view class="placeholder-container">
-  <view class="placeholder-icon">🚧</view>
-  <view class="placeholder-title">{{pageTitle}}</view>
-  <view class="placeholder-text">页面开发中...</view>
+<!--
+  订单详情页
+-->
+<view class="page-order-detail" wx:if="{{!loading && order}}">
+  <!-- 订单状态区 -->
+  <view class="status-section status-{{order.status}}">
+    <view class="status-icon">
+      <text wx:if="{{order.status === 0}}">⏰</text>
+      <text wx:elif="{{order.status === 1 || order.status === 2}}">✅</text>
+      <text wx:elif="{{order.status === 3}}">🚗</text>
+      <text wx:elif="{{order.status === 4}}">🎉</text>
+      <text wx:elif="{{order.status === 5 || order.status === 8}}">❌</text>
+      <text wx:elif="{{order.status === 6}}">⏳</text>
+      <text wx:elif="{{order.status === 7}}">💰</text>
+    </view>
+    <view class="status-text">{{order.statusText}}</view>
+    <view class="status-tip">{{order.statusTip}}</view>
+    <view class="countdown" wx:if="{{order.status === 0 && countdown}}">
+      <text>剩余支付时间: </text>
+      <text class="countdown-time">{{countdown}}</text>
+    </view>
+  </view>
+
+  <!-- 商品信息 -->
+  <view class="section product-section" bindtap="handleViewProduct">
+    <image class="product-image" src="{{order.productImage}}" mode="aspectFill"></image>
+    <view class="product-info">
+      <view class="product-name">{{order.productName}}</view>
+      <view class="product-sku">{{order.skuName}}</view>
+      <view class="product-date">
+        <text class="date-label">出发日期</text>
+        <text class="date-value">{{order.startDateText}}</text>
+      </view>
+    </view>
+    <view class="arrow-icon">›</view>
+  </view>
+
+  <!-- 出行人信息 -->
+  <view class="section traveler-section">
+    <view class="section-title">出行人信息</view>
+
+    <!-- 成人出行人 -->
+    <view class="traveler-group" wx:if="{{order.adultTravelers.length > 0}}">
+      <view class="group-label">成人 ({{order.adultTravelers.length}}人)</view>
+      <view class="traveler-item" wx:for="{{order.adultTravelers}}" wx:key="index">
+        <view class="traveler-name">{{item.name}}</view>
+        <view class="traveler-info">
+          <text class="info-label">证件号</text>
+          <text class="info-value">{{item.idCard}}</text>
+        </view>
+        <view class="traveler-info" wx:if="{{item.phone}}">
+          <text class="info-label">手机号</text>
+          <text class="info-value">{{item.phone}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 儿童出行人 -->
+    <view class="traveler-group" wx:if="{{order.childTravelers.length > 0}}">
+      <view class="group-label">儿童 ({{order.childTravelers.length}}人)</view>
+      <view class="traveler-item" wx:for="{{order.childTravelers}}" wx:key="index">
+        <view class="traveler-name">{{item.name}}</view>
+        <view class="traveler-info">
+          <text class="info-label">证件号</text>
+          <text class="info-value">{{item.idCard}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 联系人信息 -->
+  <view class="section contact-section">
+    <view class="section-title">联系人信息</view>
+    <view class="contact-row">
+      <text class="contact-label">联系人</text>
+      <text class="contact-value">{{order.contactName}}</text>
+    </view>
+    <view class="contact-row">
+      <text class="contact-label">手机号</text>
+      <text class="contact-value">{{order.contactPhone}}</text>
+    </view>
+  </view>
+
+  <!-- 价格明细 -->
+  <view class="section price-section">
+    <view class="section-title">价格明细</view>
+    <view class="price-row">
+      <text class="price-label">成人 ¥{{order.adultPriceText}} × {{order.adultCount}}</text>
+      <text class="price-value">¥{{order.adultTotalText}}</text>
+    </view>
+    <view class="price-row" wx:if="{{order.childCount > 0}}">
+      <text class="price-label">儿童 ¥{{order.childPriceText}} × {{order.childCount}}</text>
+      <text class="price-value">¥{{order.childTotalText}}</text>
+    </view>
+    <view class="price-row" wx:if="{{order.discountAmount > 0}}">
+      <text class="price-label">优惠</text>
+      <text class="price-value discount">-¥{{order.discountAmountText}}</text>
+    </view>
+    <view class="price-total">
+      <text class="total-label">实付金额</text>
+      <text class="total-value">¥{{order.payAmountText}}</text>
+    </view>
+  </view>
+
+  <!-- 订单信息 -->
+  <view class="section order-info-section">
+    <view class="section-title">订单信息</view>
+    <view class="info-row">
+      <text class="info-label">订单编号</text>
+      <view class="info-value-wrap">
+        <text class="info-value">{{order.orderNo}}</text>
+        <text class="copy-btn" bindtap="handleCopyOrderNo">复制</text>
+      </view>
+    </view>
+    <view class="info-row">
+      <text class="info-label">下单时间</text>
+      <text class="info-value">{{order.createdAtText}}</text>
+    </view>
+    <view class="info-row" wx:if="{{order.payTimeText}}">
+      <text class="info-label">支付时间</text>
+      <text class="info-value">{{order.payTimeText}}</text>
+    </view>
+    <view class="info-row" wx:if="{{order.remark}}">
+      <text class="info-label">备注</text>
+      <text class="info-value">{{order.remark}}</text>
+    </view>
+  </view>
+
+  <!-- 底部按钮 -->
+  <view class="bottom-bar">
+    <!-- 再次购买 -->
+    <view class="btn btn-default" wx:if="{{order.showBuyAgainBtn}}" bindtap="handleBuyAgain">
+      再次购买
+    </view>
+    <!-- 联系客服 -->
+    <view class="btn btn-default" wx:if="{{order.showContactBtn}}" bindtap="handleContact">
+      联系客服
+    </view>
+    <!-- 申请退款 -->
+    <view class="btn btn-default" wx:if="{{order.showRefundBtn}}" bindtap="handleRefund">
+      申请退款
+    </view>
+    <!-- 取消订单 -->
+    <view class="btn btn-default" wx:if="{{order.showCancelBtn}}" bindtap="handleCancel">
+      取消订单
+    </view>
+    <!-- 去支付 -->
+    <view class="btn btn-primary" wx:if="{{order.showPayBtn}}" bindtap="handlePay">
+      立即支付 ¥{{order.payAmountText}}
+    </view>
+  </view>
+
+  <!-- 底部占位 -->
+  <view class="bottom-placeholder"></view>
+</view>
+
+<!-- 加载中 -->
+<view class="loading-container" wx:if="{{loading}}">
+  <view class="loading-spinner"></view>
+  <text class="loading-text">加载中...</text>
 </view>

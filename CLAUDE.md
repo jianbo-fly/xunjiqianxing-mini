@@ -38,6 +38,12 @@ xunjiqianxing/
 - 分页使用PageQuery（包含page, pageSize）
 - 统一返回Result<T>
 
+## 设计文档
+小程序页面开发请参考设计文档：
+- **页面交互文档**: `/Users/jianbo/project/real_travel/需求文档/寻迹千行页面交互文档_V4.md`
+- 包含所有页面的UI设计、交互逻辑、字段说明
+- 开发前必须先阅读对应页面的设计
+
 ---
 
 # API开发进度

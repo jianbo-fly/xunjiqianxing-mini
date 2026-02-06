@@ -93,6 +93,66 @@ export const routes: RouteRecordRaw[] = [
     ],
   },
   {
+    path: '/custom',
+    component: Layout,
+    redirect: '/custom/list',
+    meta: { title: '定制需求', icon: 'Edit' },
+    children: [
+      {
+        path: 'list',
+        name: 'CustomList',
+        component: () => import('@/views/custom/list.vue'),
+        meta: { title: '需求列表' },
+      },
+      {
+        path: 'detail/:id',
+        name: 'CustomDetail',
+        component: () => import('@/views/custom/detail.vue'),
+        meta: { title: '需求详情', hidden: true },
+      },
+    ],
+  },
+  {
+    path: '/leader',
+    component: Layout,
+    redirect: '/leader/list',
+    meta: { title: '领队管理', icon: 'Flag', roles: ['admin'] },
+    children: [
+      {
+        path: 'list',
+        name: 'LeaderList',
+        component: () => import('@/views/leader/list.vue'),
+        meta: { title: '领队列表' },
+      },
+      {
+        path: 'detail/:id',
+        name: 'LeaderDetail',
+        component: () => import('@/views/leader/detail.vue'),
+        meta: { title: '领队详情', hidden: true },
+      },
+    ],
+  },
+  {
+    path: '/promoter',
+    component: Layout,
+    redirect: '/promoter/list',
+    meta: { title: '推广员管理', icon: 'Promotion', roles: ['admin'] },
+    children: [
+      {
+        path: 'list',
+        name: 'PromoterList',
+        component: () => import('@/views/promoter/list.vue'),
+        meta: { title: '推广员列表' },
+      },
+      {
+        path: 'detail/:id',
+        name: 'PromoterDetail',
+        component: () => import('@/views/promoter/detail.vue'),
+        meta: { title: '推广员详情', hidden: true },
+      },
+    ],
+  },
+  {
     path: '/user',
     component: Layout,
     redirect: '/user/list',
@@ -135,6 +195,12 @@ export const routes: RouteRecordRaw[] = [
         name: 'CategoryList',
         component: () => import('@/views/system/category.vue'),
         meta: { title: '分类管理' },
+      },
+      {
+        path: 'settings',
+        name: 'SystemSettings',
+        component: () => import('@/views/system/settings.vue'),
+        meta: { title: '系统设置' },
       },
     ],
   },

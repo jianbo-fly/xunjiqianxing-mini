@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
@@ -72,7 +73,9 @@ public class PaymentServiceImpl implements PaymentService {
         record.setStatus(0);
         record.setExpireAt(LocalDateTime.now().plusMinutes(30));
 
-        // 调用微信统一下单
+        // TODO: 微信支付证书未配置，暂时使用mock数据
+        // 实际调用微信统一下单（已注释）
+        /*
         try {
             WxPayUnifiedOrderV3Request request = new WxPayUnifiedOrderV3Request();
             request.setOutTradeNo(paymentNo);
@@ -88,8 +91,9 @@ public class PaymentServiceImpl implements PaymentService {
             payer.setOpenid(openid);
             request.setPayer(payer);
 
-            // 设置过期时间
+            // 设置过期时间（微信要求RFC 3339格式，需要带时区偏移）
             request.setTimeExpire(record.getExpireAt()
+                    .atZone(ZoneId.of("Asia/Shanghai"))
                     .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX")));
 
             Object result = wxPayService.createOrderV3(TradeTypeEnum.JSAPI, request);
@@ -114,6 +118,31 @@ public class PaymentServiceImpl implements PaymentService {
             log.error("创建微信支付失败: {}", e.getMessage(), e);
             throw new BizException("创建支付失败: " + e.getErrCodeDes());
         }
+        */
+
+        // Mock支付数据
+        String mockPrepayId = "mock_prepay_" + System.currentTimeMillis();
+        record.setPrepayId(mockPrepayId);
+        // Mock模式：直接标记为已支付
+        record.setStatus(1);
+        record.setTransactionId("mock_txn_" + System.currentTimeMillis());
+        record.setPayTime(LocalDateTime.now());
+        paymentRecordMapper.insert(record);
+        log.info("创建支付成功(Mock): paymentNo={}, bizNo={}", paymentNo, bizNo);
+
+        // Mock模式：立即发布支付成功事件，更新订单状态
+        eventPublisher.publishEvent(new PaymentSuccessEvent(this, record));
+        log.info("Mock支付成功，已发布支付成功事件: paymentNo={}", paymentNo);
+
+        // 返回mock的小程序调起支付所需参数
+        Map<String, String> payParams = new java.util.HashMap<>();
+        payParams.put("paymentNo", paymentNo);
+        payParams.put("timeStamp", String.valueOf(System.currentTimeMillis() / 1000));
+        payParams.put("nonceStr", java.util.UUID.randomUUID().toString().replace("-", ""));
+        payParams.put("package", "prepay_id=" + mockPrepayId);
+        payParams.put("signType", "RSA");
+        payParams.put("paySign", "mock_sign_" + System.currentTimeMillis());
+        return payParams;
     }
 
     @Override
