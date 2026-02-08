@@ -31,11 +31,9 @@
   justify-content: flex-end;
 }
 
-.nav-back-text {
-  font-size: 56rpx;
-  color: var(--color-text-primary);
-  font-weight: 300;
-  line-height: 1;
+.nav-back-icon {
+  width: 36rpx;
+  height: 36rpx;
 }
 
 .nav-search-icon {
@@ -261,7 +259,7 @@
 
 .filter-btn--confirm {
   background: var(--color-primary);
-  color: #FFFFFF;
+  color: var(--color-text-inverse);
 }
 
 /* ========== 定制游 ========== */
@@ -419,7 +417,7 @@
   width: 100%;
   height: 96rpx;
   background: var(--color-primary);
-  color: #FFFFFF;
+  color: var(--color-text-inverse);
   font-size: var(--font-size-lg);
   font-weight: var(--font-weight-semibold);
   border-radius: var(--radius-md);
@@ -457,7 +455,8 @@
 }
 
 .success-icon {
-  font-size: 96rpx;
+  width: 96rpx;
+  height: 96rpx;
   margin-bottom: var(--spacing-md);
 }
 
@@ -496,5 +495,5 @@
 
 .success-btn--primary {
   background: var(--color-primary);
-  color: #FFFFFF;
+  color: var(--color-text-inverse);
 }

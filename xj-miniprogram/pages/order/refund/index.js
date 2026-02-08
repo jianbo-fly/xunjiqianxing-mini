@@ -10,6 +10,8 @@ Page({
     orderId: '',
     // 订单信息
     order: null,
+    // 退款金额文本
+    refundAmountText: '',
     // 退款原因选项
     reasonOptions: [
       '行程有变，无法出行',
@@ -20,7 +22,7 @@ Page({
     ],
     // 选中的原因索引
     selectedReasonIndex: -1,
-    // 其他原因（自定义）
+    // 补充说明（选填）
     customReason: '',
     // 提交状态
     submitting: false,
@@ -46,11 +48,36 @@ Page({
   async loadOrderInfo() {
     try {
       const order = await orderApi.getDetail(this.data.orderId);
+
+      // 格式化出发日期 MM-DD
+      let startDateText = '';
+      if (order.startDate) {
+        const d = new Date(order.startDate);
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        startDateText = `${month}-${day}`;
+      }
+
+      // 格式化出行人数
+      let peopleText = '';
+      const parts = [];
+      if (order.adultCount > 0) parts.push(`成人×${order.adultCount}`);
+      if (order.childCount > 0) parts.push(`儿童×${order.childCount}`);
+      peopleText = parts.join(' ');
+
+      // 退款金额：优先使用 refundRule.refundAmount，否则回退 payAmount
+      const refundAmount = (order.refundRule && order.refundRule.refundAmount != null)
+        ? order.refundRule.refundAmount
+        : (order.payAmount || 0);
+
       this.setData({
         order: {
           ...order,
           payAmountText: (order.payAmount || 0).toFixed(2),
+          startDateText,
+          peopleText,
         },
+        refundAmountText: refundAmount.toFixed(2),
         loading: false,
       });
     } catch (err) {
@@ -65,14 +92,11 @@ Page({
    */
   handleSelectReason(e) {
     const { index } = e.currentTarget.dataset;
-    this.setData({
-      selectedReasonIndex: index,
-      customReason: index === this.data.reasonOptions.length - 1 ? '' : '',
-    });
+    this.setData({ selectedReasonIndex: index });
   },
 
   /**
-   * 输入自定义原因
+   * 输入补充说明
    */
   handleCustomReasonInput(e) {
     this.setData({ customReason: e.detail.value });
@@ -86,20 +110,18 @@ Page({
 
     if (submitting) return;
 
-    // 验证
+    // 验证：必须选择退款原因
     if (selectedReasonIndex < 0) {
       wx.showToast({ title: '请选择退款原因', icon: 'none' });
       return;
     }
 
-    // 如果选择的是"其他原因"，需要填写具体原因
-    const isOtherReason = selectedReasonIndex === reasonOptions.length - 1;
-    if (isOtherReason && !customReason.trim()) {
-      wx.showToast({ title: '请填写具体原因', icon: 'none' });
-      return;
+    // 组装原因：选中的原因 + 补充说明（如有）
+    let reason = reasonOptions[selectedReasonIndex];
+    const extra = customReason.trim();
+    if (extra) {
+      reason = `${reason}：${extra}`;
     }
-
-    const reason = isOtherReason ? customReason.trim() : reasonOptions[selectedReasonIndex];
 
     this.setData({ submitting: true });
 

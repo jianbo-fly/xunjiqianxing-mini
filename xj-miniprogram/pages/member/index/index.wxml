@@ -26,26 +26,49 @@
     </view>
     <view class="order-tabs">
       <view class="order-tab" data-status="0" bindtap="handleOrderTap">
-        <text class="order-tab-icon">💰</text>
+        <image class="order-tab-icon" src="/assets/icons/order/status-pending.png" mode="aspectFit" />
         <text class="order-tab-text">待支付</text>
       </view>
       <view class="order-tab" data-status="1" bindtap="handleOrderTap">
-        <text class="order-tab-icon">⏳</text>
+        <image class="order-tab-icon" src="/assets/icons/order/status-confirmed.png" mode="aspectFit" />
         <text class="order-tab-text">待确认</text>
       </view>
       <view class="order-tab" data-status="2" bindtap="handleOrderTap">
-        <text class="order-tab-icon">✅</text>
-        <text class="order-tab-text">已确认</text>
+        <image class="order-tab-icon" src="/assets/icons/order/status-travelling.png" mode="aspectFit" />
+        <text class="order-tab-text">待出行</text>
       </view>
       <view class="order-tab" data-status="4" bindtap="handleOrderTap">
-        <text class="order-tab-icon">⭐</text>
-        <text class="order-tab-text">待评价</text>
+        <image class="order-tab-icon" src="/assets/icons/order/status-completed.png" mode="aspectFit" />
+        <text class="order-tab-text">已完成</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 我的资产 -->
+  <view class="assets-section" wx:if="{{isLogin}}">
+    <view class="section-header">
+      <text class="section-title">我的资产</text>
+    </view>
+    <view class="assets-grid">
+      <view class="assets-item" bindtap="handlePointsTap">
+        <text class="assets-value">{{userInfo.points || 0}}</text>
+        <text class="assets-label">积分</text>
+      </view>
+      <view class="assets-divider"></view>
+      <view class="assets-item" bindtap="handleCouponTap">
+        <text class="assets-value">{{userInfo.couponCount || 0}}<text class="assets-unit">张</text></text>
+        <text class="assets-label">优惠券</text>
       </view>
     </view>
   </view>
 
   <!-- 功能菜单 -->
   <view class="menu-section">
+    <view class="menu-item" bindtap="handleMemberTap">
+      <image class="menu-icon" src="/assets/icons/common/crown.png" mode="aspectFit" />
+      <text class="menu-title">{{userInfo.isMember ? '我的会员' : '开通会员'}}</text>
+      <text class="menu-arrow">›</text>
+    </view>
     <view
       class="menu-item"
       wx:for="{{menuList}}"
@@ -53,7 +76,7 @@
       data-path="{{item.path}}"
       bindtap="handleMenuTap"
     >
-      <text class="menu-icon">{{item.icon}}</text>
+      <image class="menu-icon" src="{{item.icon}}" mode="aspectFit" />
       <text class="menu-title">{{item.title}}</text>
       <text class="menu-arrow">›</text>
     </view>
@@ -62,7 +85,7 @@
   <!-- 推广员入口 -->
   <view wx:if="{{features.promoter.enabled}}" class="menu-section">
     <view class="menu-item" bindtap="handlePromoterTap">
-      <text class="menu-icon">💼</text>
+      <image class="menu-icon" src="/assets/icons/common/share.png" mode="aspectFit" />
       <text class="menu-title">{{userInfo.isPromoter ? '推广中心' : '成为推广员'}}</text>
       <text class="menu-arrow">›</text>
     </view>
@@ -71,12 +94,12 @@
   <!-- 设置和客服 -->
   <view class="menu-section">
     <button class="menu-item menu-btn" open-type="contact" bindtap="handleServiceTap">
-      <text class="menu-icon">💬</text>
+      <image class="menu-icon" src="/assets/icons/common/service.png" mode="aspectFit" />
       <text class="menu-title">联系客服</text>
       <text class="menu-arrow">›</text>
     </button>
     <view class="menu-item" bindtap="handleSettingsTap">
-      <text class="menu-icon">⚙️</text>
+      <image class="menu-icon" src="/assets/icons/common/more.png" mode="aspectFit" />
       <text class="menu-title">设置</text>
       <text class="menu-arrow">›</text>
     </view>

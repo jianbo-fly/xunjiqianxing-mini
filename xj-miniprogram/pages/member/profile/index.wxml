@@ -1,5 +1,46 @@
-<view class="placeholder-container">
-  <view class="placeholder-icon">🚧</view>
-  <view class="placeholder-title">{{pageTitle}}</view>
-  <view class="placeholder-text">页面开发中...</view>
+<!--
+  个人资料页
+-->
+<view class="page-profile">
+  <!-- 头像 -->
+  <view class="profile-item" bindtap="handleChooseAvatar">
+    <text class="profile-label">头像</text>
+    <view class="profile-right">
+      <image class="profile-avatar" src="{{userInfo.avatar || '/assets/images/placeholder/avatar.png'}}" mode="aspectFill" />
+      <text class="profile-arrow">›</text>
+    </view>
+  </view>
+
+  <!-- 昵称 -->
+  <view class="profile-item">
+    <text class="profile-label">昵称</text>
+    <view class="profile-right">
+      <input
+        class="profile-input"
+        value="{{nickname}}"
+        placeholder="请输入昵称"
+        maxlength="20"
+        bindinput="handleNicknameInput"
+        bindblur="handleNicknameSave"
+      />
+      <text class="profile-arrow">›</text>
+    </view>
+  </view>
+
+  <!-- 手机号 -->
+  <view class="profile-item">
+    <text class="profile-label">手机号</text>
+    <view class="profile-right">
+      <text class="profile-value">{{userInfo.phone || '未绑定'}}</text>
+    </view>
+  </view>
+
+  <!-- 性别 -->
+  <view class="profile-item" bindtap="handleGenderChange">
+    <text class="profile-label">性别</text>
+    <view class="profile-right">
+      <text class="profile-value">{{genderText}}</text>
+      <text class="profile-arrow">›</text>
+    </view>
+  </view>
 </view>

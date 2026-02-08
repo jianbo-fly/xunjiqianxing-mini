@@ -17,50 +17,35 @@
   height: 100vh;
 }
 
-.loading-spinner {
-  width: 60rpx;
-  height: 60rpx;
-  border: 4rpx solid var(--color-divider);
-  border-top-color: var(--color-primary);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-.loading-text {
-  margin-top: var(--spacing-md);
-  font-size: var(--font-size-sm);
-  color: var(--color-text-tertiary);
-}
-
 /* 订单状态区 */
 .status-section {
   padding: var(--spacing-xl) var(--spacing-lg);
-  background: linear-gradient(135deg, var(--color-primary), #7c3aed);
-  color: #fff;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  color: var(--color-text-inverse);
   text-align: center;
 }
 
 .status-section.status-0 {
-  background: linear-gradient(135deg, #fa8c16, #faad14);
+  background: linear-gradient(135deg, #fa8c16, var(--color-warning));
 }
 
 .status-section.status-5,
 .status-section.status-8 {
-  background: linear-gradient(135deg, #8c8c8c, #bfbfbf);
+  background: linear-gradient(135deg, #8c8c8c, var(--color-text-disabled));
 }
 
 .status-section.status-6,
 .status-section.status-7 {
-  background: linear-gradient(135deg, #1890ff, #69c0ff);
+  background: linear-gradient(135deg, var(--color-primary), #69c0ff);
 }
 
 .status-icon {
-  font-size: 80rpx;
   margin-bottom: var(--spacing-sm);
+}
+
+.status-icon-img {
+  width: 80rpx;
+  height: 80rpx;
 }
 
 .status-text {
@@ -246,7 +231,7 @@
 }
 
 .price-value.discount {
-  color: #52c41a;
+  color: var(--color-success);
 }
 
 .price-total {
@@ -331,7 +316,7 @@
 
 .btn-primary {
   background: var(--color-primary);
-  color: #fff;
+  color: var(--color-text-inverse);
   min-width: 240rpx;
   text-align: center;
 }

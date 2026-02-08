@@ -8,6 +8,10 @@
     <view class="order-info">
       <view class="order-name">{{order.productName}}</view>
       <view class="order-sku">{{order.skuName}}</view>
+      <view class="order-meta">
+        <text wx:if="{{order.startDateText}}">出发日期：{{order.startDateText}}</text>
+        <text wx:if="{{order.peopleText}}">{{order.peopleText}}</text>
+      </view>
       <view class="order-amount">
         <text class="amount-label">实付金额</text>
         <text class="amount-value">¥{{order.payAmountText}}</text>
@@ -15,8 +19,26 @@
     </view>
   </view>
 
-  <!-- 退款金额 -->
-  <view class="section refund-amount-section">
+  <!-- 退款规则 -->
+  <view class="section refund-rule-section" wx:if="{{order.refundRule}}">
+    <view class="section-title">退款规则</view>
+    <view class="rule-row">
+      <text class="rule-label">距出发日期</text>
+      <text class="rule-value">{{order.refundRule.daysBeforeDeparture}}天</text>
+    </view>
+    <view class="rule-row">
+      <text class="rule-label">适用规则</text>
+      <text class="rule-value">{{order.refundRule.ruleDescription}}</text>
+    </view>
+    <view class="rule-row rule-row-highlight">
+      <text class="rule-label">预计退款金额</text>
+      <text class="rule-value rule-amount">¥{{refundAmountText}}</text>
+    </view>
+    <view class="rule-tip">退款将原路退回，预计1-7个工作日到账</view>
+  </view>
+
+  <!-- 退款金额（无退款规则时的回退显示） -->
+  <view class="section refund-amount-section" wx:if="{{!order.refundRule}}">
     <view class="section-title">退款金额</view>
     <view class="refund-amount">¥{{order.payAmountText}}</view>
     <view class="refund-tip">退款将原路退回，预计1-7个工作日到账</view>
@@ -25,26 +47,22 @@
   <!-- 退款原因 -->
   <view class="section reason-section">
     <view class="section-title">退款原因</view>
-    <view class="reason-list">
+    <view class="reason-tags">
       <view
-        class="reason-item {{selectedReasonIndex === index ? 'active' : ''}}"
+        class="reason-tag {{selectedReasonIndex === index ? 'active' : ''}}"
         wx:for="{{reasonOptions}}"
         wx:key="index"
         data-index="{{index}}"
         bindtap="handleSelectReason"
-      >
-        <view class="reason-radio">
-          <view class="radio-inner" wx:if="{{selectedReasonIndex === index}}"></view>
-        </view>
-        <text class="reason-text">{{item}}</text>
-      </view>
+      >{{item}}</view>
     </view>
 
-    <!-- 其他原因输入框 -->
-    <view class="custom-reason" wx:if="{{selectedReasonIndex === reasonOptions.length - 1}}">
+    <!-- 补充说明（始终显示，选填） -->
+    <view class="custom-reason">
+      <view class="custom-reason-label">补充说明<text class="optional-tag">选填</text></view>
       <textarea
         class="custom-input"
-        placeholder="请填写具体原因"
+        placeholder="请补充说明退款原因（选填）"
         maxlength="200"
         value="{{customReason}}"
         bindinput="handleCustomReasonInput"
@@ -59,13 +77,12 @@
       class="submit-btn {{submitting ? 'disabled' : ''}}"
       bindtap="handleSubmit"
     >
-      {{submitting ? '提交中...' : '提交申请'}}
+      {{submitting ? '提交中...' : '提交退款申请'}}
     </view>
   </view>
 </view>
 
 <!-- 加载中 -->
 <view class="loading-container" wx:if="{{loading}}">
-  <view class="loading-spinner"></view>
-  <text class="loading-text">加载中...</text>
+  <xj-loading text="加载中..." vertical />
 </view>

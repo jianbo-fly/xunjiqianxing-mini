@@ -98,33 +98,9 @@
 
 .action-btn--delete {
   color: var(--color-error);
-  background: #fff2f0;
+  background: var(--color-error-light);
 }
 
-/* 空状态 */
-.empty-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 120rpx 0;
-}
-
-.empty-icon {
-  font-size: 120rpx;
-  margin-bottom: var(--spacing-lg);
-}
-
-.empty-text {
-  font-size: var(--font-size-md);
-  color: var(--color-text-secondary);
-  margin-bottom: var(--spacing-xs);
-}
-
-.empty-hint {
-  font-size: var(--font-size-sm);
-  color: var(--color-text-tertiary);
-}
 
 /* 底部添加按钮 */
 .add-bar {
@@ -144,7 +120,7 @@
   justify-content: center;
   height: 88rpx;
   background: var(--color-primary);
-  color: #FFFFFF;
+  color: var(--color-text-inverse);
   font-size: var(--font-size-md);
   font-weight: var(--font-weight-semibold);
   border-radius: var(--radius-md);

@@ -94,13 +94,60 @@
 }
 
 .order-tab-icon {
-  font-size: 48rpx;
+  width: 56rpx;
+  height: 56rpx;
   margin-bottom: var(--spacing-xs);
 }
 
 .order-tab-text {
   font-size: var(--font-size-sm);
   color: var(--color-text-secondary);
+}
+
+/* 资产区块 */
+.assets-section {
+  margin: var(--section-gap) var(--page-padding);
+  padding: var(--card-padding);
+  background: var(--color-bg-card);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.assets-grid {
+  display: flex;
+  align-items: center;
+}
+
+.assets-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--spacing-md) 0;
+}
+
+.assets-value {
+  font-size: var(--font-size-xxl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.assets-unit {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-normal);
+  margin-left: 4rpx;
+}
+
+.assets-label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-tertiary);
+  margin-top: var(--spacing-xs);
+}
+
+.assets-divider {
+  width: 2rpx;
+  height: 64rpx;
+  background: var(--color-divider);
 }
 
 /* 菜单区块 */
@@ -134,7 +181,8 @@
 }
 
 .menu-icon {
-  font-size: 40rpx;
+  width: 48rpx;
+  height: 48rpx;
   margin-right: var(--spacing-md);
 }
 

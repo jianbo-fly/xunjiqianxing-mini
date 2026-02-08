@@ -51,11 +51,7 @@
     </view>
 
     <!-- 空状态 -->
-    <view class="empty-container" wx:if="{{!travelers.length}}">
-      <view class="empty-icon">👤</view>
-      <view class="empty-text">暂无常用出行人</view>
-      <view class="empty-hint">添加出行人后可快速填写订单信息</view>
-    </view>
+    <xj-empty wx:if="{{!travelers.length}}" description="添加出行人后可快速填写订单信息" />
   </view>
 
   <!-- 底部添加按钮 -->

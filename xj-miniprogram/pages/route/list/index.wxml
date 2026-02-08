@@ -1,43 +1,90 @@
 <!--
   线路列表页
-  TODO: 待完善 - 线路搜索与筛选功能
 -->
 <view class="page-route-list">
   <!-- 搜索栏 -->
   <view class="search-bar">
     <view class="search-bar__input">
-      <text class="search-bar__icon">🔍</text>
+      <image class="search-bar__icon" src="/assets/icons/common/search.png" mode="aspectFit" />
       <input
         class="search-bar__field"
         placeholder="搜索目的地、线路名称"
         value="{{keyword}}"
         confirm-type="search"
-        bindinput="handleSearch"
+        bindconfirm="handleSearch"
       />
     </view>
   </view>
 
   <!-- 筛选栏 -->
   <view class="filter-bar">
-    <view class="filter-item {{sortBy === '' ? 'active' : ''}}">
+    <view
+      class="filter-item {{sortBy === '' ? 'active' : ''}}"
+      data-sort=""
+      bindtap="handleSortChange"
+    >
       <text>综合</text>
     </view>
-    <view class="filter-item {{sortBy === 'hot' ? 'active' : ''}}">
+    <view
+      class="filter-item {{sortBy === 'hot' ? 'active' : ''}}"
+      data-sort="hot"
+      bindtap="handleSortChange"
+    >
       <text>热门</text>
     </view>
-    <view class="filter-item {{sortBy === 'new' ? 'active' : ''}}">
+    <view
+      class="filter-item {{sortBy === 'new' ? 'active' : ''}}"
+      data-sort="new"
+      bindtap="handleSortChange"
+    >
       <text>最新</text>
     </view>
-    <view class="filter-item {{sortBy === 'price' ? 'active' : ''}}">
+    <view
+      class="filter-item {{sortBy === 'price' ? 'active' : ''}}"
+      data-sort="price"
+      bindtap="handleSortChange"
+    >
       <text>价格</text>
+      <image
+        wx:if="{{sortBy === 'price'}}"
+        class="filter-arrow"
+        src="/assets/icons/common/{{priceAsc ? 'arrow-up' : 'arrow-down'}}.png"
+        mode="aspectFit"
+      />
     </view>
   </view>
 
-  <!-- 占位提示 -->
-  <view class="placeholder">
-    <view class="placeholder__icon">🗺️</view>
-    <view class="placeholder__title">线路列表开发中</view>
-    <view class="placeholder__desc">即将展示精彩线路</view>
-    <view class="placeholder__desc">敬请期待...</view>
+  <!-- 加载中（首次） -->
+  <view class="loading-container" wx:if="{{loading && list.length === 0}}">
+    <xj-loading text="加载中..." vertical />
+  </view>
+
+  <!-- 空状态 -->
+  <xj-empty
+    wx:elif="{{!loading && list.length === 0}}"
+    type="search"
+    description="暂无相关线路"
+  />
+
+  <!-- 线路列表 -->
+  <view class="route-list" wx:else>
+    <route-card
+      wx:for="{{list}}"
+      wx:key="id"
+      route="{{item}}"
+      mode="normal"
+      bind:tap="handleRouteTap"
+      data-id="{{item.id}}"
+    />
+
+    <!-- 加载更多 -->
+    <view class="load-more" wx:if="{{loadingMore}}">
+      <xj-loading size="sm" text="加载中..." />
+    </view>
+
+    <!-- 没有更多 -->
+    <view class="no-more" wx:if="{{!hasMore && list.length > 0}}">
+      <text>- 没有更多了 -</text>
+    </view>
   </view>
 </view>

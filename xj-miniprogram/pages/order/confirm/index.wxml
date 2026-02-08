@@ -189,12 +189,13 @@
   </view>
 
   <!-- 出行人选择弹窗 -->
-  <view class="popup-mask" wx:if="{{showTravelerPopup}}" bindtap="handleCloseTravelerPopup"></view>
-  <view class="popup-container {{showTravelerPopup ? 'popup-container--show' : ''}}">
-    <view class="popup-header">
-      <text class="popup-title">选择出行人</text>
-      <text class="popup-close" bindtap="handleCloseTravelerPopup">×</text>
-    </view>
+  <xj-popup
+    visible="{{showTravelerPopup}}"
+    title="选择出行人"
+    closable
+    bind:close="handleCloseTravelerPopup"
+    customClass="popup--scroll-footer"
+  >
     <scroll-view class="popup-scroll" scroll-y>
       <view
         class="traveler-option"
@@ -214,19 +215,18 @@
       </view>
     </scroll-view>
     <view class="popup-footer">
-      <view class="add-traveler-btn" bindtap="handleShowAddTraveler">
-        <text>+ 新增出行人</text>
-      </view>
+      <xj-button type="primary" size="lg" block bind:tap="handleShowAddTraveler">+ 新增出行人</xj-button>
     </view>
-  </view>
+  </xj-popup>
 
   <!-- 优惠券选择弹窗 -->
-  <view class="popup-mask" wx:if="{{showCouponPopup}}" bindtap="handleCloseCouponPopup"></view>
-  <view class="popup-container {{showCouponPopup ? 'popup-container--show' : ''}}">
-    <view class="popup-header">
-      <text class="popup-title">选择优惠券</text>
-      <text class="popup-close" bindtap="handleCloseCouponPopup">×</text>
-    </view>
+  <xj-popup
+    visible="{{showCouponPopup}}"
+    title="选择优惠券"
+    closable
+    bind:close="handleCloseCouponPopup"
+    customClass="popup--scroll-footer"
+  >
     <scroll-view class="popup-scroll" scroll-y>
       <view
         class="coupon-item {{selectedCoupon && selectedCoupon.id === item.id ? 'coupon-item--active' : ''}}"
@@ -253,5 +253,5 @@
         <text>不使用优惠券</text>
       </view>
     </view>
-  </view>
+  </xj-popup>
 </view>

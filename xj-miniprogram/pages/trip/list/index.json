@@ -1,5 +1,7 @@
 {
   "navigationBarTitleText": "行程",
   "enablePullDownRefresh": true,
-  "usingComponents": {}
+  "usingComponents": {
+    "route-card": "/components/business/route-card/index"
+  }
 }

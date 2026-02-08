@@ -1,25 +1,163 @@
-.placeholder-container {
+/**
+ * 推广员申请页样式
+ */
+
+.page-promoter-apply {
+  min-height: 100vh;
+  background: var(--color-bg-page);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* 顶部介绍 */
+.apply-header {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  height: 100vh;
-  background-color: #f5f5f5;
+  padding: var(--spacing-xl) var(--page-padding);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
 }
 
-.placeholder-icon {
-  font-size: 80rpx;
-  margin-bottom: 30rpx;
+.apply-icon {
+  width: 96rpx;
+  height: 96rpx;
+  margin-bottom: var(--spacing-md);
 }
 
-.placeholder-title {
-  font-size: 36rpx;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 20rpx;
+.apply-title {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-inverse);
+  margin-bottom: var(--spacing-xs);
 }
 
-.placeholder-text {
-  font-size: 28rpx;
-  color: #999;
+.apply-desc {
+  font-size: var(--font-size-sm);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* 通用区块 */
+.section {
+  margin: var(--spacing-md) var(--page-padding);
+  padding: var(--card-padding);
+  background: var(--color-bg-card);
+  border-radius: var(--radius-lg);
+}
+
+.section-title {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-md);
+}
+
+/* 权益列表 */
+.benefit-item {
+  display: flex;
+  align-items: flex-start;
+  padding: var(--spacing-sm) 0;
+}
+
+.benefit-item + .benefit-item {
+  border-top: 2rpx solid var(--color-divider);
+}
+
+.benefit-icon {
+  width: 48rpx;
+  height: 48rpx;
+  margin-right: var(--spacing-md);
+  margin-top: 4rpx;
+}
+
+.benefit-info {
+  flex: 1;
+}
+
+.benefit-name {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+}
+
+.benefit-desc {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-tertiary);
+  margin-top: 4rpx;
+}
+
+/* 表单 */
+.form-item {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-md) 0;
+  border-bottom: 2rpx solid var(--color-divider);
+}
+
+.form-item:last-child {
+  border-bottom: none;
+}
+
+.form-item-vertical {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.form-label {
+  font-size: var(--font-size-md);
+  color: var(--color-text-primary);
+  width: 160rpx;
+  flex-shrink: 0;
+}
+
+.form-item-vertical .form-label {
+  width: auto;
+  margin-bottom: var(--spacing-sm);
+}
+
+.form-input {
+  flex: 1;
+  font-size: var(--font-size-md);
+  color: var(--color-text-primary);
+  text-align: right;
+}
+
+.form-textarea {
+  width: 100%;
+  height: 200rpx;
+  background: var(--color-bg-page);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  font-size: var(--font-size-md);
+  box-sizing: border-box;
+}
+
+.form-count {
+  align-self: flex-end;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-tertiary);
+  margin-top: var(--spacing-xs);
+}
+
+/* 提交 */
+.submit-section {
+  padding: var(--spacing-lg) var(--page-padding);
+}
+
+.submit-btn {
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+  font-size: var(--font-size-lg);
+  text-align: center;
+  padding: var(--spacing-md);
+  border-radius: var(--radius-lg);
+}
+
+.submit-btn.disabled {
+  opacity: 0.6;
+}
+
+.submit-tip {
+  text-align: center;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-tertiary);
+  margin-top: var(--spacing-md);
 }

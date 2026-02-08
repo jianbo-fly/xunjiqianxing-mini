@@ -5,13 +5,13 @@
   <!-- 订单状态区 -->
   <view class="status-section status-{{order.status}}">
     <view class="status-icon">
-      <text wx:if="{{order.status === 0}}">⏰</text>
-      <text wx:elif="{{order.status === 1 || order.status === 2}}">✅</text>
-      <text wx:elif="{{order.status === 3}}">🚗</text>
-      <text wx:elif="{{order.status === 4}}">🎉</text>
-      <text wx:elif="{{order.status === 5 || order.status === 8}}">❌</text>
-      <text wx:elif="{{order.status === 6}}">⏳</text>
-      <text wx:elif="{{order.status === 7}}">💰</text>
+      <image wx:if="{{order.status === 0}}" class="status-icon-img" src="/assets/icons/order/status-pending.png" mode="aspectFit" />
+      <image wx:elif="{{order.status === 1 || order.status === 2}}" class="status-icon-img" src="/assets/icons/order/status-confirmed.png" mode="aspectFit" />
+      <image wx:elif="{{order.status === 3}}" class="status-icon-img" src="/assets/icons/order/status-travelling.png" mode="aspectFit" />
+      <image wx:elif="{{order.status === 4}}" class="status-icon-img" src="/assets/icons/order/status-completed.png" mode="aspectFit" />
+      <image wx:elif="{{order.status === 5 || order.status === 8}}" class="status-icon-img" src="/assets/icons/order/status-cancelled.png" mode="aspectFit" />
+      <image wx:elif="{{order.status === 6}}" class="status-icon-img" src="/assets/icons/order/status-refunding.png" mode="aspectFit" />
+      <image wx:elif="{{order.status === 7}}" class="status-icon-img" src="/assets/icons/order/status-completed.png" mode="aspectFit" />
     </view>
     <view class="status-text">{{order.statusText}}</view>
     <view class="status-tip">{{order.statusTip}}</view>
@@ -156,6 +156,5 @@
 
 <!-- 加载中 -->
 <view class="loading-container" wx:if="{{loading}}">
-  <view class="loading-spinner"></view>
-  <text class="loading-text">加载中...</text>
+  <xj-loading text="加载中..." vertical />
 </view>

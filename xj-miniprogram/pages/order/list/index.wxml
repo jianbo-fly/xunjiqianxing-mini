@@ -17,16 +17,13 @@
 
   <!-- 加载中 -->
   <view class="loading-container" wx:if="{{loading}}">
-    <view class="loading-spinner"></view>
-    <text class="loading-text">加载中...</text>
+    <xj-loading text="加载中..." vertical />
   </view>
 
   <!-- 空状态 -->
-  <view class="empty-container" wx:elif="{{isEmpty}}">
-    <image class="empty-icon" src="/images/empty-order.png" mode="aspectFit"></image>
-    <text class="empty-text">暂无订单</text>
+  <xj-empty wx:elif="{{isEmpty}}" type="order">
     <view class="empty-btn" bindtap="goExplore">去逛逛</view>
-  </view>
+  </xj-empty>
 
   <!-- 订单列表 -->
   <view class="order-list" wx:else>
@@ -95,8 +92,7 @@
 
     <!-- 加载更多 -->
     <view class="load-more" wx:if="{{loadingMore}}">
-      <view class="loading-spinner small"></view>
-      <text>加载中...</text>
+      <xj-loading size="sm" text="加载中..." />
     </view>
 
     <!-- 没有更多 -->

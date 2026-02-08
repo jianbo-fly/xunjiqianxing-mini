@@ -20,7 +20,8 @@
 }
 
 .placeholder__icon {
-  font-size: 120rpx;
+  width: 120rpx;
+  height: 120rpx;
   margin-bottom: var(--spacing-lg);
 }
 

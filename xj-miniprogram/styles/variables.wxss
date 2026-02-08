@@ -18,7 +18,12 @@ page {
   --color-warning-light: #FFFBE6;
   --color-error: #FF4D4F;
   --color-error-light: #FFF2F0;
+  --color-danger: #FF4D4F;
   --color-info: #1890FF;
+  --color-price: #FF4D4F;
+
+  /* ===== 颜色 - 状态文字 ===== */
+  --color-text-disabled: #BFBFBF;
 
   /* ===== 颜色 - 文字 ===== */
   --color-text-primary: #333333;

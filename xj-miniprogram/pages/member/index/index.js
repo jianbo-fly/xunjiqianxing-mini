@@ -15,10 +15,9 @@ Page({
     isLogin: false,
     // 菜单列表
     menuList: [
-      { icon: '📋', title: '我的订单', path: 'orderList' },
-      { icon: '❤️', title: '我的收藏', path: 'favorite' },
-      { icon: '🎫', title: '优惠券', path: 'coupon' },
-      { icon: '👥', title: '出行人管理', path: 'travelers' },
+      { icon: '/assets/icons/common/time.png', title: '我的订单', path: 'orderList' },
+      { icon: '/assets/icons/common/favorite.png', title: '我的收藏', path: 'favorite' },
+      { icon: '/assets/icons/tabbar/companion.png', title: '常用出行人', path: 'travelers' },
     ],
     // 功能开关
     features: appConfig.features,
@@ -102,6 +101,32 @@ Page({
     const { status } = e.currentTarget.dataset;
     if (!checkLogin()) return;
     go.orderList(status);
+  },
+
+  /**
+   * 积分点击
+   */
+  handlePointsTap() {
+    if (!checkLogin()) return;
+    // TODO: 跳转积分明细页
+    wx.showToast({ title: '积分明细即将上线', icon: 'none' });
+  },
+
+  /**
+   * 优惠券点击
+   */
+  handleCouponTap() {
+    if (!checkLogin()) return;
+    go.coupon();
+  },
+
+  /**
+   * 开通会员
+   */
+  handleMemberTap() {
+    if (!checkLogin()) return;
+    // TODO: 跳转会员开通/详情页
+    wx.showToast({ title: '会员功能即将上线', icon: 'none' });
   },
 
   /**

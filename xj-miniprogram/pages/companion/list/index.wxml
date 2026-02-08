@@ -5,7 +5,7 @@
 <view class="page-companion">
   <!-- 占位提示 -->
   <view class="placeholder">
-    <view class="placeholder__icon">🤝</view>
+    <image class="placeholder__icon" src="/assets/icons/tabbar/companion.png" mode="aspectFit" />
     <view class="placeholder__title">搭子功能开发中</view>
     <view class="placeholder__desc">即将推出结伴同行功能</view>
     <view class="placeholder__desc">敬请期待...</view>
