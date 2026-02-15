@@ -48,12 +48,7 @@ wechat-pay:
   notify-url: ${WECHAT_PAY_NOTIFY_URL:https://your-domain.com/api/pay/notify}
 
 # 腾讯云COS配置
-#tencent:
-#  cos:
-#    secret-id: ${COS_SECRET_ID:your-secret-id}
-#    secret-key: ${COS_SECRET_KEY:your-secret-key}
-#    region: ${COS_REGION:ap-chengdu}
-#    bucket: ${COS_BUCKET:your-bucket-name}
+
 
 # 日志配置
 logging:
