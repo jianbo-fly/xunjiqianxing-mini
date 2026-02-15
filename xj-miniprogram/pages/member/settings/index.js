@@ -17,7 +17,7 @@ Page({
   onLoad() {
     this.setData({
       isLogin: isLogin(),
-      version: appConfig.version || '1.0.0',
+      version: appConfig.version || '1.0.2',
     });
     this.calcCacheSize();
   },
@@ -29,11 +29,34 @@ Page({
     try {
       const res = wx.getStorageInfoSync();
       const kb = res.currentSize || 0;
-      const sizeText = kb > 1024 ? `${(kb / 1024).toFixed(1)}MB` : `${kb}KB`;
+      const sizeText = kb > 1024 ? `${(kb / 1024).toFixed(1)} MB` : `${kb} KB`;
       this.setData({ cacheSize: sizeText });
     } catch (e) {
-      this.setData({ cacheSize: '0KB' });
+      this.setData({ cacheSize: '0 KB' });
     }
+  },
+
+  /**
+   * 个人资料
+   */
+  handleProfile() {
+    go.profile();
+  },
+
+  /**
+   * 账号安全
+   */
+  handleAccountSecurity() {
+    wx.showToast({ title: '账号安全即将上线', icon: 'none' });
+  },
+
+  /**
+   * 消息推送设置
+   */
+  handleNotification() {
+    wx.openSetting({
+      success: () => {},
+    });
   },
 
   /**
@@ -45,7 +68,6 @@ Page({
       content: '确定要清除缓存吗？',
       success: (res) => {
         if (res.confirm) {
-          // 保留登录信息
           const token = wx.getStorageSync('token');
           const userInfo = wx.getStorageSync('userInfo');
           wx.clearStorageSync();
@@ -60,24 +82,19 @@ Page({
   },
 
   /**
-   * 关于我们
+   * 注销账号
    */
-  handleAbout() {
-    go.webview(appConfig.aboutUrl || '', '关于我们');
-  },
-
-  /**
-   * 隐私协议
-   */
-  handlePrivacy() {
-    go.webview(appConfig.privacyUrl || '', '隐私协议');
-  },
-
-  /**
-   * 用户协议
-   */
-  handleUserAgreement() {
-    go.webview(appConfig.userAgreementUrl || '', '用户协议');
+  handleDeleteAccount() {
+    wx.showModal({
+      title: '注销账号',
+      content: '注销后账号数据将无法恢复，确定要注销吗？',
+      confirmColor: '#E74C3C',
+      success: (res) => {
+        if (res.confirm) {
+          wx.showToast({ title: '注销功能即将上线', icon: 'none' });
+        }
+      },
+    });
   },
 
   /**

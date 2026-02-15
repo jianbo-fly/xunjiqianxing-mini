@@ -6,27 +6,19 @@ const { navigateBack } = require('../../../utils/router');
 
 Page({
   data: {
-    // 订单ID
     orderId: '',
-    // 订单信息
     order: null,
-    // 退款金额文本
     refundAmountText: '',
-    // 退款原因选项
+    deductAmountText: '',
     reasonOptions: [
-      '行程有变，无法出行',
-      '临时有事，无法出行',
-      '身体原因，无法出行',
-      '天气原因，无法出行',
-      '其他原因',
+      '行程变更',
+      '身体原因',
+      '同行人无法参加',
+      '航班/车次取消',
+      '其他',
     ],
-    // 选中的原因索引
     selectedReasonIndex: -1,
-    // 补充说明（选填）
-    customReason: '',
-    // 提交状态
     submitting: false,
-    // 加载状态
     loading: true,
   },
 
@@ -49,35 +41,33 @@ Page({
     try {
       const order = await orderApi.getDetail(this.data.orderId);
 
-      // 格式化出发日期 MM-DD
+      // 格式化出发日期 YYYY-MM-DD
       let startDateText = '';
       if (order.startDate) {
         const d = new Date(order.startDate);
-        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
         const day = String(d.getDate()).padStart(2, '0');
-        startDateText = `${month}-${day}`;
+        startDateText = `${y}-${m}-${day}`;
       }
 
-      // 格式化出行人数
-      let peopleText = '';
-      const parts = [];
-      if (order.adultCount > 0) parts.push(`成人×${order.adultCount}`);
-      if (order.childCount > 0) parts.push(`儿童×${order.childCount}`);
-      peopleText = parts.join(' ');
+      const payAmount = order.payAmount || 0;
 
-      // 退款金额：优先使用 refundRule.refundAmount，否则回退 payAmount
-      const refundAmount = (order.refundRule && order.refundRule.refundAmount != null)
-        ? order.refundRule.refundAmount
-        : (order.payAmount || 0);
+      // 退款金额计算
+      const refundRule = order.refundRule || {};
+      const refundAmount = refundRule.refundAmount != null
+        ? refundRule.refundAmount
+        : payAmount;
+      const deductAmount = payAmount - refundAmount;
 
       this.setData({
         order: {
           ...order,
-          payAmountText: (order.payAmount || 0).toFixed(2),
+          payAmountText: payAmount.toFixed(2),
           startDateText,
-          peopleText,
         },
         refundAmountText: refundAmount.toFixed(2),
+        deductAmountText: deductAmount > 0 ? deductAmount.toFixed(2) : '0.00',
         loading: false,
       });
     } catch (err) {
@@ -96,33 +86,19 @@ Page({
   },
 
   /**
-   * 输入补充说明
-   */
-  handleCustomReasonInput(e) {
-    this.setData({ customReason: e.detail.value });
-  },
-
-  /**
    * 提交退款申请
    */
   async handleSubmit() {
-    const { orderId, selectedReasonIndex, reasonOptions, customReason, submitting } = this.data;
+    const { orderId, selectedReasonIndex, reasonOptions, submitting } = this.data;
 
     if (submitting) return;
 
-    // 验证：必须选择退款原因
     if (selectedReasonIndex < 0) {
       wx.showToast({ title: '请选择退款原因', icon: 'none' });
       return;
     }
 
-    // 组装原因：选中的原因 + 补充说明（如有）
-    let reason = reasonOptions[selectedReasonIndex];
-    const extra = customReason.trim();
-    if (extra) {
-      reason = `${reason}：${extra}`;
-    }
-
+    const reason = reasonOptions[selectedReasonIndex];
     this.setData({ submitting: true });
 
     try {
@@ -131,10 +107,7 @@ Page({
       wx.hideLoading();
 
       wx.showToast({ title: '申请已提交', icon: 'success' });
-
-      // 返回上一页
       setTimeout(() => navigateBack(), 1500);
-
     } catch (err) {
       wx.hideLoading();
       wx.showToast({ title: err.message || '提交失败', icon: 'none' });

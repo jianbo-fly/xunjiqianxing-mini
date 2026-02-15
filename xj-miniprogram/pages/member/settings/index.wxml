@@ -2,41 +2,57 @@
   设置页
 -->
 <view class="page-settings">
-  <!-- 功能设置 -->
-  <view class="settings-group">
-    <view class="settings-item" bindtap="handleClearCache">
-      <text class="settings-label">清除缓存</text>
-      <view class="settings-right">
-        <text class="settings-value">{{cacheSize}}</text>
-        <text class="settings-arrow">›</text>
+  <!-- 个人资料 -->
+  <view class="settings-card" bindtap="handleProfile">
+    <view class="settings-icon-wrap settings-icon-blue">
+      <image class="settings-icon" src="/assets/icons/tabbar/member.png" mode="aspectFit" />
+    </view>
+    <text class="settings-label">个人资料</text>
+    <image class="settings-arrow" src="/assets/icons/common/arrow-right.png" mode="aspectFit" />
+  </view>
+
+  <!-- 账号安全 -->
+  <view class="settings-card" bindtap="handleAccountSecurity">
+    <view class="settings-icon-wrap settings-icon-green">
+      <image class="settings-icon" src="/assets/icons/common/favorite-active.png" mode="aspectFit" />
+    </view>
+    <text class="settings-label">账号安全</text>
+    <image class="settings-arrow" src="/assets/icons/common/arrow-right.png" mode="aspectFit" />
+  </view>
+
+  <!-- 消息推送 + 清除缓存 -->
+  <view class="settings-card-group">
+    <view class="settings-card-item" bindtap="handleNotification">
+      <view class="settings-icon-wrap settings-icon-orange">
+        <image class="settings-icon" src="/assets/icons/common/message.png" mode="aspectFit" />
       </view>
+      <text class="settings-label">消息推送设置</text>
+      <image class="settings-arrow" src="/assets/icons/common/arrow-right.png" mode="aspectFit" />
+    </view>
+    <view class="settings-card-item" bindtap="handleClearCache">
+      <view class="settings-icon-wrap settings-icon-purple">
+        <image class="settings-icon" src="/assets/icons/common/close.png" mode="aspectFit" />
+      </view>
+      <text class="settings-label">清除缓存</text>
+      <text class="settings-value">{{cacheSize}}</text>
+      <image class="settings-arrow" src="/assets/icons/common/arrow-right.png" mode="aspectFit" />
     </view>
   </view>
 
-  <!-- 关于 -->
-  <view class="settings-group">
-    <view class="settings-item" bindtap="handleAbout">
-      <text class="settings-label">关于我们</text>
-      <text class="settings-arrow">›</text>
+  <!-- 注销账号 -->
+  <view class="settings-card" wx:if="{{isLogin}}" bindtap="handleDeleteAccount">
+    <view class="settings-icon-wrap settings-icon-gray">
+      <image class="settings-icon" src="/assets/icons/common/close.png" mode="aspectFit" />
     </view>
-    <view class="settings-item">
-      <text class="settings-label">当前版本</text>
-      <text class="settings-value">{{version}}</text>
-    </view>
-    <view class="settings-item" bindtap="handlePrivacy">
-      <text class="settings-label">隐私协议</text>
-      <text class="settings-arrow">›</text>
-    </view>
-    <view class="settings-item" bindtap="handleUserAgreement">
-      <text class="settings-label">用户协议</text>
-      <text class="settings-arrow">›</text>
-    </view>
+    <text class="settings-label">注销账号</text>
+    <image class="settings-arrow" src="/assets/icons/common/arrow-right.png" mode="aspectFit" />
   </view>
 
   <!-- 退出登录 -->
-  <view class="settings-group" wx:if="{{isLogin}}">
-    <view class="settings-item logout-item" bindtap="handleLogout">
-      <text class="logout-text">退出登录</text>
-    </view>
+  <view class="logout-card" wx:if="{{isLogin}}" bindtap="handleLogout">
+    <text class="logout-text">退出登录</text>
   </view>
+
+  <!-- 版本号 -->
+  <view class="version-text">寻迹千行 v{{version}}</view>
 </view>

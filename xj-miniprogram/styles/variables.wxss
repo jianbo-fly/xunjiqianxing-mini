@@ -1,47 +1,49 @@
 /**
  * CSS Variables - CSS变量
  *
- * 由 design-tokens.js 配置生成
- * 后期UI美化时，修改 design-tokens.js 后重新生成此文件
+ * 基于寻迹千行 UI 设计规范 v3.0
+ * 品牌色：活力橙 #F98006
  */
 
 page {
   /* ===== 颜色 - 品牌色 ===== */
-  --color-primary: #1890FF;
-  --color-primary-light: #E6F7FF;
-  --color-primary-dark: #096DD9;
+  --color-primary: #F98006;
+  --color-primary-light: #FFF3E0;
+  --color-primary-dark: #E07000;
+  --color-primary-gradient: linear-gradient(135deg, #FFA940 0%, #F98006 100%);
 
   /* ===== 颜色 - 功能色 ===== */
-  --color-success: #52C41A;
-  --color-success-light: #F6FFED;
-  --color-warning: #FAAD14;
+  --color-success: #27AE60;
+  --color-success-light: #F0FFF4;
+  --color-warning: #FAA014;
   --color-warning-light: #FFFBE6;
-  --color-error: #FF4D4F;
+  --color-error: #E74C3C;
   --color-error-light: #FFF2F0;
-  --color-danger: #FF4D4F;
-  --color-info: #1890FF;
-  --color-price: #FF4D4F;
+  --color-danger: #E74C3C;
+  --color-info: #3B82F6;
+  --color-price: #F98006;
 
   /* ===== 颜色 - 状态文字 ===== */
-  --color-text-disabled: #BFBFBF;
+  --color-text-disabled: #C0C4CC;
 
   /* ===== 颜色 - 文字 ===== */
-  --color-text-primary: #333333;
-  --color-text-secondary: #666666;
-  --color-text-tertiary: #999999;
-  --color-text-placeholder: #CCCCCC;
+  --color-text-primary: #1C1440;
+  --color-text-secondary: #6B7280;
+  --color-text-tertiary: #9CA3AF;
+  --color-text-placeholder: #C0C4CC;
   --color-text-inverse: #FFFFFF;
 
   /* ===== 颜色 - 背景 ===== */
   --color-bg-page: #F5F5F5;
   --color-bg-card: #FFFFFF;
-  --color-bg-gray: #FAFAFA;
+  --color-bg-gray: #F9FAFB;
   --color-bg-mask: rgba(0,0,0,0.5);
+  --color-bg-warm: linear-gradient(180deg, #FFF5EB 0%, #F5F5F5 100%);
 
   /* ===== 颜色 - 边框 ===== */
-  --color-border: #E8E8E8;
-  --color-border-light: #F0F0F0;
-  --color-divider: #EEEEEE;
+  --color-border: #E5E7EB;
+  --color-border-light: #F3F4F6;
+  --color-divider: #F3F4F6;
 
   /* ===== 字体 - 字号 ===== */
   --font-size-xs: 20rpx;
@@ -85,12 +87,12 @@ page {
   --radius-xl: 32rpx;
   --radius-full: 9999rpx;
 
-  /* ===== 阴影 ===== */
+  /* ===== 阴影（柔和风格） ===== */
   --shadow-none: none;
-  --shadow-sm: 0 2rpx 8rpx rgba(0, 0, 0, 0.08);
-  --shadow-md: 0 4rpx 16rpx rgba(0, 0, 0, 0.12);
-  --shadow-lg: 0 8rpx 32rpx rgba(0, 0, 0, 0.16);
-  --shadow-xl: 0 16rpx 48rpx rgba(0, 0, 0, 0.20);
+  --shadow-sm: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 8rpx 30rpx rgba(0, 0, 0, 0.08);
+  --shadow-xl: 0 16rpx 48rpx rgba(0, 0, 0, 0.12);
 
   /* ===== 动画 ===== */
   --duration-fast: 150ms;

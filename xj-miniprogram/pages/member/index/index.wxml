@@ -1,17 +1,29 @@
 <view class="page-member">
   <!-- 头部用户信息 -->
-  <view class="header" style="background-image: url('{{assets.bg.memberHeader}}');">
+  <view class="header">
+    <view class="header-actions">
+      <image class="header-action-icon" src="/assets/icons/common/share.png" mode="aspectFit" bindtap="handleScanTap" />
+      <image class="header-action-icon" src="/assets/icons/common/more.png" mode="aspectFit" bindtap="handleSettingsTap" />
+    </view>
     <view class="user-info" bindtap="handleAvatarTap">
-      <image
-        class="avatar"
-        src="{{userInfo.avatar || assets.placeholder.avatar}}"
-        mode="aspectFill"
-      />
+      <view class="avatar-wrap">
+        <image
+          class="avatar"
+          src="{{userInfo.avatar || assets.placeholder.avatar}}"
+          mode="aspectFill"
+        />
+        <view class="avatar-edit" wx:if="{{isLogin}}">
+          <image class="avatar-edit-icon" src="/assets/icons/common/more.png" mode="aspectFit" />
+        </view>
+      </view>
       <view class="user-detail">
         <text class="nickname">{{isLogin ? (userInfo.nickname || '用户') : '点击登录'}}</text>
-        <text wx:if="{{isLogin && userInfo.phone}}" class="phone">{{userInfo.phone}}</text>
+        <view wx:if="{{isLogin}}" class="member-badge" bindtap="handleMemberTap">
+          <image class="member-badge-icon" src="/assets/icons/common/favorite-active.png" mode="aspectFit" />
+          <text class="member-badge-text">寻途会员</text>
+          <text class="member-badge-arrow">›</text>
+        </view>
       </view>
-      <view class="arrow">›</view>
     </view>
   </view>
 
@@ -20,93 +32,87 @@
     <view class="section-header">
       <text class="section-title">我的订单</text>
       <view class="section-more" data-status="" bindtap="handleOrderTap">
-        <text>全部订单</text>
+        <text>全部</text>
         <text class="arrow">›</text>
       </view>
     </view>
     <view class="order-tabs">
       <view class="order-tab" data-status="0" bindtap="handleOrderTap">
-        <image class="order-tab-icon" src="/assets/icons/order/status-pending.png" mode="aspectFit" />
+        <view class="order-tab-icon-wrap">
+          <image class="order-tab-icon" src="/assets/icons/order/status-pending.png" mode="aspectFit" />
+          <view wx:if="{{orderCounts.pending > 0}}" class="order-badge">{{orderCounts.pending}}</view>
+        </view>
         <text class="order-tab-text">待支付</text>
       </view>
       <view class="order-tab" data-status="1" bindtap="handleOrderTap">
-        <image class="order-tab-icon" src="/assets/icons/order/status-confirmed.png" mode="aspectFit" />
+        <view class="order-tab-icon-wrap">
+          <image class="order-tab-icon" src="/assets/icons/order/status-confirmed.png" mode="aspectFit" />
+          <view wx:if="{{orderCounts.confirming > 0}}" class="order-badge">{{orderCounts.confirming}}</view>
+        </view>
         <text class="order-tab-text">待确认</text>
       </view>
       <view class="order-tab" data-status="2" bindtap="handleOrderTap">
-        <image class="order-tab-icon" src="/assets/icons/order/status-travelling.png" mode="aspectFit" />
+        <view class="order-tab-icon-wrap">
+          <image class="order-tab-icon" src="/assets/icons/order/status-travelling.png" mode="aspectFit" />
+          <view wx:if="{{orderCounts.travelling > 0}}" class="order-badge">{{orderCounts.travelling}}</view>
+        </view>
         <text class="order-tab-text">待出行</text>
       </view>
       <view class="order-tab" data-status="4" bindtap="handleOrderTap">
-        <image class="order-tab-icon" src="/assets/icons/order/status-completed.png" mode="aspectFit" />
+        <view class="order-tab-icon-wrap">
+          <image class="order-tab-icon" src="/assets/icons/order/status-completed.png" mode="aspectFit" />
+        </view>
         <text class="order-tab-text">已完成</text>
-      </view>
-    </view>
-  </view>
-
-  <!-- 我的资产 -->
-  <view class="assets-section" wx:if="{{isLogin}}">
-    <view class="section-header">
-      <text class="section-title">我的资产</text>
-    </view>
-    <view class="assets-grid">
-      <view class="assets-item" bindtap="handlePointsTap">
-        <text class="assets-value">{{userInfo.points || 0}}</text>
-        <text class="assets-label">积分</text>
-      </view>
-      <view class="assets-divider"></view>
-      <view class="assets-item" bindtap="handleCouponTap">
-        <text class="assets-value">{{userInfo.couponCount || 0}}<text class="assets-unit">张</text></text>
-        <text class="assets-label">优惠券</text>
       </view>
     </view>
   </view>
 
   <!-- 功能菜单 -->
   <view class="menu-section">
+    <!-- 开通会员 -->
     <view class="menu-item" bindtap="handleMemberTap">
-      <image class="menu-icon" src="/assets/icons/common/crown.png" mode="aspectFit" />
+      <view class="menu-icon-wrap menu-icon-orange">
+        <image class="menu-icon" src="/assets/icons/common/favorite-active.png" mode="aspectFit" />
+      </view>
       <text class="menu-title">{{userInfo.isMember ? '我的会员' : '开通会员'}}</text>
+      <text class="menu-tag">尊享专属折扣</text>
       <text class="menu-arrow">›</text>
     </view>
-    <view
-      class="menu-item"
-      wx:for="{{menuList}}"
-      wx:key="path"
-      data-path="{{item.path}}"
-      bindtap="handleMenuTap"
-    >
-      <image class="menu-icon" src="{{item.icon}}" mode="aspectFit" />
-      <text class="menu-title">{{item.title}}</text>
-      <text class="menu-arrow">›</text>
-    </view>
-  </view>
 
-  <!-- 推广员入口 -->
-  <view wx:if="{{features.promoter.enabled}}" class="menu-section">
+    <!-- 成为领队 -->
+    <view class="menu-item" bindtap="handleLeaderTap">
+      <view class="menu-icon-wrap menu-icon-blue">
+        <image class="menu-icon" src="/assets/icons/entry/travel.png" mode="aspectFit" />
+      </view>
+      <text class="menu-title">成为领队</text>
+      <text class="menu-arrow">›</text>
+    </view>
+
+    <!-- 推广中心 -->
     <view class="menu-item" bindtap="handlePromoterTap">
-      <image class="menu-icon" src="/assets/icons/common/share.png" mode="aspectFit" />
-      <text class="menu-title">{{userInfo.isPromoter ? '推广中心' : '成为推广员'}}</text>
+      <view class="menu-icon-wrap menu-icon-green">
+        <image class="menu-icon" src="/assets/icons/common/share.png" mode="aspectFit" />
+      </view>
+      <text class="menu-title">{{userInfo.isPromoter ? '推广中心' : '推广中心'}}</text>
       <text class="menu-arrow">›</text>
     </view>
-  </view>
 
-  <!-- 设置和客服 -->
-  <view class="menu-section">
-    <button class="menu-item menu-btn" open-type="contact" bindtap="handleServiceTap">
-      <image class="menu-icon" src="/assets/icons/common/service.png" mode="aspectFit" />
-      <text class="menu-title">联系客服</text>
-      <text class="menu-arrow">›</text>
-    </button>
-    <view class="menu-item" bindtap="handleSettingsTap">
-      <image class="menu-icon" src="/assets/icons/common/more.png" mode="aspectFit" />
-      <text class="menu-title">设置</text>
+    <!-- 常用出行人 -->
+    <view class="menu-item" data-path="travelers" bindtap="handleMenuTap">
+      <view class="menu-icon-wrap menu-icon-purple">
+        <image class="menu-icon" src="/assets/icons/tabbar/companion.png" mode="aspectFit" />
+      </view>
+      <text class="menu-title">常用出行人</text>
       <text class="menu-arrow">›</text>
     </view>
-  </view>
 
-  <!-- 退出登录 -->
-  <view wx:if="{{isLogin}}" class="logout-section">
-    <button class="logout-btn" bindtap="handleLogout">退出登录</button>
+    <!-- 关于我们 -->
+    <view class="menu-item" bindtap="handleAboutTap">
+      <view class="menu-icon-wrap menu-icon-gray">
+        <image class="menu-icon" src="/assets/icons/common/service.png" mode="aspectFit" />
+      </view>
+      <text class="menu-title">关于我们</text>
+      <text class="menu-arrow">›</text>
+    </view>
   </view>
 </view>

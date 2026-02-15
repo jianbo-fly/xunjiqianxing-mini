@@ -3,6 +3,7 @@
  */
 const app = getApp();
 const userApi = require('../../../services/user');
+const orderApi = require('../../../services/order');
 const { go } = require('../../../utils/router');
 const { isLogin, checkLogin } = require('../../../utils/auth');
 const assets = require('../../../assets/index');
@@ -13,14 +14,11 @@ Page({
     assets,
     userInfo: null,
     isLogin: false,
-    // 菜单列表
-    menuList: [
-      { icon: '/assets/icons/common/time.png', title: '我的订单', path: 'orderList' },
-      { icon: '/assets/icons/common/favorite.png', title: '我的收藏', path: 'favorite' },
-      { icon: '/assets/icons/tabbar/companion.png', title: '常用出行人', path: 'travelers' },
-    ],
-    // 功能开关
-    features: appConfig.features,
+    orderCounts: {
+      pending: 0,
+      confirming: 0,
+      travelling: 0,
+    },
   },
 
   onLoad() {
@@ -28,10 +26,8 @@ Page({
   },
 
   onShow() {
-    // 刷新登录状态
     this.checkLogin();
 
-    // 设置TabBar选中状态
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
       this.getTabBar().setData({ selected: 3 });
     }
@@ -46,6 +42,7 @@ Page({
 
     if (loginStatus) {
       this.loadUserInfo();
+      this.loadOrderCounts();
     }
   },
 
@@ -56,7 +53,6 @@ Page({
     try {
       const userInfo = await userApi.getInfo();
       this.setData({ userInfo });
-      // 更新全局状态和存储
       app.globalData.userInfo = userInfo;
       wx.setStorageSync('userInfo', userInfo);
     } catch (e) {
@@ -65,10 +61,21 @@ Page({
   },
 
   /**
-   * 登录
+   * 加载订单数量
    */
-  handleLogin() {
-    wx.navigateTo({ url: '/pages/login/index' });
+  async loadOrderCounts() {
+    try {
+      const counts = await orderApi.getCounts();
+      this.setData({
+        orderCounts: {
+          pending: counts.pending || 0,
+          confirming: counts.confirming || 0,
+          travelling: counts.travelling || 0,
+        },
+      });
+    } catch (e) {
+      // 静默失败，不影响页面展示
+    }
   },
 
   /**
@@ -78,8 +85,19 @@ Page({
     if (this.data.isLogin) {
       go.profile();
     } else {
-      this.handleLogin();
+      wx.navigateTo({ url: '/pages/login/index' });
     }
+  },
+
+  /**
+   * 扫码
+   */
+  handleScanTap() {
+    wx.scanCode({
+      success: (res) => {
+        console.log('扫码结果', res);
+      },
+    });
   },
 
   /**
@@ -88,7 +106,6 @@ Page({
   handleMenuTap(e) {
     const { path } = e.currentTarget.dataset;
     if (!checkLogin()) return;
-
     if (go[path]) {
       go[path]();
     }
@@ -104,37 +121,26 @@ Page({
   },
 
   /**
-   * 积分点击
-   */
-  handlePointsTap() {
-    if (!checkLogin()) return;
-    // TODO: 跳转积分明细页
-    wx.showToast({ title: '积分明细即将上线', icon: 'none' });
-  },
-
-  /**
-   * 优惠券点击
-   */
-  handleCouponTap() {
-    if (!checkLogin()) return;
-    go.coupon();
-  },
-
-  /**
    * 开通会员
    */
   handleMemberTap() {
     if (!checkLogin()) return;
-    // TODO: 跳转会员开通/详情页
     wx.showToast({ title: '会员功能即将上线', icon: 'none' });
   },
 
   /**
-   * 推广员入口
+   * 成为领队
+   */
+  handleLeaderTap() {
+    if (!checkLogin()) return;
+    wx.showToast({ title: '领队功能即将上线', icon: 'none' });
+  },
+
+  /**
+   * 推广中心
    */
   handlePromoterTap() {
     if (!checkLogin()) return;
-    // 判断是否已是推广员
     if (this.data.userInfo?.isPromoter) {
       go.promoterCenter();
     } else {
@@ -143,44 +149,17 @@ Page({
   },
 
   /**
+   * 关于我们
+   */
+  handleAboutTap() {
+    go.webview && go.webview('about');
+  },
+
+  /**
    * 设置
    */
   handleSettingsTap() {
     go.settings();
-  },
-
-  /**
-   * 客服
-   */
-  handleServiceTap() {
-    // 使用微信客服
-  },
-
-  /**
-   * 退出登录
-   */
-  handleLogout() {
-    wx.showModal({
-      title: '提示',
-      content: '确定要退出登录吗？',
-      success: async (res) => {
-        if (res.confirm) {
-          try {
-            // 调用退出登录接口
-            await userApi.logout();
-          } catch (e) {
-            // 忽略接口错误，继续清除本地状态
-          }
-          // 清除登录信息
-          app.clearLoginInfo();
-          this.setData({
-            isLogin: false,
-            userInfo: null,
-          });
-          wx.showToast({ title: '已退出登录', icon: 'success' });
-        }
-      }
-    });
   },
 
   /**

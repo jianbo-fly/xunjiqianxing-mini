@@ -34,7 +34,12 @@ spring:
           max-wait: -1ms
 
 # 腾讯云COS配置
-
+tencent:
+  cos:
+    secret-id: ${COS_SECRET_ID:AKIDcHk0wkRyMbeU8lANN9nERQEpDRglsvnT}
+    secret-key: ${COS_SECRET_KEY:ax74qTt89ycGp27zd8VWN1jOuEOQK3jF}
+    region: ${COS_REGION:ap-chengdu}
+    bucket: ${COS_BUCKET:mystore-1305405082}
 
 # 日志配置
 logging:
