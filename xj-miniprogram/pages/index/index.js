@@ -12,19 +12,22 @@ Page({
     unreadCount: 0,
     // 轮播图
     banners: [],
+    currentBanner: 0,
     // 功能入口（8个）
     entries: [
-      { id: 'travel', name: '旅游定制', icon: '/assets/icons/entry/travel.png', type: 'travel', disabled: false },
-      // { id: 'custom', name: '', icon: '/assets/icons/entry/custom.png', type: 'custom', disabled: false },
-      { id: 'car', name: '租车', icon: '/assets/icons/entry/car.png', type: 'coming', disabled: true, tag: '敬请期待' },
-      { id: 'hotel', name: '民宿', icon: '/assets/icons/entry/hotel.png', type: 'coming', disabled: true, tag: '敬请期待' },
-      { id: 'ticket', name: '门票', icon: '/assets/icons/entry/ticket.png', type: 'coming', disabled: true, tag: '敬请期待' },
-      { id: 'transfer', name: '接送', icon: '/assets/icons/entry/transfer.png', type: 'coming', disabled: true, tag: '敬请期待' },
-      { id: 'food', name: '美食', icon: '/assets/icons/entry/food.png', type: 'coming', disabled: true, tag: '敬请期待' },
-      { id: 'rent', name: '租赁', icon: '/assets/icons/entry/rent.png', type: 'coming', disabled: true, tag: '敬请期待' },
+      { id: 'travel', name: '旅游', icon: '/assets/icons/entry/travel.png', type: 'travel' },
+      { id: 'car', name: '租车', icon: '/assets/icons/entry/car.png', type: 'coming' },
+      { id: 'hotel', name: '民宿', icon: '/assets/icons/entry/hotel.png', type: 'coming' },
+      { id: 'ticket', name: '门票', icon: '/assets/icons/entry/ticket.png', type: 'coming' },
+      { id: 'transfer', name: '接送', icon: '/assets/icons/entry/transfer.png', type: 'coming' },
+      { id: 'food', name: '美食', icon: '/assets/icons/entry/food.png', type: 'coming' },
+      { id: 'rent', name: '租赁服务', icon: '/assets/icons/entry/rent.png', type: 'coming' },
+      { id: 'insurance', name: '保险', icon: '/assets/icons/entry/insurance.png', type: 'coming' },
     ],
-    // 热门线路
+    // 热门线路 - 瀑布流双列
     hotRoutes: [],
+    leftRoutes: [],
+    rightRoutes: [],
     // 加载状态
     loading: true,
   },
@@ -56,9 +59,24 @@ Page({
 
     try {
       const data = await homeApi.getData();
+      const hotRoutes = data.recommendRoutes || [];
+
+      // 瀑布流分列：交替分配到左右列
+      const leftRoutes = [];
+      const rightRoutes = [];
+      hotRoutes.forEach((route, index) => {
+        if (index % 2 === 0) {
+          leftRoutes.push(route);
+        } else {
+          rightRoutes.push(route);
+        }
+      });
+
       this.setData({
         banners: data.banners || [],
-        hotRoutes: data.recommendRoutes || [],
+        hotRoutes,
+        leftRoutes,
+        rightRoutes,
       });
     } catch (e) {
       console.error('加载首页数据失败', e);
@@ -72,8 +90,20 @@ Page({
    */
   async loadUnreadCount() {
     // TODO: 调用消息接口获取未读数
-    // const res = await messageApi.getUnreadCount();
-    // this.setData({ unreadCount: res.count || 0 });
+  },
+
+  /**
+   * 轮播切换
+   */
+  handleBannerChange(e) {
+    this.setData({ currentBanner: e.detail.current });
+  },
+
+  /**
+   * 搜索点击
+   */
+  handleSearchTap() {
+    wx.navigateTo({ url: '/pages/route/list/index' });
   },
 
   /**
@@ -90,7 +120,6 @@ Page({
     const { item } = e.currentTarget.dataset;
     if (!item) return;
 
-    // linkType: 0无跳转 1线路详情 2外部链接 3小程序页面
     if (item.linkType === 1 && item.linkValue) {
       go.routeDetail(item.linkValue);
     } else if (item.linkType === 2 && item.linkValue) {
@@ -105,25 +134,20 @@ Page({
    */
   handleEntryTap(e) {
     const { item } = e.currentTarget.dataset;
-    if (!item || item.disabled) {
-      if (item.tag) {
-        wx.showToast({ title: item.tag, icon: 'none' });
-      }
-      return;
-    }
+    if (!item) return;
 
     switch (item.type) {
       case 'travel':
-        // 旅游定制 - 跳转旅游页面
         wx.navigateTo({ url: '/pages/travel/index/index' });
         break;
       case 'route':
-        // 线路列表
         go.routeList();
         break;
       case 'custom':
-        // 定制游页面
         wx.navigateTo({ url: '/pages/custom/index/index' });
+        break;
+      case 'coming':
+        wx.showToast({ title: '敬请期待', icon: 'none' });
         break;
       default:
         break;
@@ -134,9 +158,9 @@ Page({
    * 线路点击
    */
   handleRouteTap(e) {
-    const { route } = e.detail;
-    if (route && route.id) {
-      go.routeDetail(route.id);
+    const { id } = e.currentTarget.dataset;
+    if (id) {
+      go.routeDetail(id);
     }
   },
 
@@ -151,7 +175,6 @@ Page({
    * 在线客服
    */
   handleServiceTap() {
-    // 跳转企业微信客服
     if (appConfig.features.customerService.type === 'weixin') {
       wx.openCustomerServiceChat({
         extInfo: { url: appConfig.features.customerService.corpId || '' },
@@ -162,7 +185,6 @@ Page({
         }
       });
     } else {
-      // 拨打电话
       wx.makePhoneCall({
         phoneNumber: appConfig.features.customerService.phone || '',
         fail() {}

@@ -1,99 +1,206 @@
 <view class="page-index">
   <!-- 顶部栏 -->
   <view class="top-bar">
-    <image class="top-bar__logo" src="/assets/images/logo.png" mode="aspectFit" />
+    <view class="top-bar__left">
+      <image class="top-bar__logo" src="/assets/images/logo.png" mode="aspectFit" />
+      <text class="top-bar__title">寻迹千行</text>
+    </view>
     <view class="top-bar__right">
-      <!-- 积分 -->
-      <view class="top-bar__points">
-        <text class="points-value">{{points}}</text>
-        <text class="points-label">积分</text>
+      <!-- 积分徽章 -->
+      <view class="points-badge">
+        <image class="points-badge__icon" src="/assets/icons/common/points.png" mode="aspectFit" />
+        <text class="points-badge__text">{{points}} 积分</text>
       </view>
       <!-- 消息入口 -->
-      <view class="top-bar__message" bindtap="handleMessageTap">
-        <image class="message-icon" src="/assets/icons/common/message.png" mode="aspectFit" />
-        <view wx:if="{{unreadCount > 0}}" class="message-badge">
-          <text wx:if="{{unreadCount < 100}}">{{unreadCount}}</text>
-          <text wx:else>99+</text>
-        </view>
+      <view class="notification" bindtap="handleMessageTap">
+        <image class="notification__icon" src="/assets/icons/common/message.png" mode="aspectFit" />
+        <view wx:if="{{unreadCount > 0}}" class="notification__dot"></view>
       </view>
     </view>
   </view>
 
-  <!-- 轮播图 -->
-  <view class="banner-section">
-    <swiper
-      class="banner-swiper"
-      indicator-dots
-      autoplay
-      circular
-      indicator-color="rgba(255,255,255,0.5)"
-      indicator-active-color="#FFFFFF"
-    >
-      <swiper-item
-        wx:for="{{banners}}"
-        wx:key="id"
-        data-item="{{item}}"
-        bindtap="handleBannerTap"
-      >
-        <image class="banner-image" src="{{item.imageUrl}}" mode="aspectFill" />
-      </swiper-item>
-      <!-- 无数据时显示占位图 -->
-      <swiper-item wx:if="{{!banners.length}}">
-        <view class="banner-placeholder">
-          <text>暂无活动</text>
-        </view>
-      </swiper-item>
-    </swiper>
-  </view>
+  <!-- 主内容区 -->
+  <view class="main-content">
+    <!-- 搜索栏 -->
+    <view class="search-bar" bindtap="handleSearchTap">
+      <image class="search-bar__icon" src="/assets/icons/common/search.png" mode="aspectFit" />
+      <text class="search-bar__placeholder">搜索目的地 / 路线 / 攻略</text>
+    </view>
 
-  <!-- 功能入口 - 8个 -->
-  <view class="entry-section">
+    <!-- 轮播图 -->
+    <view class="banner-section">
+      <swiper
+        class="banner-swiper"
+        autoplay
+        circular
+        duration="500"
+        interval="4000"
+        bindchange="handleBannerChange"
+      >
+        <swiper-item
+          wx:for="{{banners}}"
+          wx:key="id"
+          data-item="{{item}}"
+          bindtap="handleBannerTap"
+        >
+          <view class="banner-item">
+            <image class="banner-image" src="{{item.imageUrl}}" mode="aspectFill" />
+            <view class="banner-overlay">
+              <view class="banner-tag-wrap">
+                <view class="banner-tag">{{item.tag || '本季热门'}}</view>
+              </view>
+              <view class="banner-title">{{item.title || ''}}</view>
+            </view>
+          </view>
+        </swiper-item>
+        <!-- 无数据占位 -->
+        <swiper-item wx:if="{{!banners.length}}">
+          <view class="banner-item banner-placeholder">
+            <text>暂无活动</text>
+          </view>
+        </swiper-item>
+      </swiper>
+      <!-- 轮播指示点 -->
+      <view class="banner-dots" wx:if="{{banners.length > 1}}">
+        <view
+          wx:for="{{banners}}"
+          wx:key="id"
+          class="banner-dot {{currentBanner === index ? 'banner-dot--active' : ''}}"
+        ></view>
+      </view>
+    </view>
+
+    <!-- 功能入口 -->
     <view class="entry-grid">
       <view
-        class="entry-item {{item.disabled ? 'entry-item--disabled' : ''}}"
+        class="entry-item"
         wx:for="{{entries}}"
         wx:key="id"
         data-item="{{item}}"
         bindtap="handleEntryTap"
       >
-        <view class="entry-icon-wrap">
+        <view class="entry-icon-bg">
           <image class="entry-icon" src="{{item.icon}}" mode="aspectFit" />
-          <view wx:if="{{item.tag}}" class="entry-tag">{{item.tag}}</view>
         </view>
         <text class="entry-name">{{item.name}}</text>
       </view>
     </view>
-  </view>
 
-  <!-- 热门线路 -->
-  <view class="section">
-    <view class="section-header">
-      <text class="section-title">热门线路</text>
-      <view class="section-more" bindtap="handleMoreTap">
-        <text>更多</text>
-        <text class="section-more-icon">›</text>
+    <!-- 热门路线 -->
+    <view class="hot-routes">
+      <view class="section-header">
+        <view class="section-title-wrap">
+          <view class="section-title-bar"></view>
+          <text class="section-title">热门路线</text>
+        </view>
+        <view class="section-more" bindtap="handleMoreTap">
+          <text class="section-more-text">查看全部</text>
+          <text class="section-more-arrow">›</text>
+        </view>
+      </view>
+
+      <!-- 瀑布流布局 -->
+      <view class="waterfall" wx:if="{{leftRoutes.length || rightRoutes.length}}">
+        <!-- 左列 -->
+        <view class="waterfall__col">
+          <view
+            class="route-card"
+            wx:for="{{leftRoutes}}"
+            wx:key="id"
+            data-id="{{item.id}}"
+            bindtap="handleRouteTap"
+          >
+            <view class="route-card__image-wrap">
+              <image
+                class="route-card__image"
+                src="{{item.coverImage}}"
+                mode="aspectFill"
+                lazy-load
+              />
+              <view class="route-card__location">
+                <image class="route-card__location-icon" src="/assets/icons/common/location.png" mode="aspectFit" />
+                <text class="route-card__location-text">{{item.location || ''}}</text>
+              </view>
+            </view>
+            <view class="route-card__info">
+              <text class="route-card__title">{{item.name}}</text>
+              <view class="route-card__tags" wx:if="{{item.tags && item.tags.length}}">
+                <text
+                  wx:for="{{item.tags}}"
+                  wx:for-item="tag"
+                  wx:for-index="tagIdx"
+                  wx:key="tagIdx"
+                  wx:if="{{tagIdx < 2}}"
+                  class="route-card__tag {{tagIdx === 0 ? 'route-card__tag--primary' : 'route-card__tag--gray'}}"
+                >{{tag}}</text>
+              </view>
+              <view class="route-card__bottom">
+                <text class="route-card__sales">已售 {{item.salesText || item.salesCount || 0}}</text>
+                <view class="route-card__price">
+                  <text class="route-card__price-symbol">¥</text>
+                  <text class="route-card__price-value">{{item.priceText || item.minPrice || 0}}</text>
+                </view>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 右列 -->
+        <view class="waterfall__col">
+          <view
+            class="route-card"
+            wx:for="{{rightRoutes}}"
+            wx:key="id"
+            data-id="{{item.id}}"
+            bindtap="handleRouteTap"
+          >
+            <view class="route-card__image-wrap">
+              <image
+                class="route-card__image"
+                src="{{item.coverImage}}"
+                mode="aspectFill"
+                lazy-load
+              />
+              <view class="route-card__location">
+                <image class="route-card__location-icon" src="/assets/icons/common/location.png" mode="aspectFit" />
+                <text class="route-card__location-text">{{item.location || ''}}</text>
+              </view>
+            </view>
+            <view class="route-card__info">
+              <text class="route-card__title">{{item.name}}</text>
+              <view class="route-card__tags" wx:if="{{item.tags && item.tags.length}}">
+                <text
+                  wx:for="{{item.tags}}"
+                  wx:for-item="tag"
+                  wx:for-index="tagIdx"
+                  wx:key="tagIdx"
+                  wx:if="{{tagIdx < 2}}"
+                  class="route-card__tag {{tagIdx === 0 ? 'route-card__tag--primary' : 'route-card__tag--gray'}}"
+                >{{tag}}</text>
+              </view>
+              <view class="route-card__bottom">
+                <text class="route-card__sales">已售 {{item.salesText || item.salesCount || 0}}</text>
+                <view class="route-card__price">
+                  <text class="route-card__price-symbol">¥</text>
+                  <text class="route-card__price-value">{{item.priceText || item.minPrice || 0}}</text>
+                </view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view wx:else class="empty-tip">
+        <text>暂无热门路线</text>
       </view>
     </view>
-    <view class="route-list" wx:if="{{hotRoutes.length}}">
-      <view class="route-item" wx:for="{{hotRoutes}}" wx:key="id">
-        <route-card
-          route="{{item}}"
-          mode="normal"
-          bind:tap="handleRouteTap"
-        />
-      </view>
-    </view>
-    <view wx:else class="empty-tip">
-      <text>暂无热门线路</text>
-    </view>
   </view>
 
-  <!-- 底部占位（避免被悬浮按钮遮挡） -->
+  <!-- 底部占位 -->
   <view class="bottom-placeholder"></view>
 
   <!-- 在线客服悬浮按钮 -->
   <view class="customer-service" bindtap="handleServiceTap">
     <image class="service-icon" src="/assets/icons/common/service.png" mode="aspectFit" />
-    <text class="service-text">客服</text>
   </view>
 </view>
