@@ -17,13 +17,48 @@ Page({
     hasMore: true,
     // 搜索关键词
     keyword: '',
+    // 主 Tab 列表
+    tabs: [
+      { key: 'group', label: '跟团游' },
+      { key: 'custom', label: '定制游' },
+    ],
+    // Tab 切换
+    activeTab: 'group', // group/custom
+    // 分类
+    categories: [
+      { id: '', name: '全部' },
+      { id: 'domestic', name: '国内游' },
+      { id: 'overseas', name: '出境游' },
+      { id: 'nearby', name: '周边游' },
+      { id: 'island', name: '海岛游' },
+      { id: 'resort', name: '度假游' },
+    ],
+    activeCategory: '',
     // 筛选条件
     categoryId: '',
     sortBy: '', // hot/new/price
-    priceAsc: true, // 价格升序/降序
+    priceAsc: true,
+    // 筛选值（传给组件）
+    filterValues: {
+      departure: '',
+      days: '',
+      budget: '',
+      hasFilter: false,
+    },
+    // nav-bar 高度（px），用于 route-list-header sticky top
+    navBarTotalHeight: 88,
   },
 
   onLoad(options) {
+    // 计算 nav-bar 实际高度
+    const sysInfo = wx.getSystemInfoSync();
+    const statusBarHeight = sysInfo.statusBarHeight || 44;
+    let navBarHeight = 44;
+    try {
+      const menuButton = wx.getMenuButtonBoundingClientRect();
+      navBarHeight = menuButton.height + (menuButton.top - statusBarHeight) * 2;
+    } catch (e) {}
+    this.setData({ navBarTotalHeight: statusBarHeight + navBarHeight });
     if (options.categoryId) {
       this.setData({ categoryId: options.categoryId });
     }
@@ -56,14 +91,12 @@ Page({
     this.setData({ loading: true });
 
     try {
-      const res = await routeApi.getList({
-        page,
-        pageSize,
-        keyword: keyword || undefined,
-        categoryId: categoryId || undefined,
-        sortBy: sortBy || undefined,
-        priceAsc: sortBy === 'price' ? priceAsc : undefined,
-      });
+      const params = { page, pageSize };
+      if (keyword) params.keyword = keyword;
+      if (categoryId) params.categoryId = categoryId;
+      if (sortBy) params.sortBy = sortBy;
+      if (sortBy === 'price') params.priceAsc = priceAsc;
+      const res = await routeApi.getList(params);
 
       const records = res.records || res.list || res || [];
       const list = records.map(this.formatRoute);
@@ -90,14 +123,12 @@ Page({
     this.setData({ loadingMore: true });
 
     try {
-      const res = await routeApi.getList({
-        page: nextPage,
-        pageSize,
-        keyword: keyword || undefined,
-        categoryId: categoryId || undefined,
-        sortBy: sortBy || undefined,
-        priceAsc: sortBy === 'price' ? priceAsc : undefined,
-      });
+      const params = { page: nextPage, pageSize };
+      if (keyword) params.keyword = keyword;
+      if (categoryId) params.categoryId = categoryId;
+      if (sortBy) params.sortBy = sortBy;
+      if (sortBy === 'price') params.priceAsc = priceAsc;
+      const res = await routeApi.getList(params);
 
       const records = res.records || res.list || res || [];
       const newItems = records.map(this.formatRoute);
@@ -125,6 +156,33 @@ Page({
   },
 
   /**
+   * Tab 切换（组件事件：detail.key）
+   */
+  handleTabChange(e) {
+    const { key } = e.detail;
+    if (key === this.data.activeTab) return;
+    this.setData({ activeTab: key, page: 1, list: [], hasMore: true });
+    this.loadList();
+  },
+
+  /**
+   * 分类切换（组件事件：detail.id）
+   */
+  handleCategoryChange(e) {
+    const { id } = e.detail;
+    if (id === this.data.activeCategory) return;
+    this.setData({ activeCategory: id, categoryId: id, page: 1, list: [], hasMore: true });
+    this.loadList();
+  },
+
+  /**
+   * 点击搜索图标（组件事件）
+   */
+  handleSearchTap() {
+    wx.navigateTo({ url: '/pages/route/list/index' });
+  },
+
+  /**
    * 搜索
    */
   handleSearch(e) {
@@ -134,13 +192,28 @@ Page({
   },
 
   /**
+   * 筛选按钮点击（组件事件：detail.type）
+   */
+  handleFilterTap(e) {
+    const { type } = e.detail;
+    // 暂时弹出 toast 提示，后续接入筛选弹窗
+    wx.showToast({ title: `${type} 筛选`, icon: 'none' });
+  },
+
+  /**
+   * 更多筛选（组件事件）
+   */
+  handleMoreFilter() {
+    wx.showToast({ title: '更多筛选', icon: 'none' });
+  },
+
+  /**
    * 排序切换
    */
   handleSortChange(e) {
     const { sort } = e.currentTarget.dataset;
     const { sortBy, priceAsc } = this.data;
 
-    // 价格排序支持升降序切换
     if (sort === 'price' && sortBy === 'price') {
       this.setData({ priceAsc: !priceAsc, page: 1, list: [], hasMore: true });
     } else {
@@ -151,11 +224,22 @@ Page({
   },
 
   /**
+   * 收藏
+   */
+  handleFavorite(e) {
+    const { id } = e.currentTarget.dataset;
+    const list = this.data.list.map(item => {
+      if (item.id === id) return { ...item, isFavorite: !item.isFavorite };
+      return item;
+    });
+    this.setData({ list });
+  },
+
+  /**
    * 线路点击
    */
   handleRouteTap(e) {
-    const route = e.detail?.route;
-    const id = route?.id || e.currentTarget.dataset.id;
+    const id = e.currentTarget.dataset.id;
     if (id) go.routeDetail(id);
   },
 

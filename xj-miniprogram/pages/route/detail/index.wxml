@@ -33,31 +33,74 @@
           <image class="banner-image" src="{{item}}" mode="aspectFill" />
         </swiper-item>
       </swiper>
+      <!-- 底部渐变遮罩 -->
+      <view class="banner-gradient"></view>
+      <!-- 图片计数 -->
       <view class="banner-indicator">{{swiperIndex + 1}}/{{bannerImages.length}}</view>
+      <!-- 分页圆点 -->
+      <view class="banner-dots" wx:if="{{bannerImages.length > 1}}">
+        <view
+          wx:for="{{bannerImages}}"
+          wx:key="index"
+          class="banner-dot {{swiperIndex === index ? 'banner-dot--active' : ''}}"
+        ></view>
+      </view>
     </view>
 
-    <!-- 基本信息 -->
-    <view class="info-section">
-      <view class="route-name">{{route.name}}</view>
-      <view class="route-subtitle" wx:if="{{route.subtitle}}">{{route.subtitle}}</view>
+    <!-- 基本信息卡片（与 Hero 重叠） -->
+    <view class="info-card">
+      <!-- 标题行 -->
+      <view class="info-card__top">
+        <view class="info-card__title-wrap">
+          <view class="route-name">{{route.name}}</view>
+          <view class="route-subtitle" wx:if="{{route.subtitle}}">{{route.subtitle}}</view>
+        </view>
+        <!-- 出发地/天数标签 -->
+        <view class="info-card__meta-tags">
+          <view class="info-meta-tag" wx:if="{{route.departureCity}}">
+            <text class="info-meta-tag__text">{{route.departureCity}}</text>
+          </view>
+          <view class="info-meta-tag" wx:if="{{route.days}}">
+            <text class="info-meta-tag__text">{{route.days}}天</text>
+          </view>
+        </view>
+      </view>
 
+      <!-- 价格行 -->
+      <view class="route-price">
+        <view class="price-main">
+          <text class="price-symbol">¥</text>
+          <text class="price-value">{{selectedPrice || route.minPrice}}</text>
+          <text class="price-unit">/人起</text>
+        </view>
+        <view class="route-meta">
+          <view class="route-rating" wx:if="{{route.score}}">
+            <text class="rating-star">★</text>
+            <text class="rating-value">{{route.score}}</text>
+          </view>
+          <text class="route-sales" wx:if="{{route.salesCount}}"> 已售{{route.salesCount}}人</text>
+        </view>
+      </view>
+
+      <!-- 保障标签行 -->
+      <view class="guarantee-tags">
+        <view class="guarantee-tag">
+          <text class="guarantee-tag__icon">✓</text>
+          <text class="guarantee-tag__text">品质保障</text>
+        </view>
+        <view class="guarantee-tag">
+          <text class="guarantee-tag__icon">✓</text>
+          <text class="guarantee-tag__text">极速退款</text>
+        </view>
+        <view class="guarantee-tag">
+          <text class="guarantee-tag__icon">✓</text>
+          <text class="guarantee-tag__text">成团保障</text>
+        </view>
+      </view>
+
+      <!-- 特色标签 -->
       <view class="route-tags" wx:if="{{route.tags && route.tags.length}}">
         <view class="route-tag" wx:for="{{route.tags}}" wx:key="index">{{item}}</view>
-      </view>
-
-      <view class="route-meta">
-        <view class="route-rating" wx:if="{{route.score}}">
-          <text class="rating-star">★</text>
-          <text class="rating-value">{{route.score}}</text>
-        </view>
-        <text class="route-sales" wx:if="{{route.salesCount}}">已售{{route.salesCount}}人</text>
-        <text class="route-city" wx:if="{{route.departureCity}}">{{route.departureCity}}出发</text>
-      </view>
-
-      <view class="route-price">
-        <text class="price-symbol">¥</text>
-        <text class="price-value">{{selectedPrice || route.minPrice}}</text>
-        <text class="price-unit">/人起</text>
       </view>
     </view>
 
@@ -72,60 +115,104 @@
       </view>
     </view>
 
-    <!-- 选择套餐和日期 -->
-    <view class="select-section">
-      <view class="select-item" bindtap="handleShowPackage">
-        <text class="select-label">套餐</text>
-        <view class="select-value">
-          <text>{{selectedPackage ? selectedPackage.name : '请选择套餐'}}</text>
-          <text class="select-arrow">›</text>
+    <!-- 预订卡片（套餐 + 日期 + 人数合并） -->
+    <view class="booking-card">
+      <!-- 套餐选择 -->
+      <view wx:if="{{packages && packages.length}}">
+        <view class="section-header-row booking-card__header">
+          <text class="section-title">套餐选择</text>
         </view>
-      </view>
-      <view class="select-item" bindtap="handleShowCalendar">
-        <text class="select-label">日期</text>
-        <view class="select-value">
-          <text>{{selectedDate || '请选择出行日期'}}</text>
-          <text class="select-arrow">›</text>
-        </view>
-      </view>
-    </view>
-
-    <!-- 选择人数（选择日期后显示） -->
-    <view class="people-section" wx:if="{{selectedDate}}">
-      <view class="section-title">选择人数</view>
-
-      <!-- 成人 -->
-      <view class="people-item">
-        <view class="people-info">
-          <view class="people-type">成人</view>
-          <view class="people-price">¥{{selectedPrice}}/人</view>
-          <view class="people-desc">12周岁及以上</view>
-        </view>
-        <view class="quantity-picker">
-          <view class="quantity-btn {{adultCount <= 1 ? 'quantity-btn--disabled' : ''}}" bindtap="handleAdultMinus">-</view>
-          <text class="quantity-value">{{adultCount}}</text>
-          <view class="quantity-btn" bindtap="handleAdultPlus">+</view>
-        </view>
+        <scroll-view class="package-scroll" scroll-x enable-flex>
+          <view class="package-cards">
+            <view
+              wx:for="{{packages}}"
+              wx:key="id"
+              class="package-card {{selectedPackage && selectedPackage.id === item.id ? 'package-card--active' : ''}}"
+              data-index="{{index}}"
+              bindtap="handlePackageSelect"
+            >
+              <text class="package-card__name">{{item.name}}</text>
+              <text class="package-card__desc" wx:if="{{item.description}}">{{item.description}}</text>
+              <text class="package-card__price">¥{{item.basePrice}}<text class="package-card__unit">/人</text></text>
+              <view class="package-card__check" wx:if="{{selectedPackage && selectedPackage.id === item.id}}">✓</view>
+            </view>
+          </view>
+        </scroll-view>
       </view>
 
-      <!-- 儿童 -->
-      <view class="people-item">
-        <view class="people-info">
-          <view class="people-type">儿童</view>
-          <view class="people-price">¥{{selectedChildPrice}}/人</view>
-          <view class="people-desc">2-12周岁，不占床</view>
+      <!-- 日期选择条 -->
+      <view class="booking-card__date-wrap" wx:if="{{calendar && calendar.length}}">
+        <view class="section-header-row booking-card__header">
+          <text class="section-title">出行日期</text>
+          <text class="section-more" bindtap="handleShowCalendar">更多日期 ›</text>
         </view>
-        <view class="quantity-picker">
-          <view class="quantity-btn {{childCount <= 0 ? 'quantity-btn--disabled' : ''}}" bindtap="handleChildMinus">-</view>
-          <text class="quantity-value">{{childCount}}</text>
-          <view class="quantity-btn {{childCount >= adultCount ? 'quantity-btn--disabled' : ''}}" bindtap="handleChildPlus">+</view>
+        <scroll-view class="date-strip-scroll" scroll-x enable-flex>
+          <view class="date-strip-list">
+            <view
+              wx:for="{{calendar}}"
+              wx:key="date"
+              class="date-strip-item {{selectedDate === item.date ? 'date-strip-item--active' : ''}} {{item.stock <= 0 ? 'date-strip-item--disabled' : ''}}"
+              data-item="{{item}}"
+              bindtap="handleDateSelect"
+            >
+              <text class="date-strip-item__week">{{item.week}}</text>
+              <text class="date-strip-item__day">{{item.day}}</text>
+              <text class="date-strip-item__price" wx:if="{{item.stock > 0}}">¥{{item.price}}</text>
+              <text class="date-strip-item__sold" wx:else>售罄</text>
+            </view>
+          </view>
+        </scroll-view>
+      </view>
+
+      <!-- 备用入口（无套餐/日期数据时） -->
+      <view wx:if="{{(!packages || !packages.length) && (!calendar || !calendar.length)}}">
+        <view class="select-item" bindtap="handleShowPackage">
+          <text class="select-label">套餐</text>
+          <view class="select-value">
+            <text>{{selectedPackage ? selectedPackage.name : '请选择套餐'}}</text>
+            <text class="select-arrow">›</text>
+          </view>
+        </view>
+        <view class="select-item" bindtap="handleShowCalendar">
+          <text class="select-label">日期</text>
+          <view class="select-value">
+            <text>{{selectedDate || '请选择出行日期'}}</text>
+            <text class="select-arrow">›</text>
+          </view>
         </view>
       </view>
 
-      <!-- 合计金额 -->
-      <view class="total-amount">
-        <text class="total-label">合计：</text>
-        <text class="total-value">¥{{totalAmount}}</text>
+      <!-- 虚线分隔 -->
+      <view class="booking-card__divider"></view>
+
+      <!-- 选择人数（始终显示） -->
+      <view class="booking-card__people">
+        <view class="section-header-row booking-card__header">
+          <text class="section-title">选择人数</text>
+        </view>
+
+        <!-- 成人 -->
+        <view class="people-item">
+          <text class="people-type">成人</text>
+          <view class="quantity-picker">
+            <view class="quantity-btn quantity-btn--minus {{adultCount <= 1 ? 'quantity-btn--disabled' : ''}}" bindtap="handleAdultMinus">-</view>
+            <text class="quantity-value">{{adultCount}}</text>
+            <view class="quantity-btn quantity-btn--plus" bindtap="handleAdultPlus">+</view>
+          </view>
+        </view>
+
+        <!-- 儿童 -->
+        <view class="people-item people-item--last">
+          <view class="people-label-row">
+            <text class="people-type">儿童</text>
+            <text class="people-age">(2-12岁)</text>
+          </view>
+          <view class="quantity-picker">
+            <view class="quantity-btn quantity-btn--minus {{childCount <= 0 ? 'quantity-btn--disabled' : ''}}" bindtap="handleChildMinus">-</view>
+            <text class="quantity-value">{{childCount}}</text>
+            <view class="quantity-btn quantity-btn--plus {{childCount >= adultCount ? 'quantity-btn--disabled' : ''}}" bindtap="handleChildPlus">+</view>
+          </view>
+        </view>
       </view>
     </view>
 
@@ -228,18 +315,23 @@
   <!-- 底部操作栏 -->
   <view class="action-bar" wx:if="{{!loading}}">
     <view class="action-bar__left">
-      <view class="action-btn" bindtap="handleFavorite">
-        <image class="action-btn__icon" src="/assets/icons/common/{{isFavorite ? 'favorite-active' : 'favorite'}}.png" mode="aspectFit" />
-        <text class="action-btn__text">{{isFavorite ? '已收藏' : '收藏'}}</text>
-      </view>
       <view class="action-btn" bindtap="handleService">
         <image class="action-btn__icon" src="/assets/icons/common/service.png" mode="aspectFit" />
         <text class="action-btn__text">客服</text>
       </view>
+      <view class="action-btn" bindtap="handleFavorite">
+        <image class="action-btn__icon" src="/assets/icons/common/{{isFavorite ? 'favorite-active' : 'favorite'}}.png" mode="aspectFit" />
+        <text class="action-btn__text">{{isFavorite ? '已收藏' : '收藏'}}</text>
+      </view>
     </view>
     <view class="action-bar__right">
       <view class="book-btn" bindtap="handleBook">
-        <text>立即预订</text>
+        <view class="book-btn__price" wx:if="{{totalAmount}}">
+          <text class="book-btn__price-label">总价</text>
+          <text class="book-btn__price-value">¥{{totalAmount}}</text>
+        </view>
+        <view class="book-btn__sep" wx:if="{{totalAmount}}"></view>
+        <text class="book-btn__text">立即预订</text>
       </view>
     </view>
   </view>
@@ -306,7 +398,8 @@
           data-item="{{item}}"
           bindtap="handleDateSelect"
         >
-          <text class="calendar-date">{{item.day}}日</text>
+          <text class="calendar-week">{{item.week}}</text>
+          <text class="calendar-date">{{item.dayNum}}</text>
           <text class="calendar-price" wx:if="{{item.stock > 0}}">¥{{item.price}}</text>
           <text class="calendar-sold" wx:else>售罄</text>
         </view>

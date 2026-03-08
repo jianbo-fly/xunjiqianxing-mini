@@ -1,75 +1,163 @@
+<!--
+  旅游页 - 跟团游 & 定制游
+  对齐 Figma Node: 74-6583
+-->
 <view class="page-travel">
-  <!-- 顶部导航 -->
-  <view class="nav-header" style="padding-top: {{statusBarHeight}}px; height: {{statusBarHeight + 44}}px;">
-    <view class="nav-header__left" bindtap="handleBack">
-      <image class="nav-back-icon" src="/assets/icons/common/arrow-left.png" mode="aspectFit" />
-    </view>
-    <view class="nav-header__title">旅游</view>
-    <view class="nav-header__right" bindtap="handleSearch">
-      <image class="nav-search-icon" src="/assets/icons/common/search.png" mode="aspectFit" />
-    </view>
-  </view>
 
-  <!-- 顶部Tab（固定在导航栏下方） -->
-  <view class="top-tabs-placeholder" style="height: {{statusBarHeight + 44 + 44}}px;"></view>
-  <view class="top-tabs" style="top: {{statusBarHeight + 44}}px;">
-    <view
-      class="top-tab {{currentTab === index ? 'top-tab--active' : ''}}"
-      wx:for="{{tabs}}"
-      wx:key="index"
-      data-index="{{index}}"
-      bindtap="handleTabChange"
-    >
-      <text>{{item}}</text>
-      <view class="top-tab__line" wx:if="{{currentTab === index}}"></view>
-    </view>
-  </view>
-
-  <!-- 跟团游内容 -->
-  <view class="tab-content" wx:if="{{currentTab === 0}}">
-    <!-- 二级分类 -->
-    <view class="sub-category">
+  <!-- 导航栏（嵌入 Tab，无底部分割线，与分类行融为一体） -->
+  <nav-bar background="rgba(255,255,255,1)" showBack fixed>
+    <view slot="title" class="nav-tabs">
       <view
-        class="sub-category__item {{categoryIndex === index ? 'sub-category__item--active' : ''}}"
-        wx:for="{{categories}}"
+        class="nav-tab {{currentTab === index ? 'nav-tab--active' : ''}}"
+        wx:for="{{tabs}}"
         wx:key="index"
         data-index="{{index}}"
-        bindtap="handleCategoryChange"
-      >{{item}}</view>
-      <view class="sub-category__filter" bindtap="handleShowFilter">
-        <image src="/assets/icons/common/filter.png" mode="aspectFit" />
-        <text>筛选</text>
+        bindtap="handleTabChange"
+      >
+        <text class="nav-tab__text">{{item}}</text>
+        <view class="nav-tab__line" wx:if="{{currentTab === index}}"></view>
       </view>
     </view>
+    <view slot="right" class="nav-search-btn" bindtap="handleSearch">
+      <image class="nav-search-icon" src="/assets/icons/common/search.png" mode="aspectFit" />
+    </view>
+  </nav-bar>
 
-    <!-- 线路列表 -->
-    <scroll-view class="route-scroll" scroll-y enhanced show-scrollbar="{{false}}" bindscrolltolower="onReachBottom">
-      <view class="route-list">
-        <view class="route-item" wx:for="{{routeList}}" wx:key="id">
-          <route-card route="{{item}}" mode="normal" bind:tap="handleRouteTap" />
+  <!-- ===== 跟团游 ===== -->
+  <block wx:if="{{currentTab === 0}}">
+
+    <!-- 吸顶：分类 + 筛选（整体白色 + 底部阴影） -->
+    <view class="sticky-bar" style="top: {{navBarTotalHeight}}px;">
+
+      <!-- 分类 Pills -->
+      <view class="sub-cat-row">
+        <view
+          class="sub-cat-pill {{categoryIndex === index ? 'sub-cat-pill--active' : ''}}"
+          wx:for="{{categories}}"
+          wx:key="index"
+          data-index="{{index}}"
+          bindtap="handleCategoryChange"
+        >{{item}}</view>
+      </view>
+
+      <!-- 4 按钮筛选栏（按钮自适应宽度，左对齐） -->
+      <view class="filter-bar">
+        <picker mode="selector" range="{{departures}}" bindchange="handleDepartureChange">
+          <view class="filter-bar__btn {{filters.departure ? 'filter-bar__btn--active' : ''}}">
+            <text class="filter-bar__label">{{filters.departure || '出发地'}}</text>
+            <text class="filter-bar__arrow">▾</text>
+          </view>
+        </picker>
+        <picker mode="selector" range="{{daysOptions}}" bindchange="handleDaysChange">
+          <view class="filter-bar__btn {{filters.days ? 'filter-bar__btn--active' : ''}}">
+            <text class="filter-bar__label">{{filters.days || '行程天数'}}</text>
+            <text class="filter-bar__arrow">▾</text>
+          </view>
+        </picker>
+        <picker mode="selector" range="{{filterBudgets}}" bindchange="handleFilterBudgetChange">
+          <view class="filter-bar__btn {{filters.budgetLabel ? 'filter-bar__btn--active' : ''}}">
+            <text class="filter-bar__label">{{filters.budgetLabel || '价格预算'}}</text>
+            <text class="filter-bar__arrow">▾</text>
+          </view>
+        </picker>
+        <view class="filter-bar__btn" bindtap="handleShowFilter">
+          <text class="filter-bar__label">筛选</text>
+          <text class="filter-bar__arrow">▾</text>
         </view>
       </view>
 
-      <!-- 加载状态 -->
-      <view class="loading-tip" wx:if="{{routeLoading}}">
-        <text>加载中...</text>
-      </view>
-      <view class="loading-tip" wx:elif="{{routeFinished && routeList.length}}">
-        <text>没有更多了</text>
-      </view>
-      <view class="empty-tip" wx:elif="{{!routeLoading && !routeList.length}}">
-        <text>暂无线路</text>
-      </view>
-    </scroll-view>
+    </view>
 
-    <!-- 筛选弹窗 -->
+    <!-- 路线列表 -->
+    <view class="route-list">
+      <view
+        class="route-card"
+        wx:for="{{routeList}}"
+        wx:key="id"
+        data-id="{{item.id}}"
+        bindtap="handleCardTap"
+      >
+        <!-- 图片区 -->
+        <view class="rc-img-wrap">
+          <image class="rc-img" src="{{item.coverImage}}" mode="aspectFill" />
+          <!-- 底部渐变（仅底部1/3） -->
+          <view class="rc-gradient"></view>
+          <!-- 位置标签（左上，毛玻璃，圆角矩形） -->
+          <view class="rc-location" wx:if="{{item.destination}}">
+            <text class="rc-location-text">{{item.destination}}</text>
+          </view>
+          <!-- 收藏按钮（右上，白色圆形） -->
+          <view class="rc-favorite" catchtap="handleFavorite" data-id="{{item.id}}">
+            <image class="rc-heart-icon" src="/assets/icons/common/{{item.isFavorite ? 'favorite-active' : 'favorite'}}.png" mode="aspectFit" />
+          </view>
+          <!-- 折扣/限时角标（左下） -->
+          <view class="rc-discount" wx:if="{{item.discount || item.discountLabel}}">
+            <text>{{item.discountLabel || item.discount + '折'}}</text>
+          </view>
+        </view>
+
+        <!-- 内容区 -->
+        <view class="rc-content">
+
+          <!-- 标签行（tags 为字符串数组，颜色按索引分配） -->
+          <view class="rc-tags" wx:if="{{item.tags && item.tags.length}}">
+            <text
+              class="rc-tag rc-tag--{{ti === 0 ? 'red' : ti === 1 ? 'orange' : ti === 2 ? 'blue' : 'green'}}"
+              wx:for="{{item.tags}}"
+              wx:for-item="tag"
+              wx:for-index="ti"
+              wx:key="ti"
+            >{{tag.name || tag}}</text>
+          </view>
+
+          <!-- 路线标题（2行截断） -->
+          <view class="rc-title-wrap">
+            <text class="rc-title">{{item.name || item.title}}</text>
+          </view>
+
+          <!-- 评分 + 已售 -->
+          <view class="rc-meta-row">
+            <text class="rc-star">★</text>
+            <text class="rc-rating-num">{{item.rating || '4.9'}}</text>
+            <text class="rc-rating-label">超赞</text>
+            <view class="rc-meta-divider"></view>
+            <text class="rc-sales">已售 {{item.salesCount || '0'}}</text>
+          </view>
+
+          <!-- 底部：出发日 + 价格 + CTA -->
+          <view class="rc-footer">
+            <view class="rc-footer-left">
+              <text class="rc-depart-date" wx:if="{{item.nearestDate}}">最近出发: {{item.nearestDate}}</text>
+              <view class="rc-price-row">
+                <text class="rc-price-symbol">¥</text>
+                <text class="rc-price">{{item.minPrice || item.price}}</text>
+                <text class="rc-price-unit">起</text>
+                <text class="rc-price-origin" wx:if="{{item.originalPrice && item.originalPrice > (item.minPrice || item.price)}}">¥{{item.originalPrice}}</text>
+              </view>
+            </view>
+            <view class="rc-cta {{item.featured ? 'rc-cta--solid' : 'rc-cta--light'}}">
+              <text>{{item.featured ? '查看详情' : '立即预订'}}</text>
+            </view>
+          </view>
+
+        </view>
+      </view>
+    </view>
+
+    <!-- 加载 / 空状态 -->
+    <view class="loading-tip" wx:if="{{routeLoading}}"><text>加载中...</text></view>
+    <view class="loading-tip" wx:elif="{{routeFinished && routeList.length}}"><text>没有更多了</text></view>
+    <view class="empty-tip" wx:elif="{{!routeLoading && !routeList.length}}"><text>暂无线路</text></view>
+
+    <view style="height: calc(32rpx + env(safe-area-inset-bottom));"></view>
+
+    <!-- 筛选侧边弹窗 -->
     <view class="filter-mask" wx:if="{{showFilter}}" bindtap="handleCloseFilter"></view>
     <view class="filter-popup {{showFilter ? 'filter-popup--show' : ''}}">
       <view class="filter-header">
         <text class="filter-title">筛选</text>
         <text class="filter-reset" bindtap="handleResetFilter">重置</text>
       </view>
-
       <view class="filter-item">
         <text class="filter-label">出发地</text>
         <picker mode="selector" range="{{departures}}" bindchange="handleDepartureChange">
@@ -79,7 +167,6 @@
           </view>
         </picker>
       </view>
-
       <view class="filter-item">
         <text class="filter-label">行程天数</text>
         <picker mode="selector" range="{{daysOptions}}" bindchange="handleDaysChange">
@@ -89,69 +176,88 @@
           </view>
         </picker>
       </view>
-
       <view class="filter-item">
         <text class="filter-label">价格区间</text>
         <view class="filter-price-range">
-          <input class="price-input" type="number" placeholder="最低" value="{{filters.priceMin}}" bindinput="e => this.setData({'filters.priceMin': e.detail.value})" />
+          <input class="price-input" type="number" placeholder="最低" value="{{filters.priceMin}}" bindinput="handlePriceMinInput" />
           <text class="price-separator">-</text>
-          <input class="price-input" type="number" placeholder="最高" value="{{filters.priceMax}}" bindinput="e => this.setData({'filters.priceMax': e.detail.value})" />
+          <input class="price-input" type="number" placeholder="最高" value="{{filters.priceMax}}" bindinput="handlePriceMaxInput" />
         </view>
       </view>
-
       <view class="filter-footer">
-        <button class="filter-btn filter-btn--confirm" bindtap="handleConfirmFilter">确定</button>
+        <button class="filter-confirm-btn" bindtap="handleConfirmFilter">确定</button>
       </view>
     </view>
-  </view>
 
-  <!-- 定制游内容 -->
-  <view class="tab-content custom-content" wx:if="{{currentTab === 1}}">
+  </block>
+
+  <!-- ===== 定制游 ===== -->
+  <view class="custom-content" wx:if="{{currentTab === 1}}">
     <scroll-view class="custom-scroll" scroll-y enhanced show-scrollbar="{{false}}">
-      <!-- 目的地 -->
-      <view class="form-section">
-        <view class="form-title">想去哪里？</view>
-        <view class="card-grid">
-          <view
-            class="card-item {{selectedDest === item ? 'card-item--active' : ''}}"
-            wx:for="{{destinations}}"
-            wx:key="index"
-            data-dest="{{item}}"
-            bindtap="handleDestSelect"
-          >{{item}}</view>
+
+      <!-- Banner / Intro -->
+      <view class="cs-banner">
+        <view class="cs-banner__overlay">
+          <text class="cs-banner__title">寻迹千行 · 私人定制</text>
+          <text class="cs-banner__subtitle">专业规划师 1对1 服务</text>
         </view>
-        <input
-          wx:if="{{selectedDest === '其他'}}"
-          class="custom-input"
-          placeholder="请输入目的地"
-          value="{{customDest}}"
-          bindinput="handleCustomDestInput"
-        />
       </view>
 
-      <!-- 出行时间 -->
-      <view class="form-section">
-        <view class="form-title">什么时候出发？</view>
-        <view class="card-grid">
+      <!-- Section 1: 你想去哪? -->
+      <view class="cs-card">
+        <view class="cs-card__header">
+          <image class="cs-card__icon" src="/assets/icons/custom/dest.png" mode="aspectFit" />
+          <text class="cs-card__title">你想去哪?</text>
+        </view>
+        <view class="dest-grid">
           <view
-            class="card-item {{selectedTime === item ? 'card-item--active' : ''}}"
+            class="dest-item {{selectedDest === item.name ? 'dest-item--active' : ''}}"
+            wx:for="{{destinations}}"
+            wx:key="index"
+            data-dest="{{item.name}}"
+            bindtap="handleDestSelect"
+          >
+            <view class="dest-icon-circle" style="background: {{item.color}};"></view>
+            <text class="dest-item__name">{{item.name}}</text>
+          </view>
+        </view>
+        <input wx:if="{{selectedDest === '其他'}}" class="cs-text-input" placeholder="请输入目的地" value="{{customDest}}" bindinput="handleCustomDestInput" />
+      </view>
+
+      <!-- Section 2: 出发时间 + 天数 (合并卡片) -->
+      <view class="cs-card">
+        <!-- 出发时间 -->
+        <view class="cs-card__header">
+          <image class="cs-card__icon" src="/assets/icons/custom/calendar.png" mode="aspectFit" />
+          <text class="cs-card__title">什么时候出发?</text>
+        </view>
+        <view class="cs-pills">
+          <view
+            class="cs-pill {{selectedTime === item ? 'cs-pill--active' : ''}}"
             wx:for="{{timeOptions}}"
             wx:key="index"
             data-time="{{item}}"
             bindtap="handleTimeSelect"
-          >{{item === '选日期' && customDate ? customDate : item}}</view>
+          >
+            <image wx:if="{{item === '选择日期'}}" class="cs-pill__icon" src="/assets/icons/custom/calendar-sm.png" mode="aspectFit" />
+            <text>{{item === '选择日期' && customDate ? customDate : item}}</text>
+          </view>
         </view>
         <picker wx:if="{{showDatePicker}}" mode="date" start="{{today}}" bindchange="handleDateChange">
-          <view class="date-picker-trigger">选择日期</view>
+          <view class="cs-date-trigger">选择日期 ›</view>
         </picker>
-      </view>
 
-      <!-- 出行天数 -->
-      <view class="form-section">
-        <view class="form-title">玩几天？</view>
-        <view class="card-grid">
+        <!-- 分隔线 -->
+        <view class="cs-divider"></view>
+
+        <!-- 出行天数 -->
+        <view class="cs-card__header">
+          <image class="cs-card__icon" src="/assets/icons/custom/duration.png" mode="aspectFit" />
+          <text class="cs-card__title">玩几天?</text>
+        </view>
+        <view class="cs-pills">
           <view
-            class="card-item {{selectedDays === item ? 'card-item--active' : ''}}"
+            class="cs-pill {{selectedDays === item ? 'cs-pill--active' : ''}}"
             wx:for="{{daysChoices}}"
             wx:key="index"
             data-days="{{item}}"
@@ -160,35 +266,57 @@
         </view>
       </view>
 
-      <!-- 出行人数 -->
-      <view class="form-section">
-        <view class="form-title">几个人去？</view>
-        <view class="people-row">
-          <view class="people-item">
-            <text class="people-label">成人</text>
-            <view class="people-counter">
-              <view class="counter-btn {{adultCount <= 1 ? 'counter-btn--disabled' : ''}}" data-type="minus" bindtap="handleAdultChange">-</view>
-              <text class="counter-value">{{adultCount}}</text>
-              <view class="counter-btn" data-type="plus" bindtap="handleAdultChange">+</view>
+      <!-- Section 3: 出行人数 -->
+      <view class="cs-card">
+        <view class="cs-card__header">
+          <image class="cs-card__icon" src="/assets/icons/custom/people.png" mode="aspectFit" />
+          <text class="cs-card__title">出行人数</text>
+        </view>
+        <view class="cs-people">
+          <!-- 成人行 -->
+          <view class="cs-people-row">
+            <view class="cs-people-info">
+              <text class="cs-people-name">成人</text>
+              <text class="cs-people-hint">12岁以上</text>
+            </view>
+            <view class="cs-counter">
+              <view class="cs-counter__btn {{adultCount <= 1 ? 'cs-counter__btn--dim' : ''}}" data-type="minus" bindtap="handleAdultChange">
+                <image class="cs-counter__icon" src="/assets/icons/custom/minus.png" mode="aspectFit" />
+              </view>
+              <text class="cs-counter__val">{{adultCount}}</text>
+              <view class="cs-counter__btn cs-counter__btn--plus" data-type="plus" bindtap="handleAdultChange">
+                <image class="cs-counter__icon" src="/assets/icons/custom/plus.png" mode="aspectFit" />
+              </view>
             </view>
           </view>
-          <view class="people-item">
-            <text class="people-label">儿童</text>
-            <view class="people-counter">
-              <view class="counter-btn {{childCount <= 0 ? 'counter-btn--disabled' : ''}}" data-type="minus" bindtap="handleChildChange">-</view>
-              <text class="counter-value">{{childCount}}</text>
-              <view class="counter-btn" data-type="plus" bindtap="handleChildChange">+</view>
+          <!-- 儿童行 -->
+          <view class="cs-people-row">
+            <view class="cs-people-info">
+              <text class="cs-people-name">儿童</text>
+              <text class="cs-people-hint">2-12岁</text>
+            </view>
+            <view class="cs-counter">
+              <view class="cs-counter__btn {{childCount <= 0 ? 'cs-counter__btn--dim' : ''}}" data-type="minus" bindtap="handleChildChange">
+                <image class="cs-counter__icon" src="/assets/icons/custom/minus.png" mode="aspectFit" />
+              </view>
+              <text class="cs-counter__val">{{childCount}}</text>
+              <view class="cs-counter__btn cs-counter__btn--plus" data-type="plus" bindtap="handleChildChange">
+                <image class="cs-counter__icon" src="/assets/icons/custom/plus.png" mode="aspectFit" />
+              </view>
             </view>
           </view>
         </view>
       </view>
 
-      <!-- 预算范围 -->
-      <view class="form-section">
-        <view class="form-title">预算多少？（每人）</view>
-        <view class="card-grid card-grid--5">
+      <!-- Section 4: 人均预算 -->
+      <view class="cs-card">
+        <view class="cs-card__header">
+          <image class="cs-card__icon" src="/assets/icons/custom/budget.png" mode="aspectFit" />
+          <text class="cs-card__title">人均预算</text>
+        </view>
+        <view class="budget-grid2">
           <view
-            class="card-item {{selectedBudget === item ? 'card-item--active' : ''}}"
+            class="budget-item2 {{selectedBudget === item ? 'budget-item2--active' : ''}}"
             wx:for="{{budgetOptions}}"
             wx:key="index"
             data-budget="{{item}}"
@@ -197,47 +325,68 @@
         </view>
       </view>
 
-      <!-- 其他需求 -->
-      <view class="form-section">
-        <view class="form-title">其他需求</view>
-        <view class="need-tags">
+      <!-- Section 5: 更多要求 -->
+      <view class="cs-card">
+        <view class="cs-card__header">
+          <image class="cs-card__icon" src="/assets/icons/custom/more.png" mode="aspectFit" />
+          <text class="cs-card__title">更多要求</text>
+        </view>
+        <view class="cs-tags">
           <view
-            class="need-tag {{item.selected ? 'need-tag--active' : ''}}"
+            class="cs-tag {{item.selected ? 'cs-tag--active' : ''}}"
             wx:for="{{needTags}}"
             wx:key="id"
             data-index="{{index}}"
             bindtap="handleNeedTagTap"
           >{{item.name}}</view>
         </view>
-        <textarea
-          class="extra-note"
-          placeholder="补充说明（选填）"
-          value="{{extraNote}}"
-          bindinput="handleExtraNoteInput"
-          maxlength="200"
-        />
+        <view class="cs-textarea-wrap">
+          <textarea
+            class="cs-textarea"
+            placeholder="备注: 有什么特殊需求请告诉我们..."
+            value="{{extraNote}}"
+            bindinput="handleExtraNoteInput"
+            maxlength="200"
+          />
+          <text class="cs-textarea-count">{{extraNoteLength}}/200</text>
+        </view>
       </view>
 
-      <!-- 联系方式 -->
-      <view class="form-section">
-        <view class="form-title">联系方式</view>
+      <!-- 底部留白，防止被 sticky 栏遮挡 -->
+      <view style="height: calc(340rpx + env(safe-area-inset-bottom));"></view>
+    </scroll-view>
+
+    <!-- Sticky Bottom Bar -->
+    <view class="cs-bottom-bar">
+      <!-- 电话输入行 -->
+      <view class="cs-phone-row">
+        <image class="cs-phone-icon" src="/assets/icons/custom/phone.png" mode="aspectFit" />
         <input
-          class="phone-input"
+          class="cs-phone-field"
           type="number"
           placeholder="请输入手机号"
           value="{{phone}}"
           bindinput="handlePhoneInput"
           maxlength="11"
         />
+        <text class="cs-phone-change" bindtap="handlePhoneChangeTap">修改</text>
       </view>
-
       <!-- 提交按钮 -->
-      <view class="submit-area">
-        <button class="submit-btn" bindtap="handleSubmitCustom" loading="{{submitting}}" disabled="{{submitting}}">
-          提交定制需求
-        </button>
+      <button
+        class="cs-submit-btn"
+        bindtap="handleSubmitCustom"
+        loading="{{submitting}}"
+        disabled="{{submitting}}"
+      >
+        <text class="cs-submit-text">免费获取方案</text>
+        <image class="cs-submit-arrow" src="/assets/icons/custom/arrow.png" mode="aspectFit" />
+      </button>
+      <!-- 隐私提示 -->
+      <view class="cs-privacy">
+        <image class="cs-lock-icon" src="/assets/icons/custom/lock.png" mode="aspectFit" />
+        <text class="cs-privacy-text">1对1专属顾问服务 · 隐私保护</text>
       </view>
-    </scroll-view>
+    </view>
   </view>
 
   <!-- 提交成功弹窗 -->
@@ -251,4 +400,5 @@
       <button class="success-btn success-btn--primary" bindtap="handleViewMyCustom">查看我的定制</button>
     </view>
   </view>
+
 </view>

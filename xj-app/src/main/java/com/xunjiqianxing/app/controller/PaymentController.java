@@ -2,6 +2,8 @@ package com.xunjiqianxing.app.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
 import com.xunjiqianxing.common.result.Result;
+import com.xunjiqianxing.service.member.entity.MemberOrder;
+import com.xunjiqianxing.service.member.service.MemberService;
 import com.xunjiqianxing.service.order.entity.OrderMain;
 import com.xunjiqianxing.service.order.service.OrderService;
 import com.xunjiqianxing.service.payment.entity.PaymentRecord;
@@ -31,6 +33,7 @@ public class PaymentController {
 
     private final PaymentService paymentService;
     private final OrderService orderService;
+    private final MemberService memberService;
     private final UserService userService;
 
     /**
@@ -76,15 +79,20 @@ public class PaymentController {
         Long userId = StpUtil.getLoginIdAsLong();
         UserInfo user = userService.getById(userId);
 
-        // TODO: 获取会员订单并验证
-        // MemberOrder memberOrder = memberService.getOrderById(orderId);
+        MemberOrder memberOrder = memberService.getOrderById(orderId);
+        if (memberOrder == null || !memberOrder.getUserId().equals(userId)) {
+            return Result.fail("会员订单不存在");
+        }
+        if (memberOrder.getStatus() != 0) {
+            return Result.fail("订单状态不正确");
+        }
 
         Map<String, String> payParams = paymentService.createPayment(
                 "member",
-                orderId,
-                "MB" + orderId,
+                memberOrder.getId(),
+                memberOrder.getOrderNo(),
                 userId,
-                new java.math.BigDecimal("99"), // TODO: 从订单获取
+                memberOrder.getAmount(),
                 "寻迹千行会员",
                 user.getOpenid()
         );

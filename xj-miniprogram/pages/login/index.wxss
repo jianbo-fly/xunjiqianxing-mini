@@ -1,129 +1,234 @@
-/* 登录页面样式 */
+/* ===== 登录页 ===== */
 .page-login {
   min-height: 100vh;
+  background: var(--color-bg-page);
   display: flex;
   flex-direction: column;
-  background: linear-gradient(180deg, var(--color-bg-gray) 0%, var(--color-bg-card) 100%);
-  padding: 0 60rpx;
   box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
 }
 
-/* 步骤容器 */
 .step {
   flex: 1;
   display: flex;
   flex-direction: column;
 }
 
-/* ========== 步骤一：欢迎页 ========== */
+/* ===== 步骤一 ===== */
 .step-welcome {
-  justify-content: center;
-  padding-bottom: 200rpx;
+  padding: 0 64rpx;
+  padding-top: calc(env(safe-area-inset-top) + 96rpx);
+  padding-bottom: calc(env(safe-area-inset-bottom) + 64rpx);
+  justify-content: space-between;
 }
 
-.logo-area {
+/* ---- Brand 区域 ---- */
+.brand-section {
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 120rpx;
+  justify-content: center;
+  gap: 32rpx;
 }
 
-.logo {
-  width: 180rpx;
-  height: 180rpx;
-  margin-bottom: 32rpx;
+/* Logo 外层：固定尺寸，让 glow 和 card 都能绝对定位到这个盒子里 */
+.logo-wrap {
+  width: 192rpx;
+  height: 192rpx;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
+/* 红色模糊光晕 */
+.logo-glow {
+  position: absolute;
+  inset: -40rpx;
+  border-radius: 50%;
+  background: rgba(236, 55, 19, 0.18);
+  filter: blur(20rpx);
+}
+
+/* 白色圆角卡片 */
+.logo-card {
+  position: relative;
+  width: 192rpx;
+  height: 192rpx;
+  background: #fff;
+  border: 2rpx solid #f3f4f6;
+  border-radius: 32rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(3deg);
+  box-shadow:
+    0 40rpx 50rpx -10rpx rgba(0, 0, 0, 0.1),
+    0 16rpx 20rpx -12rpx rgba(0, 0, 0, 0.1);
+  z-index: 1;
+}
+
+.logo-img {
+  width: 112rpx;
+  height: 112rpx;
+}
+
+/* App 名称 */
 .app-name {
-  font-size: 48rpx;
-  font-weight: 600;
+  font-size: 60rpx;
+  font-weight: var(--font-weight-semibold);
   color: var(--color-text-primary);
-  margin-bottom: 16rpx;
+  letter-spacing: -1.5rpx;
+  text-align: center;
 }
 
+/* 口号 */
 .app-slogan {
   font-size: 28rpx;
-  color: var(--color-text-tertiary);
+  color: var(--color-text-secondary);
+  letter-spacing: 0.7rpx;
+  text-align: center;
 }
 
-.login-area {
+/* ---- 操作区 ---- */
+.action-section {
+  display: flex;
+  flex-direction: column;
+  gap: 40rpx;
+}
+
+/* 微信登录按钮 */
+.btn-wx-login {
+  position: relative;
   width: 100%;
-}
-
-.btn-login {
+  height: 112rpx;
+  background: var(--color-primary);
+  border-radius: 24rpx;
+  border: none;
+  padding: 0;
+  margin: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 96rpx;
-  border-radius: 48rpx;
+  box-shadow:
+    0 20rpx 30rpx -6rpx rgba(236, 55, 19, 0.3),
+    0 8rpx 12rpx -8rpx rgba(236, 55, 19, 0.3);
+}
+
+.btn-wx-login::after {
+  border: none;
+}
+
+/* 微信图标绝对定位在左侧 */
+.btn-wx-icon {
+  position: absolute;
+  left: 48rpx;
+  width: 48rpx;
+  height: 48rpx;
+}
+
+.btn-wx-text {
   font-size: 32rpx;
-  font-weight: 500;
-  margin-bottom: 32rpx;
-  border: none;
+  font-weight: var(--font-weight-medium);
+  color: #fff;
+  letter-spacing: 0.8rpx;
 }
 
-.btn-login::after {
-  border: none;
+/* 手机号登录次级入口 */
+.phone-login-link {
+  display: flex;
+  justify-content: center;
 }
 
-.btn-wx {
-  background: #07c160;
-  color: var(--color-text-inverse);
+.phone-login-text {
+  font-size: 28rpx;
+  color: var(--color-text-secondary);
 }
 
-.btn-icon {
-  margin-right: 16rpx;
-  font-size: 36rpx;
-}
-
-/* 协议勾选 */
+/* ---- 协议区 ---- */
 .agreement {
   display: flex;
+  flex-direction: row;
   align-items: flex-start;
-  justify-content: center;
-  padding: 20rpx 0;
+  gap: 16rpx;
 }
 
-.checkbox {
-  width: 36rpx;
-  height: 36rpx;
-  border: 2rpx solid var(--color-border);
-  border-radius: 50%;
-  margin-right: 12rpx;
+/* 方形 checkbox：与第一行文字垂直居中对齐 */
+.checkbox-square {
+  flex-shrink: 0;
+  width: 32rpx;
+  height: 32rpx;
+  margin-top: 6rpx;          /* 对齐第一行文字中间 */
+  border: 2rpx solid #d1d5db;
+  border-radius: 8rpx;
+  background: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24rpx;
-  color: var(--color-text-inverse);
-  flex-shrink: 0;
-  margin-top: 4rpx;
 }
 
-.checkbox.checked {
+.checkbox-square.checked {
   background: var(--color-primary);
   border-color: var(--color-primary);
 }
 
-.agreement-text {
+.checkbox-check {
+  font-size: 20rpx;
+  color: #fff;
+  line-height: 1;
+}
+
+/* 协议文字容器：普通 block，不用 flex，保证 text 自然换行 */
+.agreement-body {
+  flex: 1;
+}
+
+/* 第一行："我已阅读并同意 《用户协议》 和 《隐私政策》" */
+/* ⚠️ 注意：此 <text> 内部不能有换行，否则小程序会保留空白字符导致排版错乱 */
+.agreement-line {
   font-size: 24rpx;
-  color: var(--color-text-tertiary);
-  line-height: 1.6;
+  color: var(--color-text-secondary);
+  line-height: 40rpx;
 }
 
-.agreement-text .link {
+.link {
   color: var(--color-primary);
+  text-decoration: underline;
+  text-decoration-color: rgba(236, 55, 19, 0.3);
 }
 
-/* ========== 步骤二/三：通用 ========== */
+/* 第二行说明文字 */
+.agreement-hint {
+  display: block;
+  font-size: 20rpx;
+  color: var(--color-text-tertiary);
+  line-height: 1.5;
+  margin-top: 4rpx;
+}
+
+/* 底部淡色渐变装饰 */
+.bottom-deco {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 384rpx;
+  background: linear-gradient(to top, rgba(236, 55, 19, 0.04) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+/* ===== 步骤二/三：通用头部 ===== */
 .step-header {
-  padding: 80rpx 0 60rpx;
+  padding: 80rpx 64rpx 60rpx;
   text-align: center;
 }
 
 .step-title {
   display: block;
   font-size: 44rpx;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   color: var(--color-text-primary);
   margin-bottom: 20rpx;
 }
@@ -136,30 +241,36 @@
 
 .step-actions {
   margin-top: 60rpx;
+  padding: 0 64rpx;
 }
 
+/* 通用主按钮 */
 .btn-primary {
   width: 100%;
   height: 96rpx;
   line-height: 96rpx;
   background: var(--color-primary);
-  color: var(--color-text-inverse);
+  color: #fff;
   font-size: 32rpx;
-  font-weight: 500;
-  border-radius: 48rpx;
+  font-weight: var(--font-weight-medium);
+  border-radius: 24rpx;
   border: none;
+  box-shadow:
+    0 20rpx 30rpx -6rpx rgba(236, 55, 19, 0.3),
+    0 8rpx 12rpx -8rpx rgba(236, 55, 19, 0.3);
 }
 
 .btn-primary::after {
   border: none;
 }
 
-/* ========== 步骤二：完善信息 ========== */
+/* ===== 步骤二：完善信息 ===== */
 .profile-form {
+  margin: 0 64rpx;
   background: var(--color-bg-card);
   border-radius: 24rpx;
-  padding: 20rpx 32rpx;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
+  padding: 0 32rpx;
+  box-shadow: var(--shadow-card);
 }
 
 .form-item {
@@ -217,9 +328,10 @@
   color: var(--color-text-tertiary);
 }
 
-/* ========== 步骤三：绑定手机号 ========== */
+/* ===== 步骤三：绑定手机号 ===== */
 .phone-form {
   margin-top: 20rpx;
+  padding: 0 64rpx;
 }
 
 .btn-phone-wx {
@@ -229,10 +341,10 @@
   width: 100%;
   height: 96rpx;
   background: #07c160;
-  color: var(--color-text-inverse);
+  color: #fff;
   font-size: 32rpx;
-  font-weight: 500;
-  border-radius: 48rpx;
+  font-weight: var(--font-weight-medium);
+  border-radius: 24rpx;
   border: none;
   margin-bottom: 40rpx;
 }
@@ -310,10 +422,9 @@
   padding: 20rpx 40rpx;
 }
 
-/* ========== 底部 ========== */
+/* ===== 底部说明 ===== */
 .footer {
-  padding: 40rpx 0;
-  padding-bottom: calc(40rpx + env(safe-area-inset-bottom));
+  padding: 40rpx 0 calc(40rpx + env(safe-area-inset-bottom));
   text-align: center;
 }
 

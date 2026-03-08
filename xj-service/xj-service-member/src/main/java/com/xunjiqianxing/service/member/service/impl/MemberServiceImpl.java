@@ -38,6 +38,11 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    public MemberOrder getOrderById(Long orderId) {
+        return memberOrderMapper.selectById(orderId);
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public MemberOrder createOrder(Long userId, Integer months) {
         if (months == null || months < 1) {

@@ -1,4 +1,10 @@
+<!--
+  编辑出行人页
+-->
 <view class="page-traveler-edit">
+
+  <nav-bar title="{{isEdit ? '编辑出行人' : '添加出行人'}}" background="rgba(248, 246, 246, 0.9)" border showBack fixed />
+
   <!-- 加载中 -->
   <view class="loading-container" wx:if="{{loading}}">
     <xj-loading text="加载中..." vertical />
@@ -6,7 +12,8 @@
 
   <!-- 表单 -->
   <view class="form-container" wx:if="{{!loading}}">
-    <!-- 姓名 -->
+
+    <!-- 基本信息 -->
     <view class="form-section">
       <view class="form-item">
         <view class="form-label required">姓名</view>
@@ -38,7 +45,6 @@
           </view>
         </picker>
       </view>
-
       <view class="form-item">
         <view class="form-label required">证件号码</view>
         <input
@@ -74,22 +80,23 @@
         <switch
           class="form-switch"
           checked="{{form.isDefault}}"
-          color="#1890FF"
+          color="{{primaryColor}}"
           bindchange="handleDefaultChange"
         />
       </view>
       <view class="form-hint">设为默认后，下单时将自动填充此出行人信息</view>
     </view>
 
-    <!-- 提示 -->
+    <!-- 温馨提示 -->
     <view class="tips-section">
       <view class="tips-title">温馨提示</view>
       <view class="tips-content">
-        <view class="tips-item">1. 请填写真实有效的身份信息，用于出行验证</view>
-        <view class="tips-item">2. 证件信息需与出行时携带的证件一致</view>
-        <view class="tips-item">3. 儿童也需要填写证件信息</view>
+        <text class="tips-item">请填写真实有效的身份信息，用于出行验证</text>
+        <text class="tips-item">证件信息需与出行时携带的证件一致</text>
+        <text class="tips-item">儿童也需要填写证件信息</text>
       </view>
     </view>
+
   </view>
 
   <!-- 底部保存按钮 -->
@@ -98,4 +105,5 @@
       <text>{{submitting ? '保存中...' : '保存'}}</text>
     </view>
   </view>
+
 </view>

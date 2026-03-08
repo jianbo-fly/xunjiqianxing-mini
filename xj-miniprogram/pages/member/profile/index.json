@@ -1,4 +1,6 @@
 {
-  "navigationBarTitleText": "个人信息",
-  "usingComponents": {}
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "nav-bar": "/components/layout/nav-bar/index"
+  }
 }

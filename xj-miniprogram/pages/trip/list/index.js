@@ -157,6 +157,14 @@ Page({
   },
 
   /**
+   * 推荐线路点击 → 线路详情
+   */
+  handleRecommendTap(e) {
+    const { id } = e.currentTarget.dataset;
+    if (id) go.routeDetail(id);
+  },
+
+  /**
    * 查看全部行程 → 订单列表(已确认tab)
    */
   handleViewAllTrips() {
@@ -164,10 +172,39 @@ Page({
   },
 
   /**
+   * 查看全部推荐 → 路线列表
+   */
+  handleViewAllRecommend() {
+    go.routeList();
+  },
+
+  /**
    * 空状态 → 去逛逛
    */
   handleExplore() {
     go.home();
+  },
+
+  /**
+   * 分享行程
+   */
+  handleShareTap(e) {
+    const { id } = e.currentTarget.dataset;
+    wx.showShareMenu({ withShareTicket: true });
+  },
+
+  /**
+   * 顶部通知按钮
+   */
+  handleNotificationTap() {
+    wx.navigateTo({ url: '/pages/message/list/index' });
+  },
+
+  /**
+   * 顶部历史按钮 → 历史行程（订单列表）
+   */
+  handleHistoryTap() {
+    go.orderList();
   },
 
   /**

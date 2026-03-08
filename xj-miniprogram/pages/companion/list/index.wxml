@@ -3,6 +3,7 @@
   TODO: 待开发 - 用户结伴同行功能
 -->
 <view class="page-companion">
+  <nav-bar title="搭子" background="rgba(255,255,255,0.9)" border fixed />
   <!-- 占位提示 -->
   <view class="placeholder">
     <image class="placeholder__icon" src="/assets/icons/tabbar/companion.png" mode="aspectFit" />

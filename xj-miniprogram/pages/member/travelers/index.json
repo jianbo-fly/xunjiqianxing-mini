@@ -1,5 +1,7 @@
 {
-  "navigationBarTitleText": "常用出行人",
+  "navigationStyle": "custom",
   "enablePullDownRefresh": true,
-  "usingComponents": {}
+  "usingComponents": {
+    "nav-bar": "/components/layout/nav-bar/index"
+  }
 }

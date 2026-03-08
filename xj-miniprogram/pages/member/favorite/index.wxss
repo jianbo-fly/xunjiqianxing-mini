@@ -1,1 +1,4 @@
-/* xj-empty 组件自带样式 */
+.page-favorite {
+  min-height: 100vh;
+  background: var(--color-bg-page);
+}

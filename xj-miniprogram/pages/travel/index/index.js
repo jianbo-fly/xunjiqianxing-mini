@@ -7,8 +7,8 @@ const { go } = require('../../../utils/router');
 
 Page({
   data: {
-    // 状态栏高度
     statusBarHeight: 44,
+    navBarTotalHeight: 88,
     // 顶部Tab
     currentTab: 0, // 0=跟团游, 1=定制游
     tabs: ['跟团游', '定制游'],
@@ -16,7 +16,7 @@ Page({
     // ========== 跟团游相关 ==========
     // 二级分类
     categoryIndex: 0,
-    categories: ['国内游', '出境游'],
+    categories: ['国内游', '出境游', '周边游'],
 
     // 筛选条件
     showFilter: false,
@@ -25,9 +25,11 @@ Page({
       days: '',
       priceMin: '',
       priceMax: '',
+      budgetLabel: '',
     },
     departures: ['不限', '北京', '上海', '广州', '深圳', '成都', '杭州', '南京', '武汉'],
     daysOptions: ['不限', '1-3天', '4-6天', '7-9天', '10天+'],
+    filterBudgets: ['不限', '3000以下', '3000-5000', '5000-8000', '8000以上'],
 
     // 线路列表
     routeList: [],
@@ -37,40 +39,46 @@ Page({
     routePageSize: 10,
 
     // ========== 定制游相关 ==========
-    // 目的地
-    destinations: ['云南', '三亚', '日本', '新疆', '西藏', '其他'],
+    // 目的地（含图标颜色，对齐 Figma 74-7679）
+    destinations: [
+      { name: '云南', color: '#DBEAFE' },
+      { name: '三亚', color: '#CCFBF1' },
+      { name: '日本', color: '#FEE2E2' },
+      { name: '新疆', color: '#FEF9C3' },
+      { name: '西藏', color: '#E0E7FF' },
+      { name: '其他', color: '#E5E7EB' },
+    ],
     selectedDest: '',
     customDest: '',
 
     // 出行时间
-    timeOptions: ['本周末', '下周', '本月', '选日期'],
+    timeOptions: ['本周末', '下周', '本月', '选择日期'],
     selectedTime: '',
     customDate: '',
     showDatePicker: false,
 
     // 出行天数
-    daysChoices: ['3-5天', '6-8天', '9天+', '不确定'],
+    daysChoices: ['3-5天', '6-8天', '9天+', '待定'],
     selectedDays: '',
 
     // 出行人数
     adultCount: 2,
     childCount: 0,
 
-    // 预算范围
-    budgetOptions: ['3k以下', '3-5k', '5-8k', '8k-1w', '1w+'],
+    // 预算范围（Figma: 2×2 格局，4 个选项）
+    budgetOptions: ['3千以下', '3-5千', '5-8千', '高端定制'],
     selectedBudget: '',
 
-    // 其他需求
+    // 其他需求（Figma 更新标签）
     needTags: [
-      { id: 'elderly', name: '有老人', selected: false },
-      { id: 'child', name: '有小孩', selected: false },
+      { id: 'parent', name: '带父母', selected: false },
+      { id: 'noshop', name: '纯玩无购物', selected: false },
+      { id: 'child', name: '亲子游', selected: false },
       { id: 'honeymoon', name: '蜜月', selected: false },
-      { id: 'noShopping', name: '不购物', selected: false },
-      { id: 'relaxed', name: '轻松不赶', selected: false },
-      { id: 'deep', name: '深度体验', selected: false },
-      { id: 'hotspot', name: '网红打卡', selected: false },
+      { id: 'photo', name: '摄影采风', selected: false },
     ],
     extraNote: '',
+    extraNoteLength: 0,
 
     // 联系方式
     phone: '',
@@ -80,10 +88,21 @@ Page({
     showSuccess: false,
   },
 
-  onLoad() {
-    // 获取状态栏高度
+  onLoad(options) {
     const sysInfo = wx.getSystemInfoSync();
-    this.setData({ statusBarHeight: sysInfo.statusBarHeight || 44 });
+    const statusBarHeight = sysInfo.statusBarHeight || 44;
+    let navBarHeight = 44;
+    try {
+      const menuButton = wx.getMenuButtonBoundingClientRect();
+      navBarHeight = menuButton.height + (menuButton.top - statusBarHeight) * 2;
+    } catch (e) {}
+
+    const initialTab = options && options.tab ? parseInt(options.tab) : 0;
+    this.setData({
+      statusBarHeight,
+      navBarTotalHeight: statusBarHeight + navBarHeight,
+      currentTab: initialTab,
+    });
 
     this.loadRouteList(true);
     this.loadUserPhone();
@@ -157,8 +176,45 @@ Page({
    */
   handleResetFilter() {
     this.setData({
-      filters: { departure: '', days: '', priceMin: '', priceMax: '' }
+      filters: { departure: '', days: '', priceMin: '', priceMax: '', budgetLabel: '' }
     });
+  },
+
+  /**
+   * 筛选栏 - 预算选择
+   */
+  handleFilterBudgetChange(e) {
+    const idx = parseInt(e.detail.value);
+    const budget = this.data.filterBudgets[idx];
+    const budgetRanges = {
+      '不限': { priceMin: '', priceMax: '' },
+      '3000以下': { priceMin: '', priceMax: '3000' },
+      '3000-5000': { priceMin: '3000', priceMax: '5000' },
+      '5000-8000': { priceMin: '5000', priceMax: '8000' },
+      '8000以上': { priceMin: '8000', priceMax: '' },
+    };
+    const range = budgetRanges[budget] || { priceMin: '', priceMax: '' };
+    this.setData({
+      'filters.budgetLabel': budget === '不限' ? '' : budget,
+      'filters.priceMin': range.priceMin,
+      'filters.priceMax': range.priceMax,
+    });
+    this.setData({ routePage: 1, routeList: [], routeFinished: false });
+    this.loadRouteList(true);
+  },
+
+  /**
+   * 筛选弹窗 - 价格最低输入
+   */
+  handlePriceMinInput(e) {
+    this.setData({ 'filters.priceMin': e.detail.value });
+  },
+
+  /**
+   * 筛选弹窗 - 价格最高输入
+   */
+  handlePriceMaxInput(e) {
+    this.setData({ 'filters.priceMax': e.detail.value });
   },
 
   /**
@@ -178,12 +234,16 @@ Page({
     this.setData({ routeLoading: true });
 
     try {
+      const categoryMap = ['domestic', 'overseas', 'nearby'];
       const params = {
         page: this.data.routePage,
         pageSize: this.data.routePageSize,
-        category: this.data.categoryIndex === 0 ? 'domestic' : 'overseas',
-        ...this.data.filters,
+        category: categoryMap[this.data.categoryIndex] || 'domestic',
       };
+      // 只追加有实际值的筛选条件，避免发送空字符串
+      Object.entries(this.data.filters).forEach(([k, v]) => {
+        if (v !== '' && v != null) params[k] = v;
+      });
 
       const res = await routeApi.getList(params);
       const list = res.list || res.records || [];
@@ -201,13 +261,30 @@ Page({
   },
 
   /**
-   * 线路点击
+   * 路线卡片点击（内联卡片）
+   */
+  handleCardTap(e) {
+    const { id } = e.currentTarget.dataset;
+    if (id) go.routeDetail(id);
+  },
+
+  /**
+   * 收藏按钮点击
+   */
+  handleFavorite(e) {
+    const { id } = e.currentTarget.dataset;
+    const idx = this.data.routeList.findIndex(r => r.id === id);
+    if (idx < 0) return;
+    const key = `routeList[${idx}].isFavorite`;
+    this.setData({ [key]: !this.data.routeList[idx].isFavorite });
+  },
+
+  /**
+   * 线路点击（兼容旧 route-card 组件事件，保留以防万一）
    */
   handleRouteTap(e) {
     const { route } = e.detail;
-    if (route && route.id) {
-      go.routeDetail(route.id);
-    }
+    if (route && route.id) go.routeDetail(route.id);
   },
 
   /**
@@ -230,11 +307,11 @@ Page({
   },
 
   /**
-   * 选择目的地
+   * 选择目的地（destinations 现为对象数组，dataset.dest 取 name 字段）
    */
   handleDestSelect(e) {
     const dest = e.currentTarget.dataset.dest;
-    this.setData({ selectedDest: dest, customDest: dest === '其他' ? '' : '' });
+    this.setData({ selectedDest: dest, customDest: '' });
   },
 
   /**
@@ -249,10 +326,10 @@ Page({
    */
   handleTimeSelect(e) {
     const time = e.currentTarget.dataset.time;
-    if (time === '选日期') {
+    if (time === '选择日期') {
       this.setData({ showDatePicker: true, selectedTime: time });
     } else {
-      this.setData({ selectedTime: time, customDate: '' });
+      this.setData({ selectedTime: time, customDate: '', showDatePicker: false });
     }
   },
 
@@ -311,10 +388,18 @@ Page({
   },
 
   /**
-   * 输入额外备注
+   * 输入额外备注（同步字数统计）
    */
   handleExtraNoteInput(e) {
-    this.setData({ extraNote: e.detail.value });
+    const val = e.detail.value;
+    this.setData({ extraNote: val, extraNoteLength: val.length });
+  },
+
+  /**
+   * 手机号修改（聚焦输入框即可编辑，此方法保留供 UI 调用）
+   */
+  handlePhoneChangeTap() {
+    // 输入框本身可直接编辑，无需额外操作
   },
 
   /**
@@ -361,7 +446,7 @@ Page({
 
       await customApi.submit({
         destination: this.data.selectedDest === '其他' ? this.data.customDest : this.data.selectedDest,
-        travelTime: this.data.selectedTime === '选日期' ? this.data.customDate : this.data.selectedTime,
+        travelTime: this.data.selectedTime === '选择日期' ? this.data.customDate : this.data.selectedTime,
         travelDays: this.data.selectedDays,
         adultCount: this.data.adultCount,
         childCount: this.data.childCount,
@@ -418,6 +503,7 @@ Page({
       selectedBudget: '',
       needTags: this.data.needTags.map(t => ({ ...t, selected: false })),
       extraNote: '',
+      extraNoteLength: 0,
     });
   },
 });

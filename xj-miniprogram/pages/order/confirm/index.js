@@ -11,6 +11,8 @@ Page({
   data: {
     loading: true,
     submitting: false,
+    // 滚动区高度（自定义导航栏，动态计算）
+    scrollHeight: 0,
     // 路由参数
     routeId: '',
     packageId: '',
@@ -48,19 +50,38 @@ Page({
     showTravelerPopup: false,
     travelerType: 'adult', // adult | child
     travelerIndex: 0,
+    // UI 状态
+    totalPeople: 0,
+    filledPeople: 0,
+    insuranceSelected: false,
+    showPriceDetail: false,
   },
 
   onLoad(options) {
+    // 计算自定义导航栏高度，用于 scroll-view 高度
+    try {
+      const systemInfo = wx.getSystemInfoSync();
+      const menuButton = wx.getMenuButtonBoundingClientRect();
+      const navBarHeight = menuButton.height + (menuButton.top - systemInfo.statusBarHeight) * 2;
+      const scrollHeight = systemInfo.windowHeight - systemInfo.statusBarHeight - navBarHeight;
+      this.setData({ scrollHeight });
+    } catch (e) {
+      this.setData({ scrollHeight: 600 });
+    }
+
     const { routeId, packageId, date, adultCount, childCount, adultPrice, childPrice } = options;
 
+    const parsedAdult = parseInt(adultCount) || 1;
+    const parsedChild = parseInt(childCount) || 0;
     this.setData({
       routeId,
       packageId,
       date,
-      adultCount: parseInt(adultCount) || 1,
-      childCount: parseInt(childCount) || 0,
+      adultCount: parsedAdult,
+      childCount: parsedChild,
       adultPrice: parseFloat(adultPrice) || 0,
       childPrice: parseFloat(childPrice) || 0,
+      totalPeople: parsedAdult + parsedChild,
     });
 
     this.loadData();
@@ -178,10 +199,10 @@ Page({
   },
 
   /**
-   * 计算金额
+   * 计算金额及衍生字段
    */
   calcAmount() {
-    const { adultCount, childCount, adultPrice, childPrice, selectedCoupon } = this.data;
+    const { adultCount, childCount, adultPrice, childPrice, selectedCoupon, adultTravelers, childTravelers } = this.data;
 
     const adultAmount = adultCount * adultPrice;
     const childAmount = childCount * childPrice;
@@ -202,6 +223,8 @@ Page({
     }
 
     const payAmount = Math.max(0, totalAmount - couponDiscount);
+    const totalPeople = adultCount + childCount;
+    const filledPeople = (adultTravelers || []).filter(t => t).length + (childTravelers || []).filter(t => t).length;
 
     this.setData({
       adultAmount,
@@ -209,6 +232,8 @@ Page({
       totalAmount,
       couponDiscount,
       payAmount,
+      totalPeople,
+      filledPeople,
     });
   },
 
@@ -254,6 +279,7 @@ Page({
       childTravelers[travelerIndex] = traveler;
       this.setData({ childTravelers, showTravelerPopup: false });
     }
+    this.calcAmount();
   },
 
   /**
@@ -270,6 +296,7 @@ Page({
       childTravelers[index] = null;
       this.setData({ childTravelers });
     }
+    this.calcAmount();
   },
 
   /**
@@ -489,6 +516,25 @@ Page({
       }
     }
   },
+
+  /**
+   * 切换价格明细浮层
+   */
+  handleTogglePriceDetail() {
+    this.setData({ showPriceDetail: !this.data.showPriceDetail });
+  },
+
+  /**
+   * 切换意外险选购
+   */
+  handleToggleInsurance() {
+    this.setData({ insuranceSelected: !this.data.insuranceSelected });
+  },
+
+  /**
+   * 空操作（阻止事件冒泡）
+   */
+  noop() {},
 
   /**
    * 返回

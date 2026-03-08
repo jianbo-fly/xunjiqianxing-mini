@@ -9,6 +9,7 @@ Page({
     travelerId: '',
     loading: false,
     submitting: false,
+    primaryColor: '#EC3713',
 
     // 表单数据
     form: {

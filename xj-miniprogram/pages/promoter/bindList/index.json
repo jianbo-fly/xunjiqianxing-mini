@@ -1,4 +1,6 @@
 {
-  "navigationBarTitleText": "绑定用户列表",
-  "usingComponents": {}
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "nav-bar": "/components/layout/nav-bar/index"
+  }
 }

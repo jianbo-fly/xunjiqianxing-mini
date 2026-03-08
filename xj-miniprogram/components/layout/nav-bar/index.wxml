@@ -1,6 +1,6 @@
 <view
   class="nav-bar nav-bar--{{theme}} {{fixed ? 'nav-bar--fixed' : ''}} {{border ? 'nav-bar--border' : ''}} {{customClass}}"
-  style="background: {{background}}; padding-top: {{statusBarHeight}}px;"
+  style="background: {{background}};"
 >
   <!-- 状态栏占位 -->
   <view style="height: {{statusBarHeight}}px;"></view>
@@ -20,9 +20,8 @@
 
     <!-- 标题区域 -->
     <view class="nav-bar__title">
-      <slot name="title">
-        <text>{{title}}</text>
-      </slot>
+      <text wx:if="{{title}}" style="color: #111827;">{{title}}</text>
+      <slot name="title"></slot>
     </view>
 
     <!-- 右侧区域 -->

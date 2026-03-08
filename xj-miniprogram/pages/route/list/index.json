@@ -1,7 +1,9 @@
 {
-  "navigationBarTitleText": "线路列表",
+  "navigationStyle": "custom",
   "enablePullDownRefresh": true,
   "usingComponents": {
-    "route-card": "/components/business/route-card/index"
+    "nav-bar": "/components/layout/nav-bar/index",
+    "route-card": "/components/business/route-card/index",
+    "route-list-header": "/components/business/route-list-header/index"
   }
 }

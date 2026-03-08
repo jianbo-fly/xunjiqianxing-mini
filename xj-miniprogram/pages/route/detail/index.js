@@ -202,34 +202,40 @@ Page({
    * 处理日历数据
    */
   processCalendar(rawCalendar) {
+    const weekDays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+    const now = new Date();
+    const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+
     return rawCalendar.map(item => {
       let dateStr = item.date;
-      let day = '';
 
       // 处理不同的日期格式
       if (Array.isArray(item.date)) {
         // 数组格式 [2026, 1, 29]
         const [y, m, d] = item.date;
         dateStr = `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-        day = String(d);
       } else if (typeof item.date === 'string') {
         // 字符串格式 "2026-01-29"
         dateStr = item.date;
-        day = item.date.split('-')[2] || item.date.slice(-2);
       } else if (item.date && typeof item.date === 'object') {
         // 对象格式 {year: 2026, month: 1, day: 29}
         dateStr = `${item.date.year}-${String(item.date.month).padStart(2, '0')}-${String(item.date.day).padStart(2, '0')}`;
-        day = String(item.date.day);
       }
 
-      // 判断是否周末
+      // MM-DD 格式（Figma 日期条显示格式）
+      const mmdd = dateStr.slice(5);
+
+      // 周几（今天 / 周一~周日）
       const dateObj = new Date(dateStr);
       const isWeekend = dateObj.getDay() === 0 || dateObj.getDay() === 6;
+      const week = dateStr === todayStr ? '今天' : weekDays[dateObj.getDay()];
 
       return {
         ...item,
         date: dateStr,
-        day: day,
+        day: mmdd,           // "MM-DD" 用于日期条
+        dayNum: String(parseInt(dateStr.split('-')[2], 10)), // 纯数字天 用于日历弹窗
+        week,
         isWeekend,
       };
     });
@@ -296,6 +302,8 @@ Page({
    */
   generateMockCalendar(year, month) {
     const now = new Date();
+    const weekDays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+    const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
 
     // 如果没有指定年月，使用当前月
     if (!year || !month) {
@@ -311,13 +319,16 @@ Page({
     for (let d = 1; d <= lastDay; d++) {
       const date = new Date(year, month - 1, d);
       const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+      const mmdd = `${String(month).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
 
       // 过去的日期不显示库存
       const isPast = date < today;
 
       calendar.push({
         date: dateStr,
-        day: String(d),
+        day: mmdd,           // "MM-DD" 用于日期条
+        dayNum: String(d),   // 纯数字天 用于日历弹窗
+        week: dateStr === todayStr ? '今天' : weekDays[date.getDay()],
         price: basePrice + Math.floor(Math.random() * 500),
         stock: isPast ? 0 : Math.floor(Math.random() * 20),
         isWeekend: date.getDay() === 0 || date.getDay() === 6,

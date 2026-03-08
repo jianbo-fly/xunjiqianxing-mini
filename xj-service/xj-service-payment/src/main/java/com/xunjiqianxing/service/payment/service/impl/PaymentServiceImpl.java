@@ -223,7 +223,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         try {
             wxPayService.closeOrderV3(paymentNo);
-        } catch (WxPayException e) {
+        } catch (Exception e) {
             log.warn("关闭微信订单失败(可忽略): {}", e.getMessage());
         }
 

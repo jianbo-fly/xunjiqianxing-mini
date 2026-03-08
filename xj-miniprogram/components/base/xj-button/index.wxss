@@ -97,6 +97,16 @@
   opacity: 0.8;
 }
 
+/* 类型 - Gradient */
+.xj-btn--gradient {
+  background: var(--color-primary-gradient, linear-gradient(to right, #EC3713, #EA580C));
+  color: var(--color-text-inverse);
+}
+
+.xj-btn--gradient:active {
+  opacity: 0.9;
+}
+
 /* 块级按钮 */
 .xj-btn--block {
   display: flex;

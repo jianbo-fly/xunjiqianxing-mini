@@ -10,37 +10,50 @@ module.exports = {
   // 颜色系统 (Colors)
   // ========================
   colors: {
-    // 品牌色
-    primary: '#1890FF',           // 主色调
-    primaryLight: '#E6F7FF',      // 主色浅
-    primaryDark: '#096DD9',       // 主色深
+    // 品牌色（对齐 Figma v4.0）
+    primary: '#EC3713',           // 主色调（红橙）
+    primaryLight: '#FFF7ED',      // 主色浅
+    primaryDark: '#C52E0F',       // 主色深
+    primarySubtle: 'rgba(236, 55, 19, 0.08)', // 极淡主色背景
 
     // 功能色
-    success: '#52C41A',           // 成功
-    successLight: '#F6FFED',
+    success: '#16A34A',           // 成功
+    successLight: '#F0FDF4',
     warning: '#FAAD14',           // 警告
     warningLight: '#FFFBE6',
-    error: '#FF4D4F',             // 错误
+    error: '#E74C3C',             // 错误
     errorLight: '#FFF2F0',
-    info: '#1890FF',              // 信息
+    info: '#2563EB',              // 信息
 
     // 中性色 - 文字
-    textPrimary: '#333333',       // 主要文字
-    textSecondary: '#666666',     // 次要文字
-    textTertiary: '#999999',      // 辅助文字
-    textPlaceholder: '#CCCCCC',   // 占位符
+    textPrimary: '#111827',       // 主要文字（近黑色）
+    textSecondary: '#6B7280',     // 次要文字
+    textTertiary: '#9CA3AF',      // 辅助文字
+    textPlaceholder: '#C0C4CC',   // 占位符
     textInverse: '#FFFFFF',       // 反色文字
 
     // 中性色 - 背景
-    bgPage: '#F5F5F5',            // 页面背景
+    bgPage: '#F8F6F6',            // 页面背景（微暖灰）
     bgCard: '#FFFFFF',            // 卡片背景
-    bgGray: '#FAFAFA',            // 灰色背景
+    bgGray: '#F9FAFB',            // 灰色背景
     bgMask: 'rgba(0,0,0,0.5)',    // 遮罩层
 
     // 中性色 - 边框分割线
-    border: '#E8E8E8',            // 边框
-    borderLight: '#F0F0F0',       // 浅边框
-    divider: '#EEEEEE',           // 分割线
+    border: '#E5E7EB',            // 边框
+    borderLight: '#F3F4F6',       // 浅边框
+    divider: '#F3F4F6',           // 分割线
+
+    // 标签颜色
+    tagOrangeBg: '#FFF7ED',
+    tagOrangeText: '#EA580C',
+    tagGrayBg: '#F3F4F6',
+    tagGrayText: '#4B5563',
+    tagBlueBg: '#EFF6FF',
+    tagBlueText: '#2563EB',
+    tagGreenBg: '#F0FDF4',
+    tagGreenText: '#16A34A',
+    tagPurpleBg: '#FAF5FF',
+    tagPurpleText: '#9333EA',
   },
 
   // ========================

@@ -6,15 +6,19 @@
 
 /* ===== 顶部栏 ===== */
 .top-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16rpx 32rpx;
   background: var(--color-bg-card);
   box-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.05);
   position: sticky;
   top: 0;
   z-index: 10;
+}
+
+/* 状态栏下方：logo + 操作按钮横排 */
+.top-bar__content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16rpx 32rpx;
 }
 
 .top-bar__left {
@@ -100,7 +104,7 @@
   background: var(--color-bg-card);
   border-radius: 24rpx;
   padding: 24rpx 32rpx;
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-card);
   position: relative;
 }
 
@@ -159,7 +163,7 @@
 .banner-tag {
   display: inline-block;
   padding: 4rpx 16rpx;
-  background: rgba(249, 128, 6, 0.85);
+  background: rgba(236, 55, 19, 0.85);
   border-radius: 8rpx;
   font-size: 24rpx;
   color: rgba(255, 255, 255, 0.9);
@@ -222,7 +226,7 @@
 .entry-icon-bg {
   width: 96rpx;
   height: 96rpx;
-  background: #fff7ed;
+  background: var(--color-primary-light);
   border-radius: 24rpx;
   display: flex;
   align-items: center;
@@ -306,7 +310,7 @@
   background: var(--color-bg-card);
   border-radius: 24rpx;
   overflow: hidden;
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-card);
 }
 
 .route-card__image-wrap {
@@ -374,13 +378,13 @@
 }
 
 .route-card__tag--primary {
-  background: #fff7ed;
-  color: #ea580c;
+  background: var(--tag-orange-bg);
+  color: var(--tag-orange-text);
 }
 
 .route-card__tag--gray {
-  background: #f3f4f6;
-  color: #4b5563;
+  background: var(--tag-gray-bg);
+  color: var(--tag-gray-text);
 }
 
 .route-card__bottom {

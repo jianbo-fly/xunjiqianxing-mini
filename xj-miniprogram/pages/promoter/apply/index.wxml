@@ -2,6 +2,7 @@
   推广员申请页
 -->
 <view class="page-promoter-apply">
+  <nav-bar title="推广员申请" background="rgba(255,255,255,0.9)" border showBack fixed />
   <!-- 顶部介绍 -->
   <view class="apply-header">
     <image class="apply-icon" src="/assets/icons/common/share.png" mode="aspectFit" />

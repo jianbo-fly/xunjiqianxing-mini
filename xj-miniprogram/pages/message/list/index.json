@@ -1,4 +1,6 @@
 {
-  "navigationBarTitleText": "消息列表",
-  "usingComponents": {}
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "nav-bar": "/components/layout/nav-bar/index"
+  }
 }

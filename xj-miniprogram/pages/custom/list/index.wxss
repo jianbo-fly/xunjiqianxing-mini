@@ -1,88 +1,305 @@
-.page-custom-list {
+/**
+ * 我的定制列表样式
+ * 对齐 Figma Node: 76-9523
+ */
+
+.page-cl {
   min-height: 100vh;
-  background: var(--color-bg-page);
-  padding: var(--spacing-md) var(--page-padding);
+  background: #F8F6F6;
 }
 
-.list {
+/* ===== Tabs 导航栏 ===== */
+/* Figma: px-16 py-8, bg #f8f6f6, shadow, 4 tabs: 全部|待处理|跟进中|已完成 */
+.cl-tabs {
+  position: sticky;
+  z-index: 90;
+  background: #F8F6F6;
+  display: flex;
+  align-items: flex-end;
+  padding: 16rpx 32rpx 0;
+  box-shadow: 0px 2rpx 4rpx 0px rgba(0, 0, 0, 0.05);
+}
+
+.cl-tab {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-md);
-}
-
-.item {
-  background: var(--color-bg-card);
-  border-radius: var(--radius-md);
-  padding: var(--spacing-md);
-}
-
-.item-header {
-  display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--spacing-sm);
+  padding-bottom: 8rpx;
+  margin-right: 48rpx;
 }
 
-.item-dest {
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-text-primary);
+.cl-tab__text {
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #6B7280;
+  line-height: 48rpx;
 }
 
-.item-status {
-  font-size: var(--font-size-xs);
-  padding: 4rpx 12rpx;
-  border-radius: var(--radius-xs);
+.cl-tab--active .cl-tab__text {
+  color: #EC3713;
+  font-weight: 600;
 }
 
-.item-status--0 {
-  background: var(--color-warning-light);
-  color: var(--color-warning);
+/* Figma: active indicator 20px wide, 4px high, rounded */
+.cl-tab__line {
+  width: 40rpx;
+  height: 8rpx;
+  background: #EC3713;
+  border-radius: 9999rpx;
+  margin-top: 2rpx;
 }
 
-.item-status--1 {
-  background: var(--color-primary-light);
-  color: var(--color-primary);
+/* ===== 主内容区 ===== */
+.cl-main {
+  padding: 24rpx 32rpx 32rpx;
+  box-sizing: border-box;
 }
 
-.item-status--2 {
-  background: var(--color-success-light);
-  color: var(--color-success);
-}
-
-.item-status--3 {
-  background: var(--color-bg-gray);
-  color: var(--color-text-tertiary);
-}
-
-.item-info {
-  font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
-  margin-bottom: var(--spacing-xs);
-}
-
-.item-footer {
+/* ===== 卡片列表 ===== */
+.cl-list {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 32rpx;
+}
+
+/* ===== 定制卡片 ===== */
+/* Figma: bg white, border #f3f4f6, rounded-16, shadow 0 4px 20px -2px rgba(0,0,0,0.05), p-21, overflow-clip */
+.cl-card {
+  position: relative;
+  background: #FFFFFF;
+  border: 2rpx solid #F3F4F6;
+  border-radius: 32rpx;
+  box-shadow: 0px 8rpx 40rpx -4rpx rgba(0, 0, 0, 0.05);
+  padding: 42rpx;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 32rpx;
+}
+
+/* 跟进中卡片右上角渐变装饰 */
+/* Figma: size 96px right-top, rounded-bl-full, gradient orange → transparent */
+.cl-card__deco {
+  position: absolute;
+  top: -32rpx;
+  right: -32rpx;
+  width: 192rpx;
+  height: 192rpx;
+  background: linear-gradient(135deg, rgba(255, 237, 213, 0.5) 0%, rgba(255, 237, 213, 0) 100%);
+  border-radius: 0 0 0 9999rpx;
+  pointer-events: none;
+}
+
+/* ── 卡片头部 ── */
+/* Figma: icon 48px + title/no + badge, justify-between */
+.cl-card__header {
+  display: flex;
   align-items: center;
-  margin-top: var(--spacing-sm);
-  padding-top: var(--spacing-sm);
-  border-top: 1rpx solid var(--color-border);
+  justify-content: space-between;
+  gap: 24rpx;
 }
 
-.item-time {
-  font-size: var(--font-size-xs);
-  color: var(--color-text-tertiary);
+/* Icon 背景圆角方块 48×48 */
+.cl-card__icon-wrap {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
-.item-cancel {
-  font-size: var(--font-size-sm);
-  color: var(--color-error);
+.cl-card__icon {
+  width: 48rpx;
+  height: 48rpx;
 }
 
-.loading-tip {
+.cl-card__title-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+  min-width: 0;
+}
+
+.cl-card__title {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #111827;
+  line-height: 1.25;
+}
+
+.cl-card__no {
+  font-size: 24rpx;
+  color: #9CA3AF;
+  line-height: 32rpx;
+}
+
+/* ── 状态徽章 ── */
+/* Figma: px-11 py-5, rounded-8, 3 variants */
+.cl-badge {
+  flex-shrink: 0;
+  padding: 10rpx 22rpx;
+  border-radius: 16rpx;
+  font-size: 24rpx;
+  font-weight: 500;
+  border: 2rpx solid transparent;
+  line-height: 32rpx;
+}
+
+/* 跟进中: bg #ffedd5 border #fed7aa text #c2410c */
+.cl-badge--following {
+  background: #FFEDD5;
+  border-color: #FED7AA;
+  color: #C2410C;
+}
+
+/* 待处理: bg #f3f4f6 border #e5e7eb text #4b5563 */
+.cl-badge--pending {
+  background: #F3F4F6;
+  border-color: #E5E7EB;
+  color: #4B5563;
+}
+
+/* 已完成: bg #dcfce7 border #bbf7d0 text #15803d */
+.cl-badge--completed {
+  background: #DCFCE7;
+  border-color: #BBF7D0;
+  color: #15803D;
+}
+
+/* ── 信息 2×2 格 ── */
+/* Figma: 2列，每项左图标+右文字，行间距16px */
+.cl-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  row-gap: 16rpx;
+}
+
+/* 已完成卡片信息区 opacity 0.75 */
+.cl-card--completed .cl-info-grid {
+  opacity: 0.75;
+}
+
+.cl-info-item {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.cl-info-icon {
+  width: 28rpx;
+  height: 28rpx;
+  flex-shrink: 0;
+}
+
+.cl-info-text {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #374151;
+  line-height: 40rpx;
+}
+
+/* ── 卡片底部 ── */
+/* Figma: border-top #f3f4f6, pt-13, flex justify-between */
+.cl-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 2rpx solid #F3F4F6;
+  padding-top: 26rpx;
+}
+
+.cl-card__time {
+  font-size: 24rpx;
+  color: #9CA3AF;
+  line-height: 32rpx;
+}
+
+/* ── CTA 按钮 ── */
+/* Figma: px-16 py-6, rounded-8, 3 variants */
+.cl-cta {
+  padding: 12rpx 32rpx;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+  font-weight: 500;
+  line-height: 40rpx;
+  border: 2rpx solid transparent;
+}
+
+/* 实心主色（跟进中） */
+.cl-cta--solid {
+  background: #EC3713;
+  color: #FFFFFF;
+  box-shadow: 0px 8rpx 12rpx -2rpx rgba(236, 55, 19, 0.3), 0px 4rpx 8rpx -4rpx rgba(236, 55, 19, 0.3);
+}
+
+/* 描边主色（待处理） */
+.cl-cta--outline-primary {
+  background: transparent;
+  border-color: #EC3713;
+  color: #EC3713;
+}
+
+/* 描边灰色（已完成） */
+.cl-cta--outline-gray {
+  background: transparent;
+  border-color: #E5E7EB;
+  color: #6B7280;
+}
+
+/* ===== 加载 / 空状态 ===== */
+.cl-loading {
   text-align: center;
-  padding: var(--spacing-lg);
-  color: var(--color-text-tertiary);
-  font-size: var(--font-size-sm);
+  padding: 48rpx;
+  color: #9CA3AF;
+  font-size: 24rpx;
+}
+
+.cl-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 120rpx 0 80rpx;
+  gap: 16rpx;
+}
+
+.cl-empty__icon {
+  font-size: 96rpx;
+  line-height: 1;
+  margin-bottom: 16rpx;
+}
+
+.cl-empty__text {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #374151;
+}
+
+.cl-empty__hint {
+  font-size: 24rpx;
+  color: #9CA3AF;
+}
+
+/* ===== FAB 悬浮按钮 ===== */
+/* Figma: 56px 圆形，bg #ec3713，right-24 bottom-24，阴影 */
+.cl-fab {
+  position: fixed;
+  right: 48rpx;
+  bottom: calc(48rpx + env(safe-area-inset-bottom));
+  width: 112rpx;
+  height: 112rpx;
+  background: #EC3713;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0px 20rpx 30rpx -6rpx rgba(236, 55, 19, 0.4), 0px 8rpx 12rpx -8rpx rgba(236, 55, 19, 0.4);
+  z-index: 99;
+}
+
+.cl-fab__icon {
+  width: 44rpx;
+  height: 44rpx;
 }

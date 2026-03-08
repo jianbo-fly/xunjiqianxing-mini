@@ -1,157 +1,478 @@
+/**
+ * 旅游页样式
+ * 对齐 Figma Node: 74-6583
+ */
+
+/* ===== 页面容器 ===== */
 .page-travel {
   min-height: 100vh;
-  background: var(--color-bg-page);
+  background: #F8F6F6;
 }
 
-/* 顶部导航 */
-.nav-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 100;
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  padding: 0 var(--page-padding);
-  padding-bottom: 10rpx;
-  background: var(--color-bg-card);
-  box-sizing: border-box;
-}
-
-.nav-header__left,
-.nav-header__right {
-  width: 80rpx;
-  height: 44px;
+/* ===== 导航栏内嵌 Tab ===== */
+/* Figma: tabs 居中，跟团游 bold 18px #111827，定制游 medium 18px #9ca3af */
+.nav-tabs {
   display: flex;
   align-items: center;
+  gap: 48rpx;
 }
 
-.nav-header__right {
-  justify-content: flex-end;
-}
-
-.nav-back-icon {
-  width: 36rpx;
-  height: 36rpx;
-}
-
-.nav-search-icon {
-  width: 44rpx;
-  height: 44rpx;
-}
-
-.nav-header__title {
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-text-primary);
-}
-
-/* 顶部Tab占位 */
-.top-tabs-placeholder {
-  width: 100%;
-}
-
-/* 顶部Tab */
-.top-tabs {
-  position: fixed;
-  left: 0;
-  right: 0;
-  z-index: 99;
-  display: flex;
-  background: var(--color-bg-card);
-  border-bottom: 1rpx solid var(--color-border);
-}
-
-.top-tab {
-  flex: 1;
+.nav-tab {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: var(--spacing-md) 0;
-  font-size: var(--font-size-md);
-  color: var(--color-text-secondary);
-  position: relative;
+  padding-bottom: 12rpx;
 }
 
-.top-tab--active {
-  color: var(--color-primary);
-  font-weight: var(--font-weight-semibold);
+.nav-tab__text {
+  font-size: 36rpx;
+  font-weight: 500;
+  color: #9CA3AF;
+  line-height: 1;
 }
 
-.top-tab__line {
+.nav-tab--active .nav-tab__text {
+  font-weight: 700;
+  color: #111827;
+}
+
+/* Figma: 底部红线 4px 高，居中，宽 24px */
+.nav-tab__line {
   position: absolute;
   bottom: 0;
   width: 48rpx;
-  height: 6rpx;
-  background: var(--color-primary);
-  border-radius: 3rpx;
+  height: 8rpx;
+  background: #EC3713;
+  border-radius: 9999rpx;
 }
 
-/* 内容区 */
-.tab-content {
-  min-height: calc(100vh - 200px);
-}
-
-/* ========== 跟团游 ========== */
-
-/* 二级分类 */
-.sub-category {
+/* 搜索按钮：灰色圆形 */
+.nav-search-btn {
+  width: 66rpx;
+  height: 66rpx;
+  background: #F3F4F6;
+  border-radius: 50%;
   display: flex;
   align-items: center;
-  padding: var(--spacing-md) var(--page-padding);
-  background: var(--color-bg-card);
-  gap: var(--spacing-md);
+  justify-content: center;
 }
 
-.sub-category__item {
-  padding: var(--spacing-xs) var(--spacing-lg);
-  font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
-  background: var(--color-bg-gray);
-  border-radius: var(--radius-full);
+.nav-search-icon {
+  width: 34rpx;
+  height: 34rpx;
 }
 
-.sub-category__item--active {
-  color: var(--color-primary);
-  background: var(--color-primary-light);
+/* ===== 吸顶栏（分类 + 筛选，整体白色，底部阴影） ===== */
+.sticky-bar {
+  position: sticky;
+  z-index: 90;
+  background: #FFFFFF;
+  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
 }
 
-.sub-category__filter {
-  margin-left: auto;
+/* ===== 分类 Pills ===== */
+/* Figma: pt-12+8(nav pb) pb-13 px-16，胶囊间距，活跃态红色背景+阴影，底部 border */
+/* +8px 补偿 nav-bar 组件没有 pb-8px 导致的间距不足 */
+.sub-cat-row {
+  display: flex;
+  align-items: center;
+  padding: 40rpx 32rpx 26rpx;
+  gap: 0;
+  border-bottom: 1rpx solid #F3F4F6;
+}
+
+.sub-cat-pill {
+  padding: 12rpx 32rpx;
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #6B7280;
+  background: transparent;
+  border-radius: 9999rpx;
+  line-height: 40rpx;
+  margin-right: 0;
+}
+
+/* Figma: 第一个 pill 活跃 → bg #EC3713, text white, shadow */
+.sub-cat-pill--active {
+  background: #EC3713;
+  color: #FFFFFF;
+  box-shadow: 0px 8rpx 12rpx -2rpx rgba(236, 55, 19, 0.3), 0px 4rpx 8rpx -4rpx rgba(236, 55, 19, 0.3);
+}
+
+/* ===== 4 按钮筛选栏 ===== */
+/* Figma: px-16 py-12，按钮自适应宽度（非 flex:1），左对齐，gap 8px */
+.filter-bar {
+  display: flex;
+  align-items: center;
+  padding: 24rpx 32rpx;
+  gap: 16rpx;
+  background: #FFFFFF;
+  flex-wrap: nowrap;
+  overflow: hidden;
+}
+
+/* Figma: bg #f9fafb, rounded 8px, px-13 py-7, text #374151 12px */
+.filter-bar__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 14rpx 26rpx;
+  background: #F9FAFB;
+  border-radius: 16rpx;
+  flex-shrink: 0;
+}
+
+.filter-bar__btn--active {
+  background: rgba(236, 55, 19, 0.07);
+}
+
+.filter-bar__btn--active .filter-bar__label {
+  color: #EC3713;
+}
+
+.filter-bar__label {
+  font-size: 24rpx;
+  color: #374151;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.filter-bar__arrow {
+  font-size: 18rpx;
+  color: #9CA3AF;
+  line-height: 1;
+}
+
+.filter-bar__btn--active .filter-bar__arrow {
+  color: #EC3713;
+}
+
+/* ===== 路线列表 ===== */
+.route-list {
+  padding: 32rpx 32rpx 0;
+  display: flex;
+  flex-direction: column;
+  gap: 40rpx;
+}
+
+/* ===== 路线卡片 ===== */
+/* Figma: bg white, rounded-16px, shadow 0px 2px 10px rgba(0,0,0,0.03) */
+.route-card {
+  background: #FFFFFF;
+  border-radius: 32rpx;
+  overflow: hidden;
+  box-shadow: 0px 4rpx 20rpx 0px rgba(0, 0, 0, 0.03);
+}
+
+/* ── 图片区（192px = 384rpx）── */
+.rc-img-wrap {
+  position: relative;
+  width: 100%;
+  height: 384rpx;
+  overflow: hidden;
+}
+
+.rc-img {
+  width: 100%;
+  height: 100%;
+}
+
+/* Figma: 底部渐变仅占下方1/3（inset 66.67% 0 0 0）*/
+.rc-gradient {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 66.67%;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0) 100%);
+}
+
+/* Figma: 位置标签 左上 12px 12px，rounded-4px（非圆形），毛玻璃 */
+.rc-location {
+  position: absolute;
+  top: 24rpx;
+  left: 24rpx;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 8rpx;
+  padding: 8rpx 16rpx;
+}
+
+.rc-location-text {
+  font-size: 20rpx;
+  color: #FFFFFF;
+  font-weight: 400;
+  line-height: 30rpx;
+}
+
+/* Figma: 收藏按钮 右上 12px 12px，32px 圆形，白色半透明 */
+.rc-favorite {
+  position: absolute;
+  top: 24rpx;
+  right: 24rpx;
+  width: 64rpx;
+  height: 64rpx;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rc-heart-icon {
+  width: 30rpx;
+  height: 30rpx;
+}
+
+/* 折扣/限时角标（左下 12px 12px）*/
+.rc-discount {
+  position: absolute;
+  bottom: 24rpx;
+  left: 24rpx;
+  background: #DC2626;
+  border-radius: 8rpx;
+  padding: 4rpx 16rpx;
+  box-shadow: 0px 2rpx 4rpx rgba(0, 0, 0, 0.05);
+}
+
+.rc-discount text {
+  font-size: 20rpx;
+  font-weight: 700;
+  color: #FFFFFF;
+  line-height: 30rpx;
+}
+
+/* ── 内容区（p-16 gap-8）── */
+.rc-content {
+  padding: 32rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+/* 标签行 gap-8 */
+.rc-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+  align-items: center;
+}
+
+/* Figma: 红色标签有边框，其余无边框 */
+/* 红色标签：bg rgba(236,55,19,0.05) + border rgba(236,55,19,0.3)，px-7 py-3，rounded-4 */
+.rc-tag--red {
+  font-size: 20rpx;
+  font-weight: 500;
+  line-height: 30rpx;
+  padding: 6rpx 14rpx;
+  border-radius: 8rpx;
+  background: rgba(236, 55, 19, 0.05);
+  border: 1rpx solid rgba(236, 55, 19, 0.3);
+  color: #EC3713;
+}
+
+/* 其他标签：无边框，px-6 py-2，rounded-4 */
+.rc-tag--orange {
+  font-size: 20rpx;
+  font-weight: 500;
+  line-height: 30rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 8rpx;
+  background: #FFEDD5;
+  color: #EA580C;
+}
+
+.rc-tag--blue {
+  font-size: 20rpx;
+  font-weight: 500;
+  line-height: 30rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 8rpx;
+  background: #EFF6FF;
+  color: #2563EB;
+}
+
+.rc-tag--green {
+  font-size: 20rpx;
+  font-weight: 500;
+  line-height: 30rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 8rpx;
+  background: #F0FDF4;
+  color: #16A34A;
+}
+
+.rc-tag--purple {
+  font-size: 20rpx;
+  font-weight: 500;
+  line-height: 30rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 8rpx;
+  background: #FAF5FF;
+  color: #9333EA;
+}
+
+/* 路线标题：Figma 18px bold #111827，2行截断，line-height 24.75px，高度 49.5px=99rpx */
+.rc-title-wrap {
+  height: 99rpx;
+  overflow: hidden;
+}
+
+.rc-title {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #111827;
+  line-height: 1.375;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+/* 评分 + 已售行 */
+.rc-meta-row {
   display: flex;
   align-items: center;
   gap: 8rpx;
-  font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
 }
 
-.sub-category__filter image {
-  width: 32rpx;
-  height: 32rpx;
+/* Figma: 星星黄色 */
+.rc-star {
+  font-size: 24rpx;
+  color: #EAB308;
+  line-height: 1;
 }
 
-/* 线路列表 */
-.route-scroll {
-  height: calc(100% - 88rpx);
+/* Figma: 评分数字 12px bold #eab308（黄色）*/
+.rc-rating-num {
+  font-size: 24rpx;
+  font-weight: 700;
+  color: #EAB308;
+  line-height: 32rpx;
 }
 
-.route-list {
-  padding: var(--spacing-md) var(--page-padding);
+/* Figma: "超赞" 12px #9ca3af */
+.rc-rating-label {
+  font-size: 24rpx;
+  color: #9CA3AF;
+  line-height: 32rpx;
+}
+
+/* Figma: 竖分割线 1px × 12px #d1d5db */
+.rc-meta-divider {
+  width: 2rpx;
+  height: 24rpx;
+  background: #D1D5DB;
+  margin: 0 16rpx;
+}
+
+/* Figma: 已售 12px #6b7280 */
+.rc-sales {
+  font-size: 24rpx;
+  color: #6B7280;
+  line-height: 32rpx;
+}
+
+/* 卡片底部：出发日期 + 价格 + CTA */
+.rc-footer {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.rc-footer-left {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-md);
+  gap: 4rpx;
 }
 
+/* Figma: "最近出发: xxx" 10px #9ca3af */
+.rc-depart-date {
+  font-size: 20rpx;
+  color: #9CA3AF;
+  line-height: 30rpx;
+}
+
+.rc-price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0;
+  height: 64rpx;
+}
+
+/* Figma: ¥ 符号 12px bold 红色 */
+.rc-price-symbol {
+  font-size: 24rpx;
+  font-weight: 700;
+  color: #EC3713;
+  line-height: 1;
+}
+
+/* Figma: 价格数字 24px bold 红色 */
+.rc-price {
+  font-size: 48rpx;
+  font-weight: 700;
+  color: #EC3713;
+  line-height: 1;
+  letter-spacing: -1rpx;
+}
+
+/* "起" 小字 */
+.rc-price-unit {
+  font-size: 22rpx;
+  color: #9CA3AF;
+  padding-left: 4rpx;
+}
+
+/* 划线原价 */
+.rc-price-origin {
+  font-size: 20rpx;
+  color: #9CA3AF;
+  text-decoration: line-through;
+  padding-left: 12rpx;
+}
+
+/* Figma: 实心CTA（查看详情）- 红色背景+阴影 */
+.rc-cta--solid {
+  background: #EC3713;
+  padding: 16rpx 32rpx;
+  border-radius: 16rpx;
+  box-shadow: 0px 20rpx 30rpx -6rpx rgba(236, 55, 19, 0.2), 0px 8rpx 12rpx -8rpx rgba(236, 55, 19, 0.2);
+}
+
+.rc-cta--solid text {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #FFFFFF;
+  line-height: 40rpx;
+  white-space: nowrap;
+}
+
+/* Figma: 淡色CTA（立即预订）- 浅红背景+红色文字 */
+.rc-cta--light {
+  background: rgba(236, 55, 19, 0.1);
+  padding: 16rpx 32rpx;
+  border-radius: 16rpx;
+}
+
+.rc-cta--light text {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #EC3713;
+  line-height: 40rpx;
+  white-space: nowrap;
+}
+
+/* ===== 加载 / 空状态 ===== */
 .loading-tip,
 .empty-tip {
-  padding: var(--spacing-xl);
+  padding: 48rpx;
   text-align: center;
-  color: var(--color-text-tertiary);
-  font-size: var(--font-size-sm);
+  color: #9CA3AF;
+  font-size: 24rpx;
 }
 
-/* 筛选弹窗 */
+/* ===== 筛选侧边弹窗 ===== */
 .filter-mask {
   position: fixed;
   top: 0;
@@ -168,12 +489,13 @@
   right: -80%;
   width: 80%;
   height: 100%;
-  background: var(--color-bg-card);
+  background: #FFFFFF;
   z-index: 201;
   transition: right 0.3s ease;
-  padding: env(safe-area-inset-top) var(--page-padding) var(--page-padding);
+  padding: env(safe-area-inset-top) 32rpx 32rpx;
   display: flex;
   flex-direction: column;
+  box-sizing: border-box;
 }
 
 .filter-popup--show {
@@ -184,253 +506,521 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--spacing-lg) 0;
-  border-bottom: 1rpx solid var(--color-border);
+  padding: 32rpx 0;
+  border-bottom: 1rpx solid #F3F4F6;
 }
 
 .filter-title {
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-semibold);
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #111827;
 }
 
 .filter-reset {
-  font-size: var(--font-size-sm);
-  color: var(--color-text-tertiary);
+  font-size: 24rpx;
+  color: #9CA3AF;
 }
 
 .filter-item {
-  padding: var(--spacing-lg) 0;
-  border-bottom: 1rpx solid var(--color-border);
+  padding: 32rpx 0;
+  border-bottom: 1rpx solid #F3F4F6;
 }
 
 .filter-label {
   display: block;
-  font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
-  margin-bottom: var(--spacing-sm);
+  font-size: 24rpx;
+  color: #6B7280;
+  margin-bottom: 16rpx;
 }
 
 .filter-picker {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--spacing-sm) var(--spacing-md);
-  background: var(--color-bg-gray);
-  border-radius: var(--radius-sm);
+  padding: 16rpx 24rpx;
+  background: #F9FAFB;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  color: #374151;
 }
 
 .picker-arrow {
-  color: var(--color-text-tertiary);
+  color: #9CA3AF;
+  font-size: 28rpx;
 }
 
 .filter-price-range {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: 16rpx;
 }
 
 .price-input {
   flex: 1;
   height: 72rpx;
-  padding: 0 var(--spacing-md);
-  background: var(--color-bg-gray);
-  border-radius: var(--radius-sm);
-  font-size: var(--font-size-md);
+  padding: 0 24rpx;
+  background: #F9FAFB;
+  border-radius: 12rpx;
+  font-size: 28rpx;
 }
 
 .price-separator {
-  color: var(--color-text-tertiary);
+  color: #9CA3AF;
 }
 
 .filter-footer {
   margin-top: auto;
-  padding-top: var(--spacing-lg);
+  padding-top: 32rpx;
 }
 
-.filter-btn {
+.filter-confirm-btn {
   width: 100%;
   height: 88rpx;
-  border-radius: var(--radius-md);
-  font-size: var(--font-size-md);
+  border-radius: 16rpx;
+  font-size: 28rpx;
+  font-weight: 500;
+  background: #EC3713;
+  color: #FFFFFF;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.filter-btn--confirm {
-  background: var(--color-primary);
-  color: var(--color-text-inverse);
-}
-
-/* ========== 定制游 ========== */
-
+/* ===== 定制游 ===== */
 .custom-content {
-  background: var(--color-bg-card);
+  position: relative;
+  min-height: 100vh;
+  background: #F8F6F6;
 }
 
 .custom-scroll {
   height: 100%;
-  padding: var(--spacing-md) var(--page-padding);
-  padding-bottom: calc(var(--spacing-md) + env(safe-area-inset-bottom));
-}
-
-.form-section {
-  margin-bottom: var(--spacing-xl);
-}
-
-.form-title {
-  font-size: var(--font-size-md);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-text-primary);
-  margin-bottom: var(--spacing-md);
-}
-
-/* 卡片选择 */
-.card-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--spacing-sm);
-}
-
-.card-grid--5 {
-  grid-template-columns: repeat(5, 1fr);
-}
-
-.card-item {
-  padding: var(--spacing-md) var(--spacing-sm);
-  text-align: center;
-  background: var(--color-bg-gray);
-  border-radius: var(--radius-sm);
-  font-size: var(--font-size-sm);
-  color: var(--color-text-primary);
-  border: 2rpx solid transparent;
-}
-
-.card-item--active {
-  background: var(--color-primary-light);
-  color: var(--color-primary);
-  border-color: var(--color-primary);
-}
-
-.custom-input {
-  margin-top: var(--spacing-sm);
-  height: 80rpx;
-  padding: 0 var(--spacing-md);
-  background: var(--color-bg-gray);
-  border-radius: var(--radius-sm);
-  font-size: var(--font-size-md);
-}
-
-/* 人数选择 */
-.people-row {
-  display: flex;
-  gap: var(--spacing-xl);
-}
-
-.people-item {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-md);
-}
-
-.people-label {
-  font-size: var(--font-size-md);
-  color: var(--color-text-primary);
-}
-
-.people-counter {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-}
-
-.counter-btn {
-  width: 56rpx;
-  height: 56rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--color-bg-gray);
-  border-radius: 50%;
-  font-size: var(--font-size-lg);
-  color: var(--color-text-primary);
-}
-
-.counter-btn--disabled {
-  color: var(--color-text-disabled);
-}
-
-.counter-value {
-  width: 48rpx;
-  text-align: center;
-  font-size: var(--font-size-md);
-  font-weight: var(--font-weight-semibold);
-}
-
-/* 需求标签 */
-.need-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--spacing-sm);
-}
-
-.need-tag {
-  padding: var(--spacing-xs) var(--spacing-md);
-  background: var(--color-bg-gray);
-  border-radius: var(--radius-full);
-  font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
-  border: 2rpx solid transparent;
-}
-
-.need-tag--active {
-  background: var(--color-primary-light);
-  color: var(--color-primary);
-  border-color: var(--color-primary);
-}
-
-.extra-note {
-  margin-top: var(--spacing-md);
-  width: 100%;
-  height: 160rpx;
-  padding: var(--spacing-md);
-  background: var(--color-bg-gray);
-  border-radius: var(--radius-sm);
-  font-size: var(--font-size-md);
+  padding: 32rpx;
   box-sizing: border-box;
 }
 
-.phone-input {
-  height: 88rpx;
-  padding: 0 var(--spacing-md);
-  background: var(--color-bg-gray);
-  border-radius: var(--radius-sm);
-  font-size: var(--font-size-md);
+/* --- Banner / Intro --- */
+/* Figma: 128px high, rounded-12, gradient left-dark to right-transparent */
+.cs-banner {
+  height: 256rpx;
+  border-radius: 24rpx;
+  overflow: hidden;
+  margin-bottom: 24rpx;
+  box-shadow: 0px 2rpx 4rpx 0px rgba(0, 0, 0, 0.05);
+  background: linear-gradient(135deg, #1C1440 0%, #EC3713 60%, #EA580C 100%);
 }
 
-/* 提交按钮 */
-.submit-area {
-  padding: var(--spacing-xl) 0;
-}
-
-.submit-btn {
+.cs-banner__overlay {
   width: 100%;
-  height: 96rpx;
-  background: var(--color-primary);
-  color: var(--color-text-inverse);
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-semibold);
-  border-radius: var(--radius-md);
+  height: 100%;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 48rpx;
+  gap: 8rpx;
+}
+
+.cs-banner__title {
+  font-size: 40rpx;
+  font-weight: 600;
+  color: #FFFFFF;
+  line-height: 1.4;
+}
+
+.cs-banner__subtitle {
+  font-size: 28rpx;
+  color: #E5E7EB;
+  line-height: 1.4;
+}
+
+/* --- Section Card --- */
+/* Figma: bg white, rounded-12, shadow 0 1px 2px rgba(0,0,0,.05), p-20, gap-16 */
+.cs-card {
+  background: #FFFFFF;
+  border-radius: 24rpx;
+  box-shadow: 0px 2rpx 4rpx 0px rgba(0, 0, 0, 0.05);
+  padding: 40rpx;
+  margin-bottom: 24rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 32rpx;
+}
+
+/* --- Section Header (icon + title) --- */
+.cs-card__header {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.cs-card__icon {
+  width: 36rpx;
+  height: 36rpx;
+  flex-shrink: 0;
+}
+
+.cs-card__title {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #1F2937;
+  line-height: 1;
+}
+
+/* --- Divider inside card --- */
+.cs-divider {
+  height: 2rpx;
+  background: #F3F4F6;
+}
+
+/* --- Destination Grid (3×2) --- */
+.dest-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16rpx;
+}
+
+/* Figma: card with colored circle on top + text below, p-13, rounded-8 */
+.dest-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 26rpx 16rpx;
+  background: #F9FAFB;
+  border: 2rpx solid #F3F4F6;
+  border-radius: 16rpx;
+  gap: 16rpx;
+}
+
+.dest-item--active {
+  background: #FDEBE9;
+  border-color: #EC3713;
+}
+
+/* Colored circle (40px = 80rpx) */
+.dest-icon-circle {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.dest-item__name {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #1F2937;
+  line-height: 40rpx;
+}
+
+.dest-item--active .dest-item__name {
+  color: #EC3713;
+}
+
+/* Custom destination text input */
+.cs-text-input {
+  height: 80rpx;
+  padding: 0 24rpx;
+  background: #F9FAFB;
+  border: 2rpx solid #E5E7EB;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+  color: #111827;
+}
+
+/* --- Pill Buttons (time & duration) --- */
+/* Figma: rounded-full, px-17 py-9, border */
+.cs-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+
+.cs-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 18rpx 34rpx;
+  background: #FFFFFF;
+  border: 2rpx solid #E5E7EB;
+  border-radius: 9999rpx;
+  font-size: 28rpx;
+  color: #4B5563;
+  line-height: 40rpx;
+}
+
+.cs-pill--active {
+  background: #FDEBE9;
+  border-color: #EC3713;
+  color: #EC3713;
+}
+
+.cs-pill__icon {
+  width: 28rpx;
+  height: 28rpx;
+}
+
+/* Date picker trigger */
+.cs-date-trigger {
+  height: 80rpx;
+  padding: 0 24rpx;
+  background: rgba(236, 55, 19, 0.06);
+  border-radius: 16rpx;
+  font-size: 28rpx;
+  color: #EC3713;
+  display: flex;
+  align-items: center;
+}
+
+/* --- People Counter --- */
+/* Figma: two rows (成人/儿童) each with label+hint on left, counter on right */
+.cs-people {
+  display: flex;
+  flex-direction: column;
+  gap: 32rpx;
+}
+
+.cs-people-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cs-people-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.cs-people-name {
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #111827;
+  line-height: 48rpx;
+}
+
+.cs-people-hint {
+  font-size: 24rpx;
+  color: #9CA3AF;
+  line-height: 32rpx;
+}
+
+/* Figma: counter track bg #f9fafb p-4 rounded-8, square buttons with shadow */
+.cs-counter {
+  display: flex;
+  align-items: center;
+  background: #F9FAFB;
+  padding: 8rpx;
+  border-radius: 16rpx;
+}
+
+.cs-counter__btn {
+  width: 64rpx;
+  height: 64rpx;
+  background: #FFFFFF;
+  border: 2rpx solid #F3F4F6;
+  border-radius: 12rpx;
+  box-shadow: 0px 2rpx 4rpx 0px rgba(0, 0, 0, 0.05);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.submit-btn[disabled] {
+.cs-counter__btn--dim {
+  opacity: 0.4;
+}
+
+.cs-counter__icon {
+  width: 24rpx;
+  height: 24rpx;
+}
+
+.cs-counter__val {
+  width: 80rpx;
+  text-align: center;
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #1F2937;
+  line-height: 1;
+}
+
+/* --- Budget Grid (2 × 2) --- */
+/* Figma: 2 cols, rounded-8, border, centered text, py-13 px-17 */
+.budget-grid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16rpx;
+}
+
+.budget-item2 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 26rpx 34rpx;
+  background: #FFFFFF;
+  border: 2rpx solid #E5E7EB;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #1F2937;
+  text-align: center;
+}
+
+.budget-item2--active {
+  background: #FDEBE9;
+  border-color: #EC3713;
+  color: #EC3713;
+}
+
+/* --- Requirement Tags --- */
+.cs-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+
+.cs-tag {
+  padding: 12rpx 26rpx;
+  background: #F9FAFB;
+  border: 2rpx solid #E5E7EB;
+  border-radius: 9999rpx;
+  font-size: 24rpx;
+  color: #6B7280;
+  line-height: 32rpx;
+}
+
+.cs-tag--active {
+  background: #FDEBE9;
+  border-color: #EC3713;
+  color: #EC3713;
+}
+
+/* --- Textarea with char count --- */
+.cs-textarea-wrap {
+  position: relative;
+}
+
+.cs-textarea {
+  width: 100%;
+  height: 192rpx;
+  padding: 24rpx;
+  background: #F9FAFB;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+  color: #111827;
+  box-sizing: border-box;
+  line-height: 1.6;
+}
+
+.cs-textarea-count {
+  position: absolute;
+  bottom: 16rpx;
+  right: 16rpx;
+  font-size: 24rpx;
+  color: #9CA3AF;
+  line-height: 1;
+}
+
+/* ===== Sticky Bottom Bar ===== */
+/* Figma: fixed bottom, white bg, top border + shadow, pb-safe */
+.cs-bottom-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #FFFFFF;
+  border-top: 1rpx solid #E5E7EB;
+  box-shadow: 0px -10rpx 30rpx -6rpx rgba(0, 0, 0, 0.1), 0px -8rpx 24rpx -16rpx rgba(0, 0, 0, 0.1);
+  padding: 32rpx 32rpx;
+  padding-bottom: calc(32rpx + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+  z-index: 100;
+}
+
+/* Phone input row */
+.cs-phone-row {
+  display: flex;
+  align-items: center;
+  background: #F9FAFB;
+  border: 2rpx solid #E5E7EB;
+  border-radius: 16rpx;
+  padding: 0 22rpx;
+  height: 84rpx;
+  gap: 16rpx;
+}
+
+.cs-phone-icon {
+  width: 28rpx;
+  height: 28rpx;
+  flex-shrink: 0;
+}
+
+.cs-phone-field {
+  flex: 1;
+  font-size: 28rpx;
+  color: #111827;
+  height: 84rpx;
+  line-height: 84rpx;
+}
+
+.cs-phone-change {
+  font-size: 24rpx;
+  color: #EC3713;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+/* Submit button */
+/* Figma: rounded-full, bg #ec3713, shadow, flex row icon+text */
+.cs-submit-btn {
+  width: 100%;
+  height: 96rpx;
+  background: #EC3713;
+  border-radius: 9999rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16rpx;
+  box-shadow: 0px 20rpx 30rpx -6rpx rgba(236, 55, 19, 0.3), 0px 8rpx 12rpx -8rpx rgba(236, 55, 19, 0.3);
+}
+
+.cs-submit-btn[disabled] {
   opacity: 0.6;
 }
 
-/* 成功弹窗 */
+.cs-submit-text {
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #FFFFFF;
+  line-height: 1;
+}
+
+.cs-submit-arrow {
+  width: 28rpx;
+  height: 28rpx;
+}
+
+/* Privacy tip */
+.cs-privacy {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+}
+
+.cs-lock-icon {
+  width: 22rpx;
+  height: 22rpx;
+}
+
+.cs-privacy-text {
+  font-size: 20rpx;
+  color: #9CA3AF;
+  line-height: 1;
+}
+
+/* ===== 成功弹窗 ===== */
 .success-mask {
   position: fixed;
   top: 0;
@@ -447,9 +1037,9 @@
   left: 50%;
   transform: translate(-50%, -50%);
   width: 80%;
-  background: var(--color-bg-card);
-  border-radius: var(--radius-lg);
-  padding: var(--spacing-xl);
+  background: #FFFFFF;
+  border-radius: 32rpx;
+  padding: 48rpx;
   text-align: center;
   z-index: 301;
 }
@@ -457,43 +1047,43 @@
 .success-icon {
   width: 96rpx;
   height: 96rpx;
-  margin-bottom: var(--spacing-md);
+  margin-bottom: 24rpx;
 }
 
 .success-title {
-  font-size: var(--font-size-xl);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-text-primary);
-  margin-bottom: var(--spacing-sm);
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 16rpx;
 }
 
 .success-desc {
-  font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
-  margin-bottom: var(--spacing-xl);
+  font-size: 24rpx;
+  color: #6B7280;
+  margin-bottom: 48rpx;
 }
 
 .success-actions {
   display: flex;
-  gap: var(--spacing-md);
+  gap: 24rpx;
 }
 
 .success-btn {
   flex: 1;
   height: 80rpx;
-  border-radius: var(--radius-md);
-  font-size: var(--font-size-md);
+  border-radius: 16rpx;
+  font-size: 28rpx;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .success-btn--secondary {
-  background: var(--color-bg-gray);
-  color: var(--color-text-primary);
+  background: #F9FAFB;
+  color: #374151;
 }
 
 .success-btn--primary {
-  background: var(--color-primary);
-  color: var(--color-text-inverse);
+  background: #EC3713;
+  color: #FFFFFF;
 }

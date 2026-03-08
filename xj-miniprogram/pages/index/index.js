@@ -7,6 +7,7 @@ const appConfig = require('../../config/app.config');
 
 Page({
   data: {
+    statusBarHeight: 0,
     // 用户数据
     points: 0,
     unreadCount: 0,
@@ -33,6 +34,12 @@ Page({
   },
 
   onLoad() {
+    try {
+      const { statusBarHeight } = wx.getSystemInfoSync();
+      this.setData({ statusBarHeight });
+    } catch (e) {
+      this.setData({ statusBarHeight: 20 });
+    }
     this.loadHomeData();
   },
 

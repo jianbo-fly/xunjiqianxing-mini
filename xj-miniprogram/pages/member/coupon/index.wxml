@@ -1,1 +1,4 @@
-<xj-empty type="coupon" description="页面开发中..." />
+<view class="page-coupon">
+  <nav-bar title="优惠券" background="rgba(255,255,255,0.9)" border showBack fixed />
+  <xj-empty type="coupon" description="页面开发中..." />
+</view>

@@ -15,6 +15,11 @@ public interface MemberService {
     BigDecimal getMemberPrice();
 
     /**
+     * 根据ID查询会员订单
+     */
+    MemberOrder getOrderById(Long orderId);
+
+    /**
      * 创建会员订单
      */
     MemberOrder createOrder(Long userId, Integer months);

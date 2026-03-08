@@ -2,8 +2,12 @@
  * 推广中心页样式
  */
 
-.page-promoter-center {
+.page-promoter-center-wrap {
   min-height: 100vh;
+  background: var(--color-bg-page);
+}
+
+.page-promoter-center {
   background: var(--color-bg-page);
 }
 
@@ -20,7 +24,7 @@
   flex-direction: column;
   align-items: center;
   padding: var(--spacing-xl) var(--page-padding);
-  padding-top: calc(var(--spacing-xl) + 88rpx);
+  padding-top: var(--spacing-xl);
   background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
   background-size: cover;
 }

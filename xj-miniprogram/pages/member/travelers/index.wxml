@@ -1,4 +1,19 @@
+<!--
+  常用出行人列表页
+-->
 <view class="page-traveler-list">
+
+  <!-- 顶部导航栏 -->
+  <nav-bar
+    title="常用出行人"
+    background="rgba(248, 246, 246, 0.9)"
+    border
+    showBack
+    fixed
+  />
+
+
+
   <!-- 加载中 -->
   <view class="loading-container" wx:if="{{loading}}">
     <xj-loading text="加载中..." vertical />
@@ -6,59 +21,79 @@
 
   <!-- 出行人列表 -->
   <view class="traveler-list" wx:if="{{!loading}}">
-    <view class="traveler-card" wx:for="{{travelers}}" wx:key="id">
-      <view class="traveler-header">
-        <view class="traveler-name">{{item.name}}</view>
-        <view class="traveler-default" wx:if="{{item.isDefault}}">默认</view>
-      </view>
-
-      <view class="traveler-info">
-        <view class="info-row">
-          <text class="info-label">{{item.idTypeName || '身份证'}}</text>
-          <text class="info-value">{{item.idNoMask || item.idNo}}</text>
-        </view>
-        <view class="info-row">
-          <text class="info-label">手机号</text>
-          <text class="info-value">{{item.phoneMask || item.phone}}</text>
-        </view>
-      </view>
-
-      <view class="traveler-actions">
-        <view
-          class="action-btn action-btn--default"
-          wx:if="{{!item.isDefault}}"
-          data-id="{{item.id}}"
-          bindtap="handleSetDefault"
-        >
-          设为默认
-        </view>
-        <view
-          class="action-btn action-btn--edit"
-          data-id="{{item.id}}"
-          bindtap="handleEdit"
-        >
-          编辑
-        </view>
-        <view
-          class="action-btn action-btn--delete"
-          data-id="{{item.id}}"
-          data-name="{{item.name}}"
-          bindtap="handleDelete"
-        >
-          删除
-        </view>
-      </view>
-    </view>
 
     <!-- 空状态 -->
     <xj-empty wx:if="{{!travelers.length}}" description="添加出行人后可快速填写订单信息" />
+
+    <!-- 出行人卡片 -->
+    <view class="traveler-card" wx:for="{{travelers}}" wx:key="id">
+
+      <!-- 默认徽章（右上角） -->
+      <view class="default-badge" wx:if="{{item.isDefault}}">
+        <text class="default-badge__text">默认</text>
+      </view>
+
+      <!-- 卡片主体 -->
+      <view class="card-body">
+        <!-- 头像 + 姓名 -->
+        <view class="card-header">
+          <view class="avatar {{item.isDefault ? 'avatar--primary' : 'avatar--gray'}}">
+            <text class="avatar__text">{{item.name ? item.name[0] : '?'}}</text>
+          </view>
+          <view class="name-wrap">
+            <text class="traveler-name">{{item.name}}</text>
+          </view>
+        </view>
+
+        <!-- 信息区（竖排：icon + 标签在上，值在下） -->
+        <view class="info-list">
+          <view class="info-item">
+            <view class="info-item__label-row">
+              <image class="info-item__icon" src="/assets/icons/traveler/id-card.png" mode="aspectFit" />
+              <text class="info-item__label">{{item.idTypeName || '身份证号'}}</text>
+            </view>
+            <text class="info-item__value">{{item.idNoMask || item.idNo}}</text>
+          </view>
+          <view class="info-item">
+            <view class="info-item__label-row">
+              <image class="info-item__icon" src="/assets/icons/traveler/phone.png" mode="aspectFit" />
+              <text class="info-item__label">手机号码</text>
+            </view>
+            <text class="info-item__value">{{item.phoneMask || item.phone}}</text>
+          </view>
+        </view>
+
+        <!-- 操作按钮（顶部分隔线） -->
+        <view class="card-actions">
+          <view
+            class="action-btn"
+            data-id="{{item.id}}"
+            bindtap="handleEdit"
+          >
+            <image class="action-btn__icon" src="/assets/icons/traveler/edit.png" mode="aspectFit" />
+            <text class="action-btn__text">编辑</text>
+          </view>
+          <view
+            class="action-btn action-btn--delete"
+            data-id="{{item.id}}"
+            data-name="{{item.name}}"
+            bindtap="handleDelete"
+          >
+            <image class="action-btn__icon" src="/assets/icons/traveler/delete.png" mode="aspectFit" />
+            <text class="action-btn__text">删除</text>
+          </view>
+        </view>
+      </view>
+
+    </view>
   </view>
 
   <!-- 底部添加按钮 -->
   <view class="add-bar">
     <view class="add-btn" bindtap="handleAdd">
-      <text class="add-icon">+</text>
-      <text>添加出行人</text>
+      <image class="add-btn__icon" src="/assets/icons/traveler/plus.png" mode="aspectFit" />
+      <text class="add-btn__text">添加出行人</text>
     </view>
   </view>
+
 </view>

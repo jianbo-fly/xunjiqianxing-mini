@@ -1,10 +1,14 @@
+/**
+ * 常用出行人列表页
+ */
+
 .page-traveler-list {
   min-height: 100vh;
-  background: var(--color-bg-page);
-  padding-bottom: 140rpx;
+  background: #f8f6f6;
+  padding-bottom: 160rpx;
 }
 
-/* 加载中 */
+/* ===== 加载 ===== */
 .loading-container {
   display: flex;
   justify-content: center;
@@ -12,121 +16,194 @@
   height: 60vh;
 }
 
-/* 出行人列表 */
+/* ===== 列表 ===== */
 .traveler-list {
-  padding: var(--spacing-md) var(--page-padding);
+  padding: 48rpx 32rpx 0;
+  display: flex;
+  flex-direction: column;
+  gap: 32rpx;
 }
 
+/* ===== 出行人卡片 ===== */
 .traveler-card {
-  background: var(--color-bg-card);
-  border-radius: var(--radius-lg);
-  padding: var(--spacing-lg);
-  margin-bottom: var(--spacing-md);
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+  background: #fff;
+  border-radius: 24rpx;
+  overflow: hidden;
+  box-shadow: 0px 4rpx 16rpx -4rpx rgba(0, 0, 0, 0.05), 0px 4rpx 8rpx -4rpx rgba(0, 0, 0, 0.03);
+  position: relative;
 }
 
-.traveler-header {
+/* 卡片主体内边距 */
+.card-body {
+  padding: 40rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 32rpx;
+}
+
+/* 默认徽章 — 右上角，左下圆角 */
+.default-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: rgba(236, 55, 19, 0.1);
+  border-radius: 0 24rpx 0 24rpx;
+  padding: 8rpx 24rpx;
+}
+
+.default-badge__text {
+  font-size: 24rpx;
+  color: #ec3713;
+}
+
+/* ===== 卡片头部：头像 + 姓名 ===== */
+.card-header {
   display: flex;
   align-items: center;
-  margin-bottom: var(--spacing-md);
+  gap: 24rpx;
+}
+
+/* 头像圆形 */
+.avatar {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.avatar--primary {
+  background: rgba(236, 55, 19, 0.12);
+}
+
+.avatar--gray {
+  background: #f3f4f6;
+}
+
+.avatar__text {
+  font-size: 36rpx;
+  font-weight: var(--font-weight-medium);
+  color: #ec3713;
+}
+
+.avatar--gray .avatar__text {
+  color: #6b7280;
+}
+
+.name-wrap {
+  flex: 1;
 }
 
 .traveler-name {
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-text-primary);
+  font-size: 36rpx;
+  font-weight: var(--font-weight-medium);
+  color: #111827;
 }
 
-.traveler-default {
-  margin-left: var(--spacing-sm);
-  padding: 4rpx 16rpx;
-  background: var(--color-primary-light);
-  color: var(--color-primary);
-  font-size: var(--font-size-xs);
-  border-radius: var(--radius-xs);
+/* ===== 信息区（竖排） ===== */
+.info-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
 }
 
-.traveler-info {
-  padding-bottom: var(--spacing-md);
-  border-bottom: 1rpx solid var(--color-border);
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
 }
 
-.info-row {
+/* 图标 + 标签横排 */
+.info-item__label-row {
   display: flex;
   align-items: center;
-  margin-bottom: var(--spacing-xs);
+  gap: 16rpx;
 }
 
-.info-row:last-child {
-  margin-bottom: 0;
+.info-item__icon {
+  width: 28rpx;
+  height: 28rpx;
+  opacity: 0.5;
 }
 
-.info-label {
-  width: 100rpx;
-  font-size: var(--font-size-sm);
-  color: var(--color-text-tertiary);
+.info-item__label {
+  font-size: 24rpx;
+  color: #9ca3af;
 }
 
-.info-value {
-  flex: 1;
-  font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
+/* 值（在标签下方，左缩进与标签对齐） */
+.info-item__value {
+  font-size: 28rpx;
+  color: #374151;
+  padding-left: 44rpx;
+  letter-spacing: 0.5rpx;
 }
 
-.traveler-actions {
+/* ===== 操作按钮（顶部分隔线） ===== */
+.card-actions {
   display: flex;
   justify-content: flex-end;
-  gap: var(--spacing-md);
-  padding-top: var(--spacing-md);
+  gap: 32rpx;
+  padding-top: 32rpx;
+  border-top: 1rpx solid #f3f4f6;
 }
 
 .action-btn {
-  padding: var(--spacing-xs) var(--spacing-md);
-  font-size: var(--font-size-sm);
-  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 8rpx 16rpx;
+  border-radius: 16rpx;
 }
 
-.action-btn--default {
-  color: var(--color-primary);
-  background: var(--color-primary-light);
+.action-btn__icon {
+  width: 28rpx;
+  height: 28rpx;
 }
 
-.action-btn--edit {
-  color: var(--color-text-secondary);
-  background: var(--color-bg-gray);
+.action-btn__text {
+  font-size: 28rpx;
+  color: #6b7280;
 }
 
-.action-btn--delete {
-  color: var(--color-error);
-  background: var(--color-error-light);
+.action-btn--delete .action-btn__text {
+  color: #6b7280;
 }
 
-
-/* 底部添加按钮 */
+/* ===== 底部添加按钮 ===== */
 .add-bar {
   position: fixed;
   left: 0;
   right: 0;
   bottom: 0;
-  padding: var(--spacing-md) var(--page-padding);
-  padding-bottom: calc(var(--spacing-md) + env(safe-area-inset-bottom));
-  background: var(--color-bg-card);
-  box-shadow: 0 -2rpx 10rpx rgba(0, 0, 0, 0.05);
+  padding: 32rpx;
+  padding-bottom: calc(32rpx + env(safe-area-inset-bottom));
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(12rpx);
+  border-top: 1rpx solid #f3f4f6;
+  box-shadow: 0 -4rpx 12rpx rgba(0, 0, 0, 0.05);
 }
 
 .add-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 88rpx;
-  background: var(--color-primary);
-  color: var(--color-text-inverse);
-  font-size: var(--font-size-md);
-  font-weight: var(--font-weight-semibold);
-  border-radius: var(--radius-md);
+  gap: 16rpx;
+  height: 96rpx;
+  background: #ec3713;
+  border-radius: 16rpx;
+  box-shadow: 0px 20rpx 30rpx -6rpx rgba(236, 55, 19, 0.3), 0px 8rpx 12rpx -8rpx rgba(236, 55, 19, 0.3);
 }
 
-.add-icon {
-  font-size: var(--font-size-xl);
-  margin-right: var(--spacing-xs);
+.add-btn__icon {
+  width: 40rpx;
+  height: 40rpx;
+}
+
+.add-btn__text {
+  font-size: 32rpx;
+  color: #fff;
+  font-weight: var(--font-weight-medium);
 }

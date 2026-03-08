@@ -4,14 +4,16 @@
 const app = getApp();
 const userApi = require('../../../services/user');
 const orderApi = require('../../../services/order');
+const customApi = require('../../../services/custom');
 const { go } = require('../../../utils/router');
-const { isLogin, checkLogin } = require('../../../utils/auth');
+const { isLogin, checkLogin, clearAll } = require('../../../utils/auth');
 const assets = require('../../../assets/index');
 const appConfig = require('../../../config/app.config');
 
 Page({
   data: {
     assets,
+    statusBarHeight: 0,
     userInfo: null,
     isLogin: false,
     orderCounts: {
@@ -19,9 +21,20 @@ Page({
       confirming: 0,
       travelling: 0,
     },
+    customCounts: {
+      pending: 0,
+      following: 0,
+      completed: 0,
+    },
   },
 
   onLoad() {
+    try {
+      const sysInfo = wx.getSystemInfoSync();
+      this.setData({ statusBarHeight: sysInfo.statusBarHeight });
+    } catch (e) {
+      this.setData({ statusBarHeight: 20 });
+    }
     this.checkLogin();
   },
 
@@ -43,6 +56,7 @@ Page({
     if (loginStatus) {
       this.loadUserInfo();
       this.loadOrderCounts();
+      this.loadCustomCounts();
     }
   },
 
@@ -76,6 +90,36 @@ Page({
     } catch (e) {
       // 静默失败，不影响页面展示
     }
+  },
+
+  /**
+   * 加载定制数量
+   */
+  async loadCustomCounts() {
+    try {
+      const counts = await customApi.getCounts();
+      this.setData({
+        customCounts: {
+          pending: counts.pending || 0,
+          following: counts.following || 0,
+          completed: counts.completed || 0,
+        },
+      });
+    } catch (e) {
+      // 静默失败
+    }
+  },
+
+  /**
+   * 我的定制入口
+   */
+  handleCustomTap(e) {
+    if (!checkLogin()) return;
+    const status = e.currentTarget.dataset.status;
+    const url = status !== undefined
+      ? `/pages/custom/list/index?tab=${parseInt(status) + 1}`
+      : '/pages/custom/list/index';
+    wx.navigateTo({ url });
   },
 
   /**
@@ -121,11 +165,11 @@ Page({
   },
 
   /**
-   * 开通会员
+   * 开通会员 / 查看会员权益
    */
   handleMemberTap() {
     if (!checkLogin()) return;
-    wx.showToast({ title: '会员功能即将上线', icon: 'none' });
+    wx.navigateTo({ url: '/pages/member/vip/index' });
   },
 
   /**
@@ -149,10 +193,54 @@ Page({
   },
 
   /**
+   * 优惠券
+   */
+  handleCouponTap() {
+    if (!checkLogin()) return;
+    wx.showToast({ title: '优惠券功能即将上线', icon: 'none' });
+  },
+
+  /**
+   * 联系我们
+   */
+  handleContactTap() {
+    wx.makePhoneCall({
+      phoneNumber: '400-000-0000',
+      fail: () => {
+        wx.showToast({ title: '拨打失败', icon: 'none' });
+      },
+    });
+  },
+
+  /**
    * 关于我们
    */
   handleAboutTap() {
-    go.webview && go.webview('about');
+    wx.navigateTo({ url: '/pages/member/about/index' });
+  },
+
+  /**
+   * 退出登录
+   */
+  handleLogout() {
+    wx.showModal({
+      title: '退出登录',
+      content: '确定要退出登录吗？',
+      confirmText: '退出',
+      confirmColor: '#EC3713',
+      success: (res) => {
+        if (res.confirm) {
+          clearAll();
+          app.globalData.userInfo = null;
+          app.globalData.token = '';
+          this.setData({
+            isLogin: false,
+            userInfo: null,
+            orderCounts: { pending: 0, confirming: 0, travelling: 0 },
+          });
+        }
+      },
+    });
   },
 
   /**

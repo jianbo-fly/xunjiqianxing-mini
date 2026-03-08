@@ -1,4 +1,6 @@
 {
-  "navigationBarTitleText": "退款申请",
-  "usingComponents": {}
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "nav-bar": "/components/layout/nav-bar/index"
+  }
 }

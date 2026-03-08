@@ -1,49 +1,68 @@
 /**
  * CSS Variables - CSS变量
  *
- * 基于寻迹千行 UI 设计规范 v3.0
- * 品牌色：活力橙 #F98006
+ * 基于寻迹千行 UI 设计规范 v4.0
+ * 品牌色：红橙 #EC3713（对齐 Figma 设计稿）
  */
 
 page {
   /* ===== 颜色 - 品牌色 ===== */
-  --color-primary: #F98006;
-  --color-primary-light: #FFF3E0;
-  --color-primary-dark: #E07000;
-  --color-primary-gradient: linear-gradient(135deg, #FFA940 0%, #F98006 100%);
+  --color-primary: #EC3713;
+  --color-primary-light: #FFF7ED;
+  --color-primary-dark: #C52E0F;
+  --color-primary-subtle: rgba(236, 55, 19, 0.08);
+  --color-primary-bg: rgba(236, 55, 19, 0.05);    /* 极淡主色背景：选中态 */
+  --color-primary-tint: rgba(236, 55, 19, 0.1);   /* 浅主色背景：徽章/加号按钮 */
+  --color-primary-border: rgba(236, 55, 19, 0.3); /* 半透明主色：投影/边框 */
+  --color-primary-gradient: linear-gradient(to right, #EC3713, #EA580C);
 
   /* ===== 颜色 - 功能色 ===== */
-  --color-success: #27AE60;
-  --color-success-light: #F0FFF4;
+  --color-success: #16A34A;
+  --color-success-light: #F0FDF4;
   --color-warning: #FAA014;
   --color-warning-light: #FFFBE6;
   --color-error: #E74C3C;
   --color-error-light: #FFF2F0;
   --color-danger: #E74C3C;
-  --color-info: #3B82F6;
-  --color-price: #F98006;
+  --color-info: #2563EB;
+  --color-price: #EC3713;
 
   /* ===== 颜色 - 状态文字 ===== */
   --color-text-disabled: #C0C4CC;
 
   /* ===== 颜色 - 文字 ===== */
-  --color-text-primary: #1C1440;
+  --color-text-primary: #111827;
+  --color-text-strong: #1F2937;      /* 强调文字：套餐标题、计数器数字 */
+  --color-text-body: #374151;        /* 正文文字：标签、列表项 */
   --color-text-secondary: #6B7280;
   --color-text-tertiary: #9CA3AF;
   --color-text-placeholder: #C0C4CC;
   --color-text-inverse: #FFFFFF;
 
   /* ===== 颜色 - 背景 ===== */
-  --color-bg-page: #F5F5F5;
+  --color-bg-page: #F8F6F6;
   --color-bg-card: #FFFFFF;
   --color-bg-gray: #F9FAFB;
   --color-bg-mask: rgba(0,0,0,0.5);
-  --color-bg-warm: linear-gradient(180deg, #FFF5EB 0%, #F5F5F5 100%);
+  --color-bg-warm: linear-gradient(180deg, #FFF7ED 0%, #F8F6F6 100%);
 
   /* ===== 颜色 - 边框 ===== */
   --color-border: #E5E7EB;
+  --color-border-medium: #D1D5DB;  /* 中灰边框：减号按钮、分隔 */
   --color-border-light: #F3F4F6;
   --color-divider: #F3F4F6;
+
+  /* ===== 颜色 - 标签系统 ===== */
+  --tag-orange-bg: #FFF7ED;
+  --tag-orange-text: #EA580C;
+  --tag-gray-bg: #F3F4F6;
+  --tag-gray-text: #4B5563;
+  --tag-blue-bg: #EFF6FF;
+  --tag-blue-text: #2563EB;
+  --tag-green-bg: #F0FDF4;
+  --tag-green-text: #16A34A;
+  --tag-purple-bg: #FAF5FF;
+  --tag-purple-text: #9333EA;
 
   /* ===== 字体 - 字号 ===== */
   --font-size-xs: 20rpx;
@@ -93,6 +112,8 @@ page {
   --shadow-md: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
   --shadow-lg: 0 8rpx 30rpx rgba(0, 0, 0, 0.08);
   --shadow-xl: 0 16rpx 48rpx rgba(0, 0, 0, 0.12);
+  --shadow-card: 0px 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-card-hover: 0px 2px 10px rgba(0, 0, 0, 0.08);
 
   /* ===== 动画 ===== */
   --duration-fast: 150ms;

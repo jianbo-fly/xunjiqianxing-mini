@@ -2,37 +2,48 @@
 <view class="page-login">
   <!-- 步骤一：欢迎页 -->
   <view class="step step-welcome" wx:if="{{step === 1}}">
-    <!-- Logo区域 -->
-    <view class="logo-area">
-      <image class="logo" src="/assets/images/logo.png" mode="aspectFit" />
+
+    <!-- Brand 区域：logo + 文字 -->
+    <view class="brand-section">
+      <!-- Logo 卡片（外层撑开尺寸，内部 glow 和 card 叠放） -->
+      <view class="logo-wrap">
+        <view class="logo-glow"></view>
+        <view class="logo-card">
+          <image class="logo-img" src="/assets/images/logo.png" mode="aspectFit" />
+        </view>
+      </view>
+      <!-- 文字 -->
       <text class="app-name">寻迹千行</text>
-      <text class="app-slogan">发现旅途中的美好</text>
+      <text class="app-slogan">发现身边的美景 · 探索未知的世界</text>
     </view>
 
-    <!-- 登录按钮区域 -->
-    <view class="login-area">
-      <button
-        class="btn-login btn-wx"
-        loading="{{logging}}"
-        bindtap="handleWxLogin"
-      >
-        <text class="btn-icon">微信</text>
-        <text>微信一键登录</text>
+    <!-- 操作区 -->
+    <view class="action-section">
+      <!-- 微信一键登录 -->
+      <button class="btn-wx-login" loading="{{logging}}" bindtap="handleWxLogin">
+        <image class="btn-wx-icon" src="/assets/icons/common/weixin.png" mode="aspectFit" />
+        <text class="btn-wx-text">微信一键登录</text>
       </button>
 
-      <!-- 协议勾选 -->
-      <view class="agreement">
-        <view class="checkbox {{agreed ? 'checked' : ''}}" bindtap="handleAgreeChange">
-          <text wx:if="{{agreed}}">✓</text>
+      <!-- 手机号验证码登录 -->
+      <view class="phone-login-link" bindtap="handlePhoneLogin">
+        <text class="phone-login-text">手机号验证码登录</text>
+      </view>
+
+      <!-- 协议区：checkbox 与文字在同一行 -->
+      <view class="agreement" bindtap="handleAgreeChange">
+        <view class="checkbox-square {{agreed ? 'checked' : ''}}">
+          <text wx:if="{{agreed}}" class="checkbox-check">✓</text>
         </view>
-        <text class="agreement-text">
-          我已阅读并同意
-          <text class="link" bindtap="handleViewAgreement">《用户协议》</text>
-          和
-          <text class="link" bindtap="handleViewPrivacy">《隐私政策》</text>
-        </text>
+        <view class="agreement-body">
+          <text class="agreement-line">我已阅读并同意<text class="link" catchtap="handleViewAgreement">《用户协议》</text>和<text class="link" catchtap="handleViewPrivacy">《隐私政策》</text></text>
+          <text class="agreement-hint">未注册手机号登录时将自动创建账号</text>
+        </view>
       </view>
     </view>
+
+    <!-- 底部装饰 -->
+    <view class="bottom-deco"></view>
   </view>
 
   <!-- 步骤二：完善信息 -->

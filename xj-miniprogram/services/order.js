@@ -72,7 +72,7 @@ const orderApi = {
    * @param {string} reason - 退款原因
    */
   refund(id, reason) {
-    return post(`${paths.order.detail}/${id}/refund`, { reason });
+    return post(`${paths.order.detail}/${id}/refund?reason=${encodeURIComponent(reason)}`);
   },
 };
 

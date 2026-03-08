@@ -49,6 +49,17 @@ Page({
   },
 
   /**
+   * 手机号验证码登录（直接进入手机绑定步骤）
+   */
+  handlePhoneLogin() {
+    if (!this.data.agreed) {
+      wx.showToast({ title: '请先同意用户协议', icon: 'none' });
+      return;
+    }
+    this.setData({ step: 3 });
+  },
+
+  /**
    * 查看用户协议
    */
   handleViewAgreement() {

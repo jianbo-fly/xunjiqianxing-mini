@@ -1,4 +1,6 @@
 {
-  "navigationBarTitleText": "优惠券",
-  "usingComponents": {}
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "nav-bar": "/components/layout/nav-bar/index"
+  }
 }

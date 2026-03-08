@@ -1,1 +1,4 @@
-<xj-empty type="favorite" description="页面开发中..." />
+<view class="page-favorite">
+  <nav-bar title="我的收藏" background="rgba(255,255,255,0.9)" border showBack fixed />
+  <xj-empty type="favorite" description="页面开发中..." />
+</view>

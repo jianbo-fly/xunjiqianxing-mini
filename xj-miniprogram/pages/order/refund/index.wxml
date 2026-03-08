@@ -1,77 +1,154 @@
 <!--
-  退款申请页
+  退款申请页 - 对齐 Figma 5-5
 -->
-<view class="page-refund" wx:if="{{!loading}}">
-  <!-- 订单信息卡片 -->
-  <view class="order-card" wx:if="{{order}}">
-    <image class="order-image" src="{{order.productImage}}" mode="aspectFill" />
-    <view class="order-info">
-      <view class="order-name">{{order.productName}}</view>
-      <view class="order-no">订单号：{{order.orderNo}}</view>
-      <view class="order-bottom">
-        <text class="order-date-tag" wx:if="{{order.startDateText}}">{{order.startDateText}}出发</text>
-        <text class="order-price">¥ {{order.payAmountText}}</text>
+<view class="page-refund">
+
+  <!-- 自定义导航栏 -->
+  <nav-bar
+    title="退款申请"
+    background="rgba(248,246,246,0.9)"
+    border
+    showBack
+    fixed
+  />
+
+  <!-- 加载中 -->
+  <view class="loading-wrap" wx:if="{{loading}}">
+    <xj-loading text="加载中..." vertical />
+  </view>
+
+  <!-- 主内容 -->
+  <view class="main-content" wx:if="{{!loading && order}}">
+
+    <!-- 1. 订单摘要卡片 -->
+    <view class="card order-card">
+      <image class="order-img" src="{{order.productImage}}" mode="aspectFill" />
+      <view class="order-info">
+        <view class="order-name">{{order.productName}}</view>
+        <view class="order-date">出发时间: {{order.startDateText}}</view>
+        <view class="order-footer">
+          <view class="order-status-badge">订单已支付</view>
+          <text class="order-price">¥ {{order.payAmountText}}</text>
+        </view>
       </view>
     </view>
-  </view>
 
-  <!-- 退款提示 -->
-  <view class="refund-warning" wx:if="{{order.refundRule}}">
-    <image class="warning-icon" src="/assets/icons/common/service.png" mode="aspectFit" />
-    <text class="warning-text">{{order.refundRule.ruleDescription}}</text>
-  </view>
+    <!-- 2. 退款金额 & 退改规则卡片 -->
+    <view class="card">
+      <!-- 金额高亮区 -->
+      <view class="amount-area">
+        <text class="amount-label-text">预计退款金额</text>
+        <view class="amount-value-row">
+          <text class="amount-unit">¥</text>
+          <text class="amount-number">{{refundAmountText}}</text>
+        </view>
+        <view class="amount-badge" wx:if="{{refundPolicyDesc}}">
+          <text class="amount-badge-text">{{refundPolicyDesc}}</text>
+        </view>
+      </view>
 
-  <!-- 退款金额明细 -->
-  <view class="amount-section">
-    <view class="amount-row">
-      <text class="amount-label">订单总额</text>
-      <text class="amount-value">¥ {{order.payAmountText}}</text>
+      <!-- 退改规则时间轴 -->
+      <view class="policy-area">
+        <text class="policy-title">退改规则说明</text>
+        <view class="timeline">
+
+          <!-- Step 0：出发前>7天 -->
+          <view class="tl-item {{currentStep === 0 ? 'tl-item--active' : 'tl-item--past'}}">
+            <view class="tl-dot {{currentStep === 0 ? 'tl-dot--active' : 'tl-dot--past'}}"></view>
+            <view class="tl-body">
+              <text class="tl-title {{currentStep === 0 ? 'tl-title--active' : ''}}">出发前 > 7天</text>
+              <text class="tl-sub {{currentStep === 0 ? 'tl-sub--active' : ''}}">{{currentStep === 0 ? '当前状态' : '全额退款'}}</text>
+            </view>
+            <text class="tl-pct {{currentStep === 0 ? 'tl-pct--active' : ''}}">100%</text>
+          </view>
+
+          <!-- Step 1：出发前1-7天 -->
+          <view class="tl-item {{currentStep === 1 ? 'tl-item--active' : currentStep > 1 ? 'tl-item--past' : 'tl-item--future'}}">
+            <view class="tl-dot {{currentStep === 1 ? 'tl-dot--active' : currentStep > 1 ? 'tl-dot--past' : 'tl-dot--future'}}"></view>
+            <view class="tl-body">
+              <text class="tl-title {{currentStep === 1 ? 'tl-title--active' : ''}}">出发前 1-7天</text>
+              <text class="tl-sub {{currentStep === 1 ? 'tl-sub--active' : ''}}">{{currentStep === 1 ? '当前状态' : ''}}</text>
+            </view>
+            <text class="tl-pct {{currentStep === 1 ? 'tl-pct--active' : ''}}">70%</text>
+          </view>
+
+          <!-- Step 2：出发当天 -->
+          <view class="tl-item {{currentStep === 2 ? 'tl-item--active' : 'tl-item--future'}}">
+            <view class="tl-dot {{currentStep === 2 ? 'tl-dot--active' : 'tl-dot--future'}}"></view>
+            <view class="tl-body">
+              <text class="tl-title {{currentStep === 2 ? 'tl-title--active' : ''}}">出发当天</text>
+              <text class="tl-sub {{currentStep === 2 ? 'tl-sub--active' : ''}}">{{currentStep === 2 ? '当前状态' : '无法退款'}}</text>
+            </view>
+            <text class="tl-pct {{currentStep === 2 ? 'tl-pct--active' : ''}}">0%</text>
+          </view>
+
+        </view>
+      </view>
     </view>
-    <view class="amount-row" wx:if="{{order.refundRule.refundPercent < 100}}">
-      <text class="amount-label">扣除手续费 ({{100 - order.refundRule.refundPercent}}%)</text>
-      <text class="amount-value amount-deduct">- ¥ {{deductAmountText}}</text>
+
+    <!-- 3. 退款原因卡片 -->
+    <view class="card reason-card">
+      <view class="card-hd">
+        <text class="card-hd-title">退款原因</text>
+        <text class="required"> *</text>
+      </view>
+      <view class="reason-list">
+        <view
+          class="reason-item"
+          wx:for="{{reasonOptions}}"
+          wx:key="index"
+          data-index="{{index}}"
+          bindtap="handleSelectReason"
+        >
+          <view class="reason-left">
+            <view class="reason-icon-wrap" style="background: {{item.iconBg}};">
+              <text class="reason-icon-text">{{item.icon}}</text>
+            </view>
+            <text class="reason-label">{{item.label}}</text>
+          </view>
+          <view class="radio {{selectedReasonIndex === index ? 'radio--checked' : ''}}">
+            <text class="radio-check" wx:if="{{selectedReasonIndex === index}}">✓</text>
+          </view>
+        </view>
+      </view>
     </view>
-    <view class="amount-row amount-row-total">
-      <text class="amount-label-bold">预计退款金额</text>
-      <text class="amount-total">¥ {{refundAmountText}}</text>
+
+    <!-- 4. 补充说明卡片 -->
+    <view class="card">
+      <text class="card-title-plain">补充说明</text>
+      <view class="remark-wrap">
+        <textarea
+          class="remark-textarea"
+          placeholder="请详细描述退款原因，以便我们更快为您处理..."
+          placeholder-class="remark-placeholder"
+          maxlength="200"
+          value="{{remark}}"
+          bindinput="handleRemarkInput"
+        />
+        <text class="char-counter">{{remarkCount}}/200</text>
+      </view>
+      <view class="upload-btn" bindtap="handleUploadPhoto">
+        <text class="upload-icon">📷</text>
+        <text class="upload-text">凭证(选填)</text>
+      </view>
     </view>
-    <view class="amount-tip">退款将原路退回至您的支付账户，预计1-3个工作日到账。</view>
+
+    <view class="bottom-placeholder"></view>
   </view>
 
-  <!-- 退款原因 -->
-  <view class="reason-section">
-    <view class="reason-title">退款原因 <text class="required">*</text></view>
-    <view class="reason-tags">
-      <view
-        class="reason-tag {{selectedReasonIndex === index ? 'active' : ''}}"
-        wx:for="{{reasonOptions}}"
-        wx:key="index"
-        data-index="{{index}}"
-        bindtap="handleSelectReason"
-      >{{item}}</view>
+  <!-- 底部固定操作栏 -->
+  <view class="bottom-bar" wx:if="{{!loading && order}}">
+    <view class="bar-price">
+      <text class="bar-price-label">退款总额</text>
+      <text class="bar-price-value">¥ {{refundAmountText}}</text>
+    </view>
+    <view
+      class="bar-btn {{submitting ? 'bar-btn--disabled' : ''}}"
+      bindtap="handleSubmit"
+    >
+      <text class="bar-btn-text">{{submitting ? '提交中...' : '提交申请'}}</text>
+      <image wx:if="{{!submitting}}" class="bar-btn-arrow" src="/assets/icons/order/bar-btn-icon.png" mode="aspectFit" />
     </view>
   </view>
 
-  <!-- 底部占位 -->
-  <view class="bottom-placeholder"></view>
-</view>
-
-<!-- 底部固定操作栏 -->
-<view class="bottom-bar" wx:if="{{!loading && order}}">
-  <view class="bottom-price">
-    <text class="bottom-price-label">退款总额</text>
-    <text class="bottom-price-value">¥ {{refundAmountText}}</text>
-  </view>
-  <view
-    class="bottom-submit {{submitting ? 'disabled' : ''}}"
-    bindtap="handleSubmit"
-  >
-    {{submitting ? '提交中...' : '提交退款申请'}}
-    <text wx:if="{{!submitting}}"> →</text>
-  </view>
-</view>
-
-<!-- 加载中 -->
-<view class="loading-container" wx:if="{{loading}}">
-  <xj-loading text="加载中..." vertical />
 </view>

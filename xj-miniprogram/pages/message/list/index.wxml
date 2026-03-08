@@ -1,1 +1,4 @@
-<xj-empty type="message" description="页面开发中..." />
+<view class="page-message-list">
+  <nav-bar title="消息列表" background="rgba(255,255,255,0.9)" border showBack fixed />
+  <xj-empty type="message" description="页面开发中..." />
+</view>

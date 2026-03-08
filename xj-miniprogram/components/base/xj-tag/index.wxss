@@ -44,6 +44,36 @@
   color: var(--color-error);
 }
 
+/* 颜色变体 - Orange */
+.xj-tag--orange {
+  background: var(--tag-orange-bg, #FFF7ED);
+  color: var(--tag-orange-text, #EA580C);
+}
+
+/* 颜色变体 - Blue */
+.xj-tag--blue {
+  background: var(--tag-blue-bg, #EFF6FF);
+  color: var(--tag-blue-text, #2563EB);
+}
+
+/* 颜色变体 - Green */
+.xj-tag--green {
+  background: var(--tag-green-bg, #F0FDF4);
+  color: var(--tag-green-text, #16A34A);
+}
+
+/* 颜色变体 - Purple */
+.xj-tag--purple {
+  background: var(--tag-purple-bg, #FAF5FF);
+  color: var(--tag-purple-text, #9333EA);
+}
+
+/* 颜色变体 - Gray */
+.xj-tag--gray {
+  background: var(--tag-gray-bg, #F3F4F6);
+  color: var(--tag-gray-text, #4B5563);
+}
+
 /* 镂空 */
 .xj-tag--plain {
   background: transparent;

@@ -57,7 +57,7 @@
 }
 
 .banner-swiper {
-  height: 500rpx;
+  height: 576rpx;
 }
 
 .banner-image {
@@ -65,28 +65,82 @@
   height: 100%;
 }
 
+.banner-gradient {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 200rpx;
+  background: linear-gradient(to top, rgba(0,0,0,0.5), transparent);
+  pointer-events: none;
+}
+
 .banner-indicator {
   position: absolute;
   right: var(--page-padding);
-  bottom: var(--spacing-md);
-  padding: 4rpx 16rpx;
-  background: rgba(0, 0, 0, 0.5);
+  bottom: 80rpx;
+  padding: 6rpx 20rpx;
+  background: rgba(0, 0, 0, 0.45);
   border-radius: var(--radius-full);
   font-size: var(--font-size-xs);
   color: var(--color-text-inverse);
 }
 
-/* 基本信息 */
-.info-section {
-  padding: var(--spacing-lg) var(--page-padding);
+.banner-dots {
+  position: absolute;
+  bottom: 24rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10rpx;
+  z-index: 5;
+}
+
+.banner-dot {
+  width: 10rpx;
+  height: 10rpx;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.5);
+  transition: all 0.2s;
+}
+
+.banner-dot--active {
+  width: 24rpx;
+  border-radius: var(--radius-full);
+  background: var(--color-text-inverse);
+}
+
+/* 信息卡片（与 Hero 重叠 48rpx） */
+.info-card {
+  position: relative;
+  margin-top: -48rpx;
+  padding: 40rpx 40rpx 32rpx;
   background: var(--color-bg-card);
+  border-radius: 48rpx 48rpx var(--radius-lg) var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  z-index: 5;
+}
+
+.info-card__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24rpx;
+}
+
+.info-card__title-wrap {
+  flex: 1;
 }
 
 .route-name {
-  font-size: var(--font-size-xl);
+  font-size: 40rpx;
   font-weight: var(--font-weight-bold);
   color: var(--color-text-primary);
   line-height: 1.4;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
 }
 
 .route-subtitle {
@@ -95,26 +149,59 @@
   color: var(--color-text-secondary);
 }
 
-.route-tags {
+.info-card__meta-tags {
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--spacing-xs);
-  margin-top: var(--spacing-md);
+  flex-direction: column;
+  gap: 8rpx;
+  flex-shrink: 0;
 }
 
-.route-tag {
-  padding: 4rpx 16rpx;
+.info-meta-tag {
+  padding: 8rpx 16rpx;
   background: var(--color-primary-light);
+  border-radius: var(--radius-sm);
+}
+
+.info-meta-tag__text {
+  font-size: 22rpx;
   color: var(--color-primary);
-  font-size: var(--font-size-xs);
-  border-radius: var(--radius-xs);
+  font-weight: var(--font-weight-medium);
+}
+
+.route-price {
+  margin-top: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.price-main {
+  display: flex;
+  align-items: baseline;
+  gap: 2rpx;
+}
+
+.price-symbol {
+  font-size: var(--font-size-lg);
+  color: var(--color-primary);
+  font-weight: var(--font-weight-bold);
+}
+
+.price-value {
+  font-size: 48rpx;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+}
+
+.price-unit {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-tertiary);
 }
 
 .route-meta {
   display: flex;
   align-items: center;
-  gap: var(--spacing-md);
-  margin-top: var(--spacing-md);
+  gap: 8rpx;
   font-size: var(--font-size-sm);
   color: var(--color-text-secondary);
 }
@@ -134,27 +221,218 @@
   font-weight: var(--font-weight-semibold);
 }
 
-.route-price {
-  margin-top: var(--spacing-md);
+/* 保障标签行 */
+.guarantee-tags {
   display: flex;
-  align-items: baseline;
+  gap: 24rpx;
+  margin-top: 20rpx;
+  padding-top: 20rpx;
+  border-top: 1rpx solid var(--color-border-light);
 }
 
-.price-symbol {
-  font-size: var(--font-size-md);
-  color: var(--color-error);
+.guarantee-tag {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
 }
 
-.price-value {
-  font-size: 48rpx;
-  font-weight: var(--font-weight-bold);
-  color: var(--color-error);
+.guarantee-tag__icon {
+  font-size: 22rpx;
+  color: var(--color-success);
+  font-weight: bold;
 }
 
-.price-unit {
+.guarantee-tag__text {
+  font-size: 22rpx;
+  color: var(--color-text-secondary);
+}
+
+.route-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+  margin-top: var(--spacing-md);
+}
+
+.route-tag {
+  padding: 6rpx 16rpx;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  font-size: var(--font-size-xs);
+  border-radius: var(--radius-xs);
+}
+
+/* 预订卡片（套餐 + 日期 + 人数合并） */
+.booking-card {
+  margin-top: var(--section-gap);
+  padding: var(--spacing-lg) 0 0;
+  background: var(--color-bg-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+
+.booking-card__header {
+  padding: 0 var(--page-padding);
+  margin-bottom: var(--spacing-md);
+}
+
+.booking-card__date-wrap {
+  margin-top: var(--spacing-lg);
+}
+
+.booking-card__divider {
+  margin: var(--spacing-lg) var(--page-padding) 0;
+  border-top: 2rpx dashed var(--color-border);
+}
+
+.booking-card__people {
+  padding-top: var(--spacing-md);
+  padding-bottom: var(--spacing-sm);
+}
+
+.section-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 var(--page-padding);
+  margin-bottom: var(--spacing-md);
+}
+
+.section-more {
   font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.package-scroll {
+  white-space: nowrap;
+}
+
+.package-cards {
+  display: flex;
+  gap: 20rpx;
+  padding: 8rpx var(--page-padding);
+}
+
+.package-card {
+  flex-shrink: 0;
+  width: 240rpx;
+  padding: 24rpx 20rpx;
+  background: var(--color-bg-gray);
+  border-radius: var(--radius-md);
+  border: 2rpx solid transparent;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.package-card--active {
+  background: var(--color-primary-light);
+  border-color: var(--color-primary);
+}
+
+.package-card__name {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  white-space: normal;
+}
+
+.package-card__desc {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  white-space: normal;
+  line-height: 1.4;
+}
+
+.package-card__price {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+  margin-top: 4rpx;
+}
+
+.package-card__unit {
+  font-size: var(--font-size-xs);
+  font-weight: normal;
   color: var(--color-text-tertiary);
-  margin-left: 4rpx;
+}
+
+.package-card__check {
+  position: absolute;
+  bottom: 12rpx;
+  right: 12rpx;
+  font-size: 20rpx;
+  color: var(--color-primary);
+  font-weight: bold;
+}
+
+/* 日期选择条 */
+.date-strip-scroll {
+  white-space: nowrap;
+}
+
+.date-strip-list {
+  display: flex;
+  gap: 16rpx;
+  padding: 8rpx var(--page-padding);
+}
+
+.date-strip-item {
+  flex-shrink: 0;
+  width: 144rpx;
+  padding: 18rpx;
+  background: var(--color-bg-card);
+  border-radius: var(--radius-md);
+  border: 2rpx solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.date-strip-item--active {
+  background: var(--color-primary-bg);
+  border-color: var(--color-primary);
+}
+
+.date-strip-item--disabled {
+  opacity: 0.5;
+}
+
+.date-strip-item__week {
+  font-size: 24rpx;
+  color: var(--color-text-secondary);
+  text-align: center;
+}
+
+.date-strip-item--active .date-strip-item__week {
+  color: var(--color-primary);
+}
+
+.date-strip-item__day {
+  font-size: 28rpx;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-strong);
+  text-align: center;
+}
+
+.date-strip-item--active .date-strip-item__day {
+  color: var(--color-primary);
+}
+
+.date-strip-item__price {
+  font-size: 24rpx;
+  color: var(--color-primary);
+  font-weight: var(--font-weight-medium);
+  text-align: center;
+}
+
+.date-strip-item__sold {
+  font-size: 24rpx;
+  color: var(--color-text-disabled);
+  text-align: center;
 }
 
 /* 行程亮点 */
@@ -162,6 +440,7 @@
   margin-top: var(--section-gap);
   padding: var(--spacing-lg) var(--page-padding);
   background: var(--color-bg-card);
+  border-radius: var(--radius-lg);
 }
 
 .section-title {
@@ -235,36 +514,53 @@
 .quantity-picker {
   display: flex;
   align-items: center;
-  gap: var(--spacing-md);
+  gap: 24rpx;
 }
 
 .quantity-btn {
   width: 56rpx;
   height: 56rpx;
-  background: var(--color-bg-gray);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: var(--font-size-lg);
+  font-size: 36rpx;
+  font-weight: var(--font-weight-bold);
+  flex-shrink: 0;
+}
+
+/* 减号：灰色边框 */
+.quantity-btn--minus {
+  border: 2rpx solid var(--color-border-medium);
+  background: transparent;
   color: var(--color-text-primary);
 }
 
+/* 加号：浅橙背景 + 主色边框 */
+.quantity-btn--plus {
+  background: var(--color-primary-tint);
+  border: 2rpx solid var(--color-primary);
+  color: var(--color-primary);
+}
+
 .quantity-btn--disabled {
-  color: var(--color-text-disabled);
+  opacity: 0.35;
 }
 
 .quantity-value {
-  width: 60rpx;
+  width: 48rpx;
   text-align: center;
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-semibold);
+  font-size: 36rpx;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-strong);
 }
 
 /* 内容区 */
 .content-section {
   margin-top: var(--section-gap);
   background: var(--color-bg-card);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
 }
 
 .content-tabs {
@@ -313,7 +609,7 @@
   background: var(--color-bg-card);
   border-radius: var(--radius-lg);
   overflow: hidden;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-card);
 }
 
 .day-header {
@@ -321,28 +617,29 @@
   align-items: center;
   gap: var(--spacing-md);
   padding: var(--spacing-md);
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  background: var(--color-bg-card);
 }
 
 .day-badge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 64rpx;
+  min-width: 80rpx;
   height: 48rpx;
-  padding: 0 var(--spacing-sm);
-  background: rgba(255, 255, 255, 0.25);
-  color: var(--color-text-inverse);
-  font-size: var(--font-size-sm);
+  padding: 0 24rpx;
+  background: var(--color-primary-tint);
+  color: var(--color-primary);
+  font-size: 32rpx;
   font-weight: var(--font-weight-bold);
   border-radius: var(--radius-sm);
+  flex-shrink: 0;
 }
 
 .day-header .day-title {
   flex: 1;
-  font-size: var(--font-size-md);
+  font-size: 36rpx;
   font-weight: var(--font-weight-semibold);
-  color: var(--color-text-inverse);
+  color: var(--color-text-primary);
 }
 
 /* 时间轴 */
@@ -358,8 +655,8 @@
   left: 42rpx;
   top: var(--spacing-md);
   bottom: var(--spacing-md);
-  width: 2rpx;
-  background: var(--color-border);
+  width: 4rpx;
+  background: var(--color-border-light);
 }
 
 .timeline-item {
@@ -564,14 +861,52 @@
 .book-btn {
   width: 100%;
   height: 88rpx;
-  background: linear-gradient(135deg, var(--color-primary-dark), var(--color-primary));
-  border-radius: var(--radius-md);
+  background: linear-gradient(to right, #EC3713, #EA580C);
+  border-radius: var(--radius-full);
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 0;
+  box-shadow: 0 20rpx 30rpx -6rpx var(--color-primary-border), 0 8rpx 12rpx -8rpx var(--color-primary-border);
+}
+
+/* 价格在按钮内（有选中金额时） */
+.book-btn__price {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding-left: 32rpx;
+  flex: 1;
+}
+
+.book-btn__price-label {
+  font-size: 20rpx;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1;
+}
+
+.book-btn__price-value {
+  font-size: 32rpx;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-inverse);
+  line-height: 1.2;
+}
+
+/* 竖向分隔线 */
+.book-btn__sep {
+  width: 2rpx;
+  height: 40rpx;
+  background: rgba(255, 255, 255, 0.4);
+  margin: 0 24rpx;
+  flex-shrink: 0;
+}
+
+.book-btn__text {
   color: var(--color-text-inverse);
   font-size: var(--font-size-lg);
   font-weight: var(--font-weight-semibold);
+  /* 有价格时靠右留间距；无价格时居中 */
+  padding: 0 32rpx;
 }
 
 /* xj-popup 布局覆盖 */
@@ -632,7 +967,7 @@
   margin-top: var(--spacing-sm);
   font-size: var(--font-size-lg);
   font-weight: var(--font-weight-bold);
-  color: var(--color-error);
+  color: var(--color-primary);
 }
 
 .package-price-unit {
@@ -718,9 +1053,9 @@
 
 .calendar-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: var(--spacing-sm);
-  padding: var(--spacing-md);
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16rpx;
+  padding: var(--spacing-md) var(--page-padding);
 }
 
 .calendar-item {
@@ -728,14 +1063,15 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: var(--spacing-sm);
+  padding: 14rpx 8rpx;
   background: var(--color-bg-gray);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   border: 2rpx solid transparent;
+  gap: 4rpx;
 }
 
 .calendar-item--active {
-  background: var(--color-primary-light);
+  background: var(--color-primary-bg);
   border-color: var(--color-primary);
 }
 
@@ -743,87 +1079,71 @@
   opacity: 0.5;
 }
 
-.calendar-item--weekend {
-  background: var(--color-warning-light);
+.calendar-item--weekend .calendar-week,
+.calendar-item--weekend .calendar-date {
+  color: var(--color-warning);
+}
+
+.calendar-week {
+  font-size: 20rpx;
+  color: var(--color-text-secondary);
+  line-height: 1;
+}
+
+.calendar-item--active .calendar-week {
+  color: var(--color-primary);
 }
 
 .calendar-date {
-  font-size: var(--font-size-sm);
+  font-size: 32rpx;
+  font-weight: var(--font-weight-bold);
   color: var(--color-text-primary);
+  line-height: 1.2;
+}
+
+.calendar-item--active .calendar-date {
+  color: var(--color-primary);
 }
 
 .calendar-price {
-  margin-top: 4rpx;
-  font-size: var(--font-size-xs);
-  color: var(--color-error);
+  font-size: 20rpx;
+  color: var(--color-primary);
+  line-height: 1;
 }
 
 .calendar-sold {
-  margin-top: 4rpx;
-  font-size: var(--font-size-xs);
+  font-size: 20rpx;
   color: var(--color-text-disabled);
+  line-height: 1;
 }
 
 /* 选择人数区域 */
-.people-section {
-  margin-top: var(--section-gap);
-  padding: var(--spacing-lg) var(--page-padding);
-  background: var(--color-bg-card);
-}
-
 .people-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--spacing-md) 0;
-  border-bottom: 1rpx solid var(--color-border);
+  padding: var(--spacing-md) var(--page-padding);
+  border-bottom: 1rpx solid var(--color-border-light);
 }
 
-.people-item:last-of-type {
+.people-item--last {
   border-bottom: none;
 }
 
-.people-info {
-  display: flex;
-  flex-direction: column;
-  gap: 4rpx;
-}
-
 .people-type {
-  font-size: var(--font-size-md);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-text-primary);
+  font-size: 28rpx;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-body);
 }
 
-.people-price {
-  font-size: var(--font-size-sm);
-  color: var(--color-error);
-  font-weight: var(--font-weight-semibold);
+.people-label-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6rpx;
 }
 
-.people-desc {
-  font-size: var(--font-size-xs);
+.people-age {
+  font-size: 24rpx;
   color: var(--color-text-tertiary);
 }
 
-/* 合计金额 */
-.total-amount {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  margin-top: var(--spacing-lg);
-  padding-top: var(--spacing-md);
-  border-top: 1rpx solid var(--color-border);
-}
-
-.total-label {
-  font-size: var(--font-size-md);
-  color: var(--color-text-secondary);
-}
-
-.total-value {
-  font-size: 40rpx;
-  font-weight: var(--font-weight-bold);
-  color: var(--color-error);
-  margin-left: var(--spacing-xs);
-}

@@ -1,58 +1,85 @@
+<!--
+  我的 - 个人中心
+-->
 <view class="page-member">
-  <!-- 头部用户信息 -->
+
+  <!-- ===== 头部（渐变背景 + 圆角底部） ===== -->
   <view class="header">
+    <!-- 状态栏占位 -->
+    <view class="status-bar" style="height: {{statusBarHeight}}px;"></view>
+
+    <!-- 右侧操作按钮行 -->
     <view class="header-actions">
-      <image class="header-action-icon" src="/assets/icons/common/share.png" mode="aspectFit" bindtap="handleScanTap" />
-      <image class="header-action-icon" src="/assets/icons/common/more.png" mode="aspectFit" bindtap="handleSettingsTap" />
+      <view class="action-icon-btn" bindtap="handleSettingsTap">
+        <image class="action-icon" src="/assets/icons/member/settings.png" mode="aspectFit" />
+      </view>
     </view>
-    <view class="user-info" bindtap="handleAvatarTap">
+
+    <!-- 用户信息行 -->
+    <view class="profile-row" bindtap="handleAvatarTap">
+      <!-- 头像 -->
       <view class="avatar-wrap">
         <image
           class="avatar"
           src="{{userInfo.avatar || assets.placeholder.avatar}}"
           mode="aspectFill"
         />
-        <view class="avatar-edit" wx:if="{{isLogin}}">
-          <image class="avatar-edit-icon" src="/assets/icons/common/more.png" mode="aspectFit" />
+        <view class="avatar-edit-dot" wx:if="{{isLogin}}">
+          <image class="avatar-edit-icon" src="/assets/icons/member/edit.png" mode="aspectFit" />
         </view>
       </view>
+
+      <!-- 昵称 + 会员徽章 -->
       <view class="user-detail">
         <text class="nickname">{{isLogin ? (userInfo.nickname || '用户') : '点击登录'}}</text>
-        <view wx:if="{{isLogin}}" class="member-badge" bindtap="handleMemberTap">
-          <image class="member-badge-icon" src="/assets/icons/common/favorite-active.png" mode="aspectFit" />
-          <text class="member-badge-text">寻途会员</text>
-          <text class="member-badge-arrow">›</text>
+        <view class="vip-badge" wx:if="{{isLogin}}">
+          <image class="vip-badge-star-icon" src="/assets/icons/member/vip-star.png" mode="aspectFit" />
+          <text class="vip-badge-text">黄金会员</text>
         </view>
+        <text class="login-hint" wx:else>登录享受更多服务</text>
+      </view>
+    </view>
+
+    <!-- 资产卡片行 -->
+    <view class="stats-row" wx:if="{{isLogin}}">
+      <view class="stat-card">
+        <text class="stat-value">{{userInfo.points || 500}}</text>
+        <text class="stat-label">我的积分</text>
+      </view>
+      <view class="stat-divider"></view>
+      <view class="stat-card" bindtap="handleCouponTap">
+        <text class="stat-value">{{userInfo.couponCount || 3}}</text>
+        <text class="stat-label">优惠券</text>
       </view>
     </view>
   </view>
 
-  <!-- 订单入口 -->
-  <view class="order-section">
-    <view class="section-header">
-      <text class="section-title">我的订单</text>
-      <view class="section-more" data-status="" bindtap="handleOrderTap">
-        <text>全部</text>
-        <text class="arrow">›</text>
+  <!-- ===== 我的订单卡片 ===== -->
+  <view class="section-card order-card">
+    <view class="card-hd">
+      <text class="card-hd-title">我的订单</text>
+      <view class="card-hd-more" data-status="" bindtap="handleOrderTap">
+        <text class="card-hd-more-text">全部订单</text>
+        <image class="card-hd-chevron" src="/assets/icons/member/chevron.png" mode="aspectFit" />
       </view>
     </view>
     <view class="order-tabs">
       <view class="order-tab" data-status="0" bindtap="handleOrderTap">
-        <view class="order-tab-icon-wrap">
-          <image class="order-tab-icon" src="/assets/icons/order/status-pending.png" mode="aspectFit" />
+        <view class="order-tab-icon-wrap order-tab-bg">
+          <image class="order-tab-icon" src="/assets/icons/order/status-pending-pay.png" mode="aspectFit" />
           <view wx:if="{{orderCounts.pending > 0}}" class="order-badge">{{orderCounts.pending}}</view>
         </view>
-        <text class="order-tab-text">待支付</text>
+        <text class="order-tab-text">待付款</text>
       </view>
       <view class="order-tab" data-status="1" bindtap="handleOrderTap">
         <view class="order-tab-icon-wrap">
-          <image class="order-tab-icon" src="/assets/icons/order/status-confirmed.png" mode="aspectFit" />
+          <image class="order-tab-icon-full" src="/assets/icons/order/status-confirming.png" mode="aspectFit" />
           <view wx:if="{{orderCounts.confirming > 0}}" class="order-badge">{{orderCounts.confirming}}</view>
         </view>
         <text class="order-tab-text">待确认</text>
       </view>
       <view class="order-tab" data-status="2" bindtap="handleOrderTap">
-        <view class="order-tab-icon-wrap">
+        <view class="order-tab-icon-wrap order-tab-bg">
           <image class="order-tab-icon" src="/assets/icons/order/status-travelling.png" mode="aspectFit" />
           <view wx:if="{{orderCounts.travelling > 0}}" class="order-badge">{{orderCounts.travelling}}</view>
         </view>
@@ -60,59 +87,122 @@
       </view>
       <view class="order-tab" data-status="4" bindtap="handleOrderTap">
         <view class="order-tab-icon-wrap">
-          <image class="order-tab-icon" src="/assets/icons/order/status-completed.png" mode="aspectFit" />
+          <image class="order-tab-icon-full" src="/assets/icons/order/status-completed.png" mode="aspectFit" />
         </view>
         <text class="order-tab-text">已完成</text>
       </view>
     </view>
   </view>
 
-  <!-- 功能菜单 -->
-  <view class="menu-section">
-    <!-- 开通会员 -->
-    <view class="menu-item" bindtap="handleMemberTap">
-      <view class="menu-icon-wrap menu-icon-orange">
-        <image class="menu-icon" src="/assets/icons/common/favorite-active.png" mode="aspectFit" />
+  <!-- ===== 我的定制卡片 ===== -->
+  <view class="section-card custom-card" wx:if="{{isLogin}}">
+    <view class="card-hd" bindtap="handleCustomTap">
+      <text class="card-hd-title">我的定制</text>
+      <view class="card-hd-more">
+        <text class="card-hd-more-text">全部</text>
+        <image class="card-hd-chevron" src="/assets/icons/member/chevron.png" mode="aspectFit" />
       </view>
-      <text class="menu-title">{{userInfo.isMember ? '我的会员' : '开通会员'}}</text>
-      <text class="menu-tag">尊享专属折扣</text>
-      <text class="menu-arrow">›</text>
     </view>
-
-    <!-- 成为领队 -->
-    <view class="menu-item" bindtap="handleLeaderTap">
-      <view class="menu-icon-wrap menu-icon-blue">
-        <image class="menu-icon" src="/assets/icons/entry/travel.png" mode="aspectFit" />
+    <view class="custom-tabs">
+      <view class="custom-tab" data-status="0" bindtap="handleCustomTap">
+        <view class="custom-tab-icon-wrap custom-tab-bg--pending">
+          <image class="custom-tab-icon" src="/assets/icons/custom-list/cl-dest-blue.png" mode="aspectFit" />
+          <view wx:if="{{customCounts.pending > 0}}" class="order-badge">{{customCounts.pending}}</view>
+        </view>
+        <text class="order-tab-text">待处理</text>
       </view>
-      <text class="menu-title">成为领队</text>
-      <text class="menu-arrow">›</text>
-    </view>
-
-    <!-- 推广中心 -->
-    <view class="menu-item" bindtap="handlePromoterTap">
-      <view class="menu-icon-wrap menu-icon-green">
-        <image class="menu-icon" src="/assets/icons/common/share.png" mode="aspectFit" />
+      <view class="custom-tab" data-status="1" bindtap="handleCustomTap">
+        <view class="custom-tab-icon-wrap custom-tab-bg--following">
+          <image class="custom-tab-icon" src="/assets/icons/custom-list/cl-dest-warm.png" mode="aspectFit" />
+          <view wx:if="{{customCounts.following > 0}}" class="order-badge">{{customCounts.following}}</view>
+        </view>
+        <text class="order-tab-text">跟进中</text>
       </view>
-      <text class="menu-title">{{userInfo.isPromoter ? '推广中心' : '推广中心'}}</text>
-      <text class="menu-arrow">›</text>
-    </view>
-
-    <!-- 常用出行人 -->
-    <view class="menu-item" data-path="travelers" bindtap="handleMenuTap">
-      <view class="menu-icon-wrap menu-icon-purple">
-        <image class="menu-icon" src="/assets/icons/tabbar/companion.png" mode="aspectFit" />
+      <view class="custom-tab" data-status="2" bindtap="handleCustomTap">
+        <view class="custom-tab-icon-wrap custom-tab-bg--completed">
+          <image class="custom-tab-icon" src="/assets/icons/custom-list/cl-dest-green.png" mode="aspectFit" />
+        </view>
+        <text class="order-tab-text">已完成</text>
       </view>
-      <text class="menu-title">常用出行人</text>
-      <text class="menu-arrow">›</text>
-    </view>
-
-    <!-- 关于我们 -->
-    <view class="menu-item" bindtap="handleAboutTap">
-      <view class="menu-icon-wrap menu-icon-gray">
-        <image class="menu-icon" src="/assets/icons/common/service.png" mode="aspectFit" />
-      </view>
-      <text class="menu-title">关于我们</text>
-      <text class="menu-arrow">›</text>
     </view>
   </view>
+
+  <!-- ===== 会员 Banner ===== -->
+  <view class="member-banner" bindtap="handleMemberTap">
+    <view class="member-banner-deco"></view>
+    <view class="member-banner-left">
+      <text class="member-banner-title">{{userInfo.isMember ? '我的会员' : '开通会员'}}</text>
+      <text class="member-banner-subtitle">尊享 8 大特权，出行更省心</text>
+    </view>
+    <view class="member-open-btn">
+      <text class="member-open-btn-text">{{userInfo.isMember ? '查看权益' : '立即开通'}}</text>
+    </view>
+  </view>
+
+  <!-- ===== 功能菜单卡片 ===== -->
+  <view class="section-card menu-card">
+    <!-- 成为领队 -->
+    <view class="menu-item" bindtap="handleLeaderTap">
+      <view class="menu-icon-circle menu-icon-red">
+        <image class="menu-icon" src="/assets/icons/member/leader.png" mode="aspectFit" />
+      </view>
+      <text class="menu-title">成为领队</text>
+      <image class="menu-chevron" src="/assets/icons/member/chevron.png" mode="aspectFit" />
+    </view>
+    <view class="menu-divider"></view>
+    <!-- 推广中心 -->
+    <view class="menu-item" bindtap="handlePromoterTap">
+      <view class="menu-icon-circle menu-icon-blue">
+        <image class="menu-icon" src="/assets/icons/member/promoter.png" mode="aspectFit" />
+      </view>
+      <text class="menu-title">推广中心</text>
+      <image class="menu-chevron" src="/assets/icons/member/chevron.png" mode="aspectFit" />
+    </view>
+    <view class="menu-divider"></view>
+    <!-- 常用旅客 -->
+    <view class="menu-item" data-path="travelers" bindtap="handleMenuTap">
+      <view class="menu-icon-circle menu-icon-green">
+        <image class="menu-icon" src="/assets/icons/member/travelers.png" mode="aspectFit" />
+      </view>
+      <text class="menu-title">常用旅客</text>
+      <image class="menu-chevron" src="/assets/icons/member/chevron.png" mode="aspectFit" />
+    </view>
+    <view class="menu-divider"></view>
+    <!-- 联系我们 -->
+    <view class="menu-item" bindtap="handleContactTap">
+      <view class="menu-icon-circle menu-icon-purple">
+        <image class="menu-icon" src="/assets/icons/member/contact.png" mode="aspectFit" />
+      </view>
+      <text class="menu-title">联系我们</text>
+      <text class="menu-sub">09:00 - 18:00</text>
+      <image class="menu-chevron" src="/assets/icons/member/chevron.png" mode="aspectFit" />
+    </view>
+    <view class="menu-divider"></view>
+    <!-- 关于我们 -->
+    <view class="menu-item" bindtap="handleAboutTap">
+      <view class="menu-icon-circle menu-icon-orange">
+        <image class="menu-icon" src="/assets/icons/member/about.png" mode="aspectFit" />
+      </view>
+      <text class="menu-title">关于我们</text>
+      <image class="menu-chevron" src="/assets/icons/member/chevron.png" mode="aspectFit" />
+    </view>
+    <view class="menu-divider"></view>
+    <!-- 设置 -->
+    <view class="menu-item" bindtap="handleSettingsTap">
+      <view class="menu-icon-circle menu-icon-gray">
+        <image class="menu-icon" src="/assets/icons/member/settings-menu.png" mode="aspectFit" />
+      </view>
+      <text class="menu-title">设置</text>
+      <image class="menu-chevron" src="/assets/icons/member/chevron.png" mode="aspectFit" />
+    </view>
+  </view>
+
+  <!-- ===== 退出登录 + 版本号 ===== -->
+  <view class="footer-section">
+    <view class="logout-btn" wx:if="{{isLogin}}" bindtap="handleLogout">
+      <text class="logout-btn-text">退出登录</text>
+    </view>
+    <text class="version-text">版本 v1.0.0</text>
+  </view>
+
 </view>

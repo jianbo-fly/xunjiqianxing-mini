@@ -3,258 +3,360 @@
   background: var(--color-bg-page);
 }
 
-/* 加载中 */
+/* 加载中（高度由 inline style 动态传入） */
 .loading-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
 }
 
-/* 主滚动区 */
+/* 主滚动区（高度由 inline style 动态传入） */
 .main-scroll {
-  height: 100vh;
+  /* height 由 JS 计算后通过 inline style 传入 */
 }
 
-/* 区块 */
-.section {
-  margin-top: var(--section-gap);
-  padding: var(--spacing-lg) var(--page-padding);
+/* 主内容容器 */
+.main-content {
+  padding: var(--page-padding);
+  padding-top: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+/* 通用卡片 */
+.card {
   background: var(--color-bg-card);
+  border-radius: var(--radius-md);
+  padding: var(--card-padding);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
 }
 
-.section:first-child {
-  margin-top: 0;
-}
-
-.section--row {
+/* ===== 卡片通用标题 ===== */
+.card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: var(--spacing-md);
 }
 
-.section-title {
-  font-size: var(--font-size-md);
+.card-header__left {
+  display: flex;
+  align-items: baseline;
+  gap: 4rpx;
+}
+
+.card-title {
+  font-size: var(--font-size-lg);
   font-weight: var(--font-weight-semibold);
   color: var(--color-text-primary);
 }
 
-.section-value {
+.card-title-sub {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-normal);
+}
+
+/* ===== 1. 产品卡片 ===== */
+.product-media {
+  display: flex;
+  gap: var(--spacing-md);
+  align-items: flex-start;
+}
+
+.product-img-wrap {
+  flex-shrink: 0;
+  width: 192rpx;
+  height: 192rpx;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--color-border);
+}
+
+.product-img {
+  width: 100%;
+  height: 100%;
+}
+
+.product-info {
+  flex: 1;
+  padding-top: 4rpx;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.product-title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  line-height: 1.4;
+}
+
+.product-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+}
+
+.product-tag {
+  padding: 6rpx 18rpx;
+  background: var(--color-bg-page);
+  border: 1rpx solid var(--color-border);
+  border-radius: var(--radius-xs);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.product-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: var(--spacing-md);
+  padding-top: var(--spacing-md);
+  border-top: 1rpx solid var(--color-border-light);
+}
+
+.departure-info {
   display: flex;
   align-items: center;
   gap: var(--spacing-xs);
 }
 
-.section-arrow {
-  font-size: var(--font-size-lg);
-  color: var(--color-text-tertiary);
+.departure-icon {
+  width: 30rpx;
+  height: 30rpx;
+  flex-shrink: 0;
 }
 
-/* 订单信息卡片 */
-.order-info-card {
-  margin-top: var(--spacing-md);
-  padding: var(--spacing-md);
-  background: var(--color-bg-gray);
-  border-radius: var(--radius-md);
+.departure-date {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-body);
 }
 
-.route-name {
-  font-size: var(--font-size-md);
-  font-weight: var(--font-weight-semibold);
+.people-count {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
   color: var(--color-text-primary);
 }
 
-.package-name {
-  margin-top: var(--spacing-xs);
-  font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
+/* ===== 2. 出行人信息 ===== */
+.realname-badge {
+  padding: 8rpx 16rpx;
+  background: var(--color-primary-tint);
+  border-radius: var(--radius-xs);
+  font-size: var(--font-size-xs);
+  color: var(--color-primary);
+  font-weight: var(--font-weight-medium);
 }
 
-.travel-date {
-  margin-top: var(--spacing-sm);
-  font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
-}
-
-.price-detail {
-  margin-top: var(--spacing-md);
-  padding-top: var(--spacing-md);
-  border-top: 1rpx solid var(--color-border);
-}
-
-.price-row {
+.traveler-list {
   display: flex;
-  align-items: center;
-  margin-bottom: var(--spacing-xs);
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
 }
 
-.price-row:last-child {
-  margin-bottom: 0;
-}
-
-.price-label {
-  width: 80rpx;
-  font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
-}
-
-.price-calc {
-  flex: 1;
-  font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
-}
-
-.price-amount {
-  font-size: var(--font-size-sm);
-  color: var(--color-text-primary);
-  font-weight: var(--font-weight-semibold);
-}
-
-/* 出行人 */
-.traveler-group {
-  margin-top: var(--spacing-md);
-}
-
-.traveler-group:first-child {
-  margin-top: var(--spacing-sm);
-}
-
-.traveler-group-title {
-  font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
-  margin-bottom: var(--spacing-sm);
-}
-
-.traveler-card {
+.traveler-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--spacing-md);
-  margin-bottom: var(--spacing-sm);
-  background: var(--color-bg-gray);
-  border-radius: var(--radius-md);
-  border: 2rpx solid transparent;
+  padding: 26rpx;
+  background: var(--color-bg-page);
+  border: 1rpx solid var(--color-border-light);
+  border-radius: var(--radius-sm);
 }
 
-.traveler-card:last-child {
-  margin-bottom: 0;
-}
-
-.traveler-card--empty {
-  border: 2rpx dashed var(--color-border);
+.traveler-item--empty {
   background: transparent;
+  border: 1rpx dashed var(--color-border);
 }
 
 .traveler-info {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.traveler-name-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
 }
 
 .traveler-name {
-  font-size: var(--font-size-md);
+  font-size: var(--font-size-lg);
   font-weight: var(--font-weight-semibold);
   color: var(--color-text-primary);
 }
 
-.traveler-id,
-.traveler-phone {
-  margin-top: 4rpx;
+.type-badge {
+  padding: 4rpx 12rpx;
+  background: var(--color-border);
+  border-radius: var(--radius-xs);
   font-size: var(--font-size-xs);
-  color: var(--color-text-tertiary);
+  color: var(--color-text-body);
+  font-weight: var(--font-weight-medium);
 }
 
-.traveler-action {
+.traveler-id {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.traveler-edit-btn {
   padding: var(--spacing-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.action-delete {
-  font-size: var(--font-size-sm);
-  color: var(--color-error);
+.traveler-edit-icon {
+  width: 30rpx;
+  height: 30rpx;
+  opacity: 0.4;
 }
 
-.traveler-add {
+.traveler-empty-row {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
-  padding: var(--spacing-sm) 0;
+  gap: var(--spacing-xs);
+  padding: 8rpx 0;
 }
 
-.add-icon {
+.empty-icon {
   font-size: var(--font-size-xl);
   color: var(--color-primary);
-  margin-right: var(--spacing-xs);
 }
 
-.add-text {
+.empty-text {
   font-size: var(--font-size-sm);
   color: var(--color-primary);
 }
 
-/* 联系人 */
-.contact-card {
-  margin-top: var(--spacing-md);
+/* 添加出行人按钮（虚线） */
+.add-traveler-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  padding: 26rpx;
+  border: 2rpx dashed var(--color-primary-border);
+  border-radius: var(--radius-sm);
+}
+
+.add-traveler-icon {
+  font-size: var(--font-size-xl);
+  color: var(--color-primary);
+}
+
+.add-traveler-text {
+  font-size: var(--font-size-lg);
+  color: var(--color-primary);
+  font-weight: var(--font-weight-medium);
+}
+
+/* ===== 3. 联系方式 ===== */
+.contact-card .card-title {
+  display: block;
+  margin-bottom: var(--spacing-md);
+}
+
+.contact-rows {
+  display: flex;
+  flex-direction: column;
 }
 
 .contact-row {
   display: flex;
   align-items: center;
+  gap: var(--spacing-md);
   padding: var(--spacing-md) 0;
-  border-bottom: 1rpx solid var(--color-border);
 }
 
 .contact-label {
-  width: 100rpx;
-  font-size: var(--font-size-md);
+  width: 128rpx;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  flex-shrink: 0;
+}
+
+.phone-input-wrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.phone-prefix {
+  font-size: var(--font-size-lg);
   color: var(--color-text-primary);
+  flex-shrink: 0;
 }
 
 .contact-input {
   flex: 1;
-  font-size: var(--font-size-md);
+  font-size: var(--font-size-lg);
   color: var(--color-text-primary);
+  min-height: 48rpx;
 }
 
-.contact-input[disabled] {
-  color: var(--color-text-secondary);
+.input-placeholder {
+  color: var(--color-text-placeholder);
 }
 
-.contact-toggle {
+.contact-divider {
+  height: 2rpx;
+  background: var(--color-border-light);
+}
+
+/* ===== 4. 优惠券 & 意外险 ===== */
+.coupon-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4rpx 0;
+}
+
+.coupon-row__left {
   display: flex;
   align-items: center;
-  padding-top: var(--spacing-md);
+  gap: var(--spacing-xs);
 }
 
-.toggle-checkbox {
-  width: 36rpx;
-  height: 36rpx;
-  border: 2rpx solid var(--color-border);
+.coupon-label {
+  font-size: var(--font-size-lg);
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-medium);
+}
+
+.coupon-recommend-tag {
+  padding: 6rpx 14rpx;
+  border: 1rpx solid var(--color-primary);
   border-radius: var(--radius-xs);
+  font-size: 20rpx;
+  color: var(--color-primary);
+  font-weight: var(--font-weight-medium);
+}
+
+.coupon-row__right {
   display: flex;
   align-items: center;
-  justify-content: center;
-  margin-right: var(--spacing-sm);
-  font-size: 24rpx;
-  color: var(--color-text-inverse);
+  gap: 8rpx;
 }
 
-.toggle-checkbox--checked {
-  background: var(--color-primary);
-  border-color: var(--color-primary);
-}
-
-.toggle-text {
+.coupon-saving {
   font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
 }
 
-/* 优惠券 */
-.coupon-selected {
-  font-size: var(--font-size-md);
-  color: var(--color-error);
-  font-weight: var(--font-weight-semibold);
-}
-
-.coupon-available {
+.coupon-count {
   font-size: var(--font-size-sm);
   color: var(--color-primary);
 }
@@ -264,61 +366,106 @@
   color: var(--color-text-tertiary);
 }
 
-.rule-text {
-  font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
+.row-arrow {
+  font-size: var(--font-size-lg);
+  color: var(--color-text-tertiary);
 }
 
-/* 金额明细 */
-.amount-section {
-  margin-bottom: var(--spacing-lg);
+.discount-divider {
+  height: 2rpx;
+  background: var(--color-border-light);
+  margin: var(--spacing-md) 0;
 }
 
-.amount-row {
+.insurance-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--spacing-sm) 0;
 }
 
-.amount-label {
+.insurance-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.insurance-label {
   font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-medium);
+}
+
+.insurance-desc {
+  font-size: var(--font-size-xs);
   color: var(--color-text-secondary);
 }
 
-.amount-value {
+.insurance-right {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.insurance-price {
   font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
   color: var(--color-text-primary);
 }
 
-.amount-value--discount {
-  color: var(--color-error);
+.insurance-toggle {
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 50%;
+  border: 2rpx solid var(--color-border-medium);
+  background: var(--color-bg-card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.amount-divider {
-  height: 1rpx;
-  background: var(--color-border);
-  margin: var(--spacing-sm) 0;
+.insurance-toggle--on {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
 }
 
-.amount-row--total .amount-label {
-  font-size: var(--font-size-md);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-text-primary);
-}
-
-.amount-value--total {
-  font-size: var(--font-size-xl);
+.insurance-toggle-icon {
+  font-size: 22rpx;
+  color: var(--color-text-inverse);
   font-weight: var(--font-weight-bold);
-  color: var(--color-error);
 }
 
-/* 底部占位 */
+/* ===== 5. 退改政策提示 ===== */
+.policy-notice {
+  display: flex;
+  gap: var(--spacing-xs);
+  align-items: flex-start;
+  padding: 0 4rpx;
+}
+
+.policy-icon {
+  font-size: 24rpx;
+  color: var(--color-text-tertiary);
+  flex-shrink: 0;
+  margin-top: 2rpx;
+}
+
+.policy-text {
+  flex: 1;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+.policy-link {
+  color: var(--color-primary);
+}
+
+/* ===== 底部占位（按操作栏高度 + safe area 预留） ===== */
 .bottom-placeholder {
-  height: 140rpx;
+  height: 180rpx;
 }
 
-/* 底部操作栏 */
+/* ===== 底部操作栏 ===== */
 .action-bar {
   position: fixed;
   left: 0;
@@ -326,45 +473,149 @@
   bottom: 0;
   display: flex;
   align-items: center;
-  padding: var(--spacing-md) var(--page-padding);
-  padding-bottom: calc(var(--spacing-md) + env(safe-area-inset-bottom));
+  gap: var(--spacing-md);
+  padding: 24rpx var(--page-padding);
+  padding-bottom: calc(24rpx + env(safe-area-inset-bottom));
   background: var(--color-bg-card);
-  box-shadow: 0 -2rpx 10rpx rgba(0, 0, 0, 0.05);
+  border-top: 2rpx solid var(--color-border-light);
+  box-shadow: 0 -8rpx 32rpx -4rpx rgba(0, 0, 0, 0.08);
   z-index: 100;
 }
 
-.action-bar__left {
+.action-bar__price {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+  min-width: 0;
 }
 
-.pay-amount {
-  font-size: 44rpx;
+.price-main {
+  display: flex;
+  align-items: baseline;
+  gap: 2rpx;
+}
+
+.price-symbol {
+  font-size: var(--font-size-sm);
   font-weight: var(--font-weight-bold);
-  color: var(--color-error);
+  color: var(--color-primary);
 }
 
-.action-bar__right {
-  margin-left: var(--spacing-lg);
+.price-value {
+  font-size: 48rpx;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+  line-height: 1.1;
 }
 
+.price-meta {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.price-detail-label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.price-detail-arrow {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.price-saving-chip {
+  padding: 4rpx 8rpx;
+  background: var(--color-primary-tint);
+  border-radius: var(--radius-xs);
+  font-size: var(--font-size-sm);
+  color: var(--color-primary);
+}
+
+/* 提交按钮（胶囊形，对齐 Figma：py-[14px] px-[32px]） */
 .submit-btn {
-  padding: 0 60rpx;
-  height: 88rpx;
-  background: linear-gradient(135deg, var(--color-primary-dark), var(--color-primary));
-  border-radius: var(--radius-md);
+  padding: 28rpx 64rpx;
+  background: var(--color-primary);
+  border-radius: var(--radius-full);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-text-inverse);
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-semibold);
+  box-shadow: 0 20rpx 30rpx -6rpx var(--color-primary-border), 0 8rpx 12rpx -8rpx var(--color-primary-border);
+  flex-shrink: 0;
 }
 
 .submit-btn--disabled {
   opacity: 0.6;
 }
 
-/* xj-popup 布局覆盖 */
+.submit-btn__text {
+  color: var(--color-text-inverse);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  white-space: nowrap;
+}
+
+/* ===== 价格明细浮层 ===== */
+.price-detail-panel {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  z-index: 99;
+  display: flex;
+  align-items: flex-end;
+}
+
+.price-detail-panel__inner {
+  width: 100%;
+  background: var(--color-bg-card);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  padding: var(--spacing-lg) var(--page-padding);
+  padding-bottom: calc(160rpx + env(safe-area-inset-bottom));
+  box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.06);
+}
+
+.price-detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-sm) 0;
+}
+
+.price-detail-row--total {
+  padding-top: var(--spacing-md);
+}
+
+.pd-label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.pd-value {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-medium);
+}
+
+.pd-value--discount {
+  color: var(--color-error);
+}
+
+.pd-value--total {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+}
+
+.price-detail-divider {
+  height: 1rpx;
+  background: var(--color-border-light);
+  margin: var(--spacing-xs) 0;
+}
+
+/* ===== xj-popup 布局覆盖 ===== */
 .popup--scroll-footer .xj-popup__container {
   max-height: 70vh;
   overflow: hidden;
@@ -392,7 +643,7 @@
   border-top: 1rpx solid var(--color-border);
 }
 
-/* 出行人选项 */
+/* ===== 出行人选项 ===== */
 .traveler-option {
   display: flex;
   justify-content: space-between;
@@ -427,44 +678,7 @@
   border-radius: var(--radius-xs);
 }
 
-
-/* 表单 */
-.form-content {
-  padding: var(--spacing-md) var(--page-padding);
-}
-
-.form-row {
-  display: flex;
-  align-items: center;
-  padding: var(--spacing-md) 0;
-  border-bottom: 1rpx solid var(--color-border);
-}
-
-.form-label {
-  width: 120rpx;
-  font-size: var(--font-size-md);
-  color: var(--color-text-primary);
-}
-
-.form-input {
-  flex: 1;
-  font-size: var(--font-size-md);
-  color: var(--color-text-primary);
-}
-
-.form-submit-btn {
-  width: 100%;
-  height: 88rpx;
-  background: var(--color-primary);
-  color: var(--color-text-inverse);
-  font-size: var(--font-size-md);
-  border-radius: var(--radius-md);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* 优惠券选项 */
+/* ===== 优惠券弹窗 ===== */
 .coupon-item {
   display: flex;
   margin-bottom: var(--spacing-sm);

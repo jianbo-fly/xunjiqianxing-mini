@@ -1,64 +1,68 @@
 <!--
   推广中心页
 -->
-<view class="page-promoter-center" wx:if="{{!loading}}">
-  <!-- 头部信息 -->
-  <view class="center-header" style="background-image: url('/assets/images/bg/promoter-header.png');">
-    <image class="center-avatar" src="{{promoter.avatar || '/assets/images/placeholder/avatar.png'}}" mode="aspectFill" />
-    <view class="center-name">{{promoter.name || '推广员'}}</view>
-    <view class="center-id">推广员ID: {{promoter.promoterId}}</view>
-  </view>
+<view class="page-promoter-center-wrap">
+  <nav-bar title="推广中心" background="rgba(255,255,255,0.9)" border showBack fixed />
 
-  <!-- 数据统计 -->
-  <view class="stats-section">
-    <view class="stats-item">
-      <text class="stats-value">{{promoter.scanCount || 0}}</text>
-      <text class="stats-label">扫码人数</text>
+  <view class="page-promoter-center" wx:if="{{!loading}}">
+    <!-- 头部信息 -->
+    <view class="center-header" style="background-image: url('/assets/images/bg/promoter-header.png');">
+      <image class="center-avatar" src="{{promoter.avatar || '/assets/images/placeholder/avatar.png'}}" mode="aspectFill" />
+      <view class="center-name">{{promoter.name || '推广员'}}</view>
+      <view class="center-id">推广员ID: {{promoter.promoterId}}</view>
     </view>
-    <view class="stats-divider"></view>
-    <view class="stats-item">
-      <text class="stats-value">{{promoter.orderCount || 0}}</text>
-      <text class="stats-label">订单数</text>
-    </view>
-    <view class="stats-divider"></view>
-    <view class="stats-item">
-      <text class="stats-value">{{promoter.points || 0}}</text>
-      <text class="stats-label">积分</text>
-    </view>
-  </view>
 
-  <!-- 推广码 -->
-  <view class="section qrcode-section">
-    <view class="section-title">我的推广码</view>
-    <view class="qrcode-wrap">
-      <image
-        class="qrcode-img"
-        wx:if="{{promoter.qrCodeUrl}}"
-        src="{{promoter.qrCodeUrl}}"
-        mode="aspectFit"
-        show-menu-by-longpress
-      />
-      <view class="qrcode-placeholder" wx:else>
-        <text>推广码生成中...</text>
+    <!-- 数据统计 -->
+    <view class="stats-section">
+      <view class="stats-item">
+        <text class="stats-value">{{promoter.scanCount || 0}}</text>
+        <text class="stats-label">扫码人数</text>
+      </view>
+      <view class="stats-divider"></view>
+      <view class="stats-item">
+        <text class="stats-value">{{promoter.orderCount || 0}}</text>
+        <text class="stats-label">订单数</text>
+      </view>
+      <view class="stats-divider"></view>
+      <view class="stats-item">
+        <text class="stats-value">{{promoter.points || 0}}</text>
+        <text class="stats-label">积分</text>
       </view>
     </view>
-    <view class="qrcode-tip">扫码即可绑定推广关系</view>
-    <view class="qrcode-actions">
-      <view class="qrcode-btn" bindtap="handleSaveImage">保存图片</view>
-      <view class="qrcode-btn qrcode-btn-primary" bindtap="handleShare">分享好友</view>
+
+    <!-- 推广码 -->
+    <view class="section qrcode-section">
+      <view class="section-title">我的推广码</view>
+      <view class="qrcode-wrap">
+        <image
+          class="qrcode-img"
+          wx:if="{{promoter.qrCodeUrl}}"
+          src="{{promoter.qrCodeUrl}}"
+          mode="aspectFit"
+          show-menu-by-longpress
+        />
+        <view class="qrcode-placeholder" wx:else>
+          <text>推广码生成中...</text>
+        </view>
+      </view>
+      <view class="qrcode-tip">扫码即可绑定推广关系</view>
+      <view class="qrcode-actions">
+        <view class="qrcode-btn" bindtap="handleSaveImage">保存图片</view>
+        <view class="qrcode-btn qrcode-btn-primary" bindtap="handleShare">分享好友</view>
+      </view>
+    </view>
+
+    <!-- 功能菜单 -->
+    <view class="menu-section">
+      <view class="menu-item" bindtap="handlePromoterDetail">
+        <text class="menu-label">推广明细</text>
+        <text class="menu-arrow">›</text>
+      </view>
     </view>
   </view>
 
-  <!-- 功能菜单 -->
-  <view class="menu-section">
-    <view class="menu-item" bindtap="handlePromoterDetail">
-      <text class="menu-label">推广明细</text>
-      <text class="menu-arrow">›</text>
-    </view>
+  <!-- 加载中 -->
+  <view class="loading-container" wx:if="{{loading}}">
+    <xj-loading text="加载中..." vertical />
   </view>
-</view>
-
-<!-- 加载中 -->
-<view class="loading-container" wx:if="{{loading}}">
-  <xj-loading text="加载中..." vertical />
 </view>

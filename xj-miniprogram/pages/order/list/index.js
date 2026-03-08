@@ -8,6 +8,7 @@ const { checkLogin } = require('../../../utils/auth');
 
 Page({
   data: {
+    navBarTotalHeight: 0,
     // 页面状态
     loading: true,
     refreshing: false,
@@ -33,7 +34,16 @@ Page({
   },
 
   onLoad(options) {
-    // 获取传入的状态参数
+    // 计算自定义导航栏高度，用于 Tab 吸顶偏移
+    try {
+      const systemInfo = wx.getSystemInfoSync();
+      const menuButton = wx.getMenuButtonBoundingClientRect();
+      const navBarContentHeight = menuButton.height + (menuButton.top - systemInfo.statusBarHeight) * 2;
+      this.setData({ navBarTotalHeight: systemInfo.statusBarHeight + navBarContentHeight });
+    } catch (e) {
+      this.setData({ navBarTotalHeight: 88 });
+    }
+
     if (options.status !== undefined) {
       this.setData({ currentStatus: options.status });
     }
@@ -132,6 +142,14 @@ Page({
       showCancelBtn: order.status === 0,
       showRefundBtn: [1, 2, 3].includes(order.status),
       showBuyAgainBtn: [4, 5, 7, 8].includes(order.status),
+      // 状态文本
+      statusText: order.statusText || { 0: '待支付', 1: '待确认', 2: '已确认', 3: '行程中', 4: '已完成', 5: '已取消', 6: '退款中', 7: '已退款', 8: '已关闭' }[order.status] || '',
+      // 状态徽章颜色类
+      statusBadgeClass: order.status === 0 ? 'orange'
+        : [1, 2, 3].includes(order.status) ? 'primary'
+        : order.status === 4 ? 'green'
+        : [5, 8].includes(order.status) ? 'gray'
+        : 'blue',
     };
   },
 

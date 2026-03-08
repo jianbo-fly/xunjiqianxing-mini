@@ -9,6 +9,8 @@ Page({
   data: {
     // 页面状态
     loading: true,
+    // 滚动区高度（自定义导航栏，动态计算）
+    scrollHeight: 0,
     // 订单ID
     orderId: '',
     // 订单详情
@@ -19,6 +21,17 @@ Page({
   },
 
   onLoad(options) {
+    // 计算自定义导航栏高度，用于 scroll-view 高度
+    try {
+      const systemInfo = wx.getSystemInfoSync();
+      const menuButton = wx.getMenuButtonBoundingClientRect();
+      const navBarHeight = menuButton.height + (menuButton.top - systemInfo.statusBarHeight) * 2;
+      const scrollHeight = systemInfo.windowHeight - systemInfo.statusBarHeight - navBarHeight;
+      this.setData({ scrollHeight });
+    } catch (e) {
+      this.setData({ scrollHeight: 600 });
+    }
+
     const { id } = options;
     if (!id) {
       wx.showToast({ title: '订单不存在', icon: 'none' });
@@ -99,6 +112,12 @@ Page({
       showBuyAgainBtn: [4, 5, 7, 8].includes(order.status),
       // 状态提示
       statusTip: this.getStatusTip(order.status),
+      // 状态文本（API 未返回时兜底）
+      statusText: order.statusText || { 0: '待支付', 1: '待确认', 2: '已确认', 3: '行程中', 4: '已完成', 5: '已取消', 6: '退款中', 7: '已退款', 8: '已关闭' }[order.status] || '',
+      // 状态横幅颜色类
+      statusBannerClass: [0, 1].includes(order.status) ? 'orange' : [5, 8].includes(order.status) ? 'gray' : order.status === 4 ? 'green' : [6, 7].includes(order.status) ? 'blue' : 'primary',
+      // 状态图标名
+      statusIcon: order.status === 0 || order.status === 1 ? 'pending' : order.status === 2 || order.status === 3 ? 'confirmed' : order.status === 4 ? 'completed' : order.status === 5 || order.status === 8 ? 'cancelled' : 'refunding',
     };
   },
 

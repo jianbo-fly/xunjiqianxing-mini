@@ -4,158 +4,391 @@
 
 .page-trip {
   min-height: 100vh;
-  background: var(--color-bg-page);
-  padding-bottom: var(--tab-bar-height);
+  background: #f8f6f6;
+  padding-bottom: calc(var(--tab-bar-height) + 32rpx);
 }
 
-/* 加载状态 */
-.loading-container {
+/* ===== nav-bar 右侧图标 ===== */
+.nav-right-actions {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  gap: 24rpx;
+  padding-right: 8rpx;
+}
+
+.nav-icon-btn {
+  padding: 8rpx;
+}
+
+.nav-icon {
+  width: 40rpx;
+  height: 40rpx;
+}
+
+/* ===== 加载 ===== */
+.loading-wrap {
+  padding: 200rpx 0;
+  display: flex;
   align-items: center;
   justify-content: center;
-  padding: 200rpx 0;
 }
 
-/* 区块 */
+/* ===== 主内容 ===== */
+.main-content {
+  display: flex;
+  flex-direction: column;
+  gap: 64rpx;
+  padding: 32rpx 40rpx 40rpx;
+}
+
+/* ===== 区块 ===== */
 .section {
-  padding: var(--page-padding);
-  padding-bottom: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 32rpx;
 }
 
 .section-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--spacing-md);
+}
+
+.section-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.section-title-bar {
+  width: 12rpx;
+  height: 48rpx;
+  background: var(--color-primary);
+  border-radius: 9999rpx;
 }
 
 .section-title {
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-text-primary);
+  font-size: 36rpx;
+  font-weight: var(--font-weight-medium);
+  color: #111827;
 }
 
+/* 行程数量徽章 */
+.trip-count-badge {
+  background: #f3f4f6;
+  border-radius: 9999rpx;
+  padding: 8rpx 20rpx;
+}
+
+.trip-count-text {
+  font-size: 24rpx;
+  color: #6b7280;
+}
+
+/* 查看全部 */
 .section-more {
   display: flex;
   align-items: center;
-  font-size: var(--font-size-sm);
-  color: var(--color-text-tertiary);
+  gap: 4rpx;
+}
+
+.section-more__text {
+  font-size: 24rpx;
+  color: #9ca3af;
 }
 
 .section-more__icon {
-  width: var(--icon-size-sm);
-  height: var(--icon-size-sm);
-  margin-left: var(--spacing-xs);
+  width: 20rpx;
+  height: 28rpx;
+  opacity: 0.6;
 }
 
-/* 空状态按钮 */
-.empty-btn {
-  padding: var(--spacing-sm) var(--spacing-xl);
-  background: var(--color-primary);
-  color: var(--color-text-inverse);
-  font-size: var(--font-size-md);
-  border-radius: var(--radius-md);
-}
-
-/* 待出行列表 */
+/* ===== 待出行卡片 ===== */
 .trip-list {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-md);
+  gap: 24rpx;
 }
 
-/* 行程卡片 */
-.trip-card {
+.active-trip-card {
+  background: #fff;
+  border-radius: 24rpx;
+  overflow: hidden;
+  border: 1rpx solid #f3f4f6;
+  box-shadow: 0px 20rpx 30rpx -6rpx rgba(0, 0, 0, 0.1), 0px 8rpx 12rpx -8rpx rgba(0, 0, 0, 0.1);
+}
+
+/* 图片区 */
+.active-trip-card__image-wrap {
+  position: relative;
+  width: 100%;
+  height: 384rpx;
+}
+
+.active-trip-card__image {
+  width: 100%;
+  height: 100%;
+}
+
+.active-trip-card__gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.2) 50%, transparent 100%);
+}
+
+/* 倒计时徽章 */
+.countdown-badge {
+  position: absolute;
+  top: 32rpx;
+  right: 32rpx;
   display: flex;
   align-items: center;
-  background: var(--color-bg-card);
-  border-radius: var(--radius-lg);
-  padding: var(--card-padding);
-  box-shadow: var(--shadow-sm);
+  gap: 12rpx;
+  padding: 12rpx 24rpx;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(4rpx);
+  border-radius: 16rpx;
+  box-shadow: 0px 2rpx 4rpx rgba(0, 0, 0, 0.05);
 }
 
-.trip-card__left {
-  flex-shrink: 0;
+.countdown-badge__icon {
+  width: 24rpx;
+  height: 28rpx;
+}
+
+.countdown-badge__text {
+  font-size: 24rpx;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+}
+
+/* 图片底部标题覆盖 */
+.active-trip-card__overlay {
+  position: absolute;
+  left: 32rpx;
+  right: 32rpx;
+  bottom: 32rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.active-trip-card__title {
+  font-size: 40rpx;
+  color: #fff;
+  line-height: 1.4;
+  font-weight: var(--font-weight-medium);
+}
+
+.active-trip-card__location {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.location-icon {
+  width: 24rpx;
+  height: 24rpx;
+  opacity: 0.9;
+}
+
+.location-text {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* 详情区 */
+.active-trip-card__details {
+  padding: 40rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 32rpx;
+}
+
+.trip-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+}
+
+.departure-pill {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  width: 120rpx;
-  height: 120rpx;
-  background: var(--color-primary-light);
-  border-radius: var(--radius-md);
-  margin-right: var(--spacing-md);
+  background: rgba(236, 55, 19, 0.1);
+  border-radius: 16rpx;
+  padding: 12rpx 24rpx;
 }
 
-.trip-card__date {
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-semibold);
+.departure-pill__label {
+  font-size: 24rpx;
+  color: #6b7280;
+  line-height: 1.4;
+}
+
+.departure-pill__date {
+  font-size: 28rpx;
+  font-weight: var(--font-weight-bold);
   color: var(--color-primary);
-  line-height: var(--line-height-tight);
+  line-height: 1.4;
 }
 
-.trip-card__countdown {
-  font-size: var(--font-size-xs);
-  color: var(--color-primary);
-  margin-top: var(--spacing-xs);
+.trip-divider {
+  width: 2rpx;
+  height: 64rpx;
+  background: #e5e7eb;
 }
 
-/* 出行中状态 - 绿色标签 */
-.trip-card__left.is-ongoing {
-  background: var(--color-success-light);
+.companions {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
 }
 
-.trip-card__left.is-ongoing .trip-card__date,
-.trip-card__left.is-ongoing .trip-card__countdown {
-  color: var(--color-success);
+.companions__label {
+  font-size: 24rpx;
+  color: #6b7280;
 }
 
-.trip-card__right {
+.companions__text {
+  font-size: 28rpx;
+  color: #374151;
+}
+
+/* 操作按钮行 */
+.trip-action-row {
+  display: flex;
+  gap: 24rpx;
+  align-items: center;
+}
+
+.trip-detail-btn {
   flex: 1;
-  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16rpx;
+  background: var(--color-primary);
+  border-radius: 16rpx;
+  padding: 24rpx 32rpx;
+  box-shadow: 0px 8rpx 12rpx -2rpx rgba(236, 55, 19, 0.2), 0px 4rpx 8rpx -4rpx rgba(236, 55, 19, 0.2);
 }
 
-.trip-card__name {
-  font-size: var(--font-size-md);
+.trip-detail-btn__text {
+  font-size: 28rpx;
+  color: #fff;
   font-weight: var(--font-weight-medium);
-  color: var(--color-text-primary);
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 1;
-  overflow: hidden;
-  line-height: var(--line-height-normal);
 }
 
-.trip-card__meta {
-  font-size: var(--font-size-sm);
-  color: var(--color-text-tertiary);
-  margin-top: var(--spacing-xs);
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 1;
-  overflow: hidden;
+.trip-detail-btn__arrow {
+  width: 22rpx;
+  height: 22rpx;
 }
 
-.trip-card__dot {
-  margin: 0 var(--spacing-xs);
+.trip-share-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8f6f6;
+  border-radius: 16rpx;
+  width: 88rpx;
+  height: 88rpx;
 }
 
-.trip-card__action {
-  flex-shrink: 0;
-  margin-left: var(--spacing-sm);
+.trip-share-btn__icon {
+  width: 36rpx;
+  height: 40rpx;
 }
 
-.trip-card__arrow {
-  width: var(--icon-size-sm);
-  height: var(--icon-size-sm);
-  opacity: 0.4;
-}
-
-/* 为你推荐 - 两列网格 */
+/* ===== 为你推荐网格 ===== */
 .recommend-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: var(--spacing-md);
-  padding-bottom: var(--spacing-lg);
+  gap: 24rpx;
+}
+
+.recommend-card {
+  background: #fff;
+  border-radius: 24rpx;
+  overflow: hidden;
+  border: 1rpx solid #f3f4f6;
+  box-shadow: 0px 2rpx 4rpx rgba(0, 0, 0, 0.05);
+}
+
+.recommend-card__img-wrap {
+  position: relative;
+  width: 100%;
+  height: 256rpx;
+}
+
+.recommend-card__img {
+  width: 100%;
+  height: 100%;
+}
+
+.recommend-card__tag-overlay {
+  position: absolute;
+  top: 16rpx;
+  left: 16rpx;
+  padding: 6rpx 18rpx;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4rpx);
+  border: 1rpx solid rgba(255, 255, 255, 0.2);
+  border-radius: 8rpx;
+}
+
+.recommend-card__tag {
+  font-size: 20rpx;
+  color: #fff;
+}
+
+.recommend-card__content {
+  padding: 24rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.recommend-card__title {
+  font-size: 28rpx;
+  color: #111827;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.recommend-card__bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.recommend-card__duration {
+  font-size: 24rpx;
+  color: #9ca3af;
+}
+
+.recommend-card__price {
+  font-size: 28rpx;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+}
+
+/* ===== 空状态 ===== */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 48rpx 0;
+  gap: 32rpx;
+}
+
+.empty-btn {
+  padding: 20rpx 64rpx;
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 28rpx;
+  border-radius: 16rpx;
 }

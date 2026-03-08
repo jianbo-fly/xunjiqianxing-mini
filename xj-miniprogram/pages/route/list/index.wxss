@@ -1,72 +1,11 @@
 /**
  * 线路列表页样式
+ * 顶部 Tabs/分类/筛选 样式已移至组件：components/business/route-list-header/index.wxss
  */
 
 .page-route-list {
   min-height: 100vh;
   background: var(--color-bg-page);
-}
-
-/* 搜索栏 */
-.search-bar {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  padding: var(--spacing-md) var(--page-padding);
-  background: var(--color-bg-card);
-}
-
-.search-bar__input {
-  display: flex;
-  align-items: center;
-  height: 72rpx;
-  padding: 0 var(--spacing-md);
-  background: var(--color-bg-gray);
-  border-radius: var(--radius-full);
-}
-
-.search-bar__icon {
-  width: 28rpx;
-  height: 28rpx;
-  margin-right: var(--spacing-sm);
-}
-
-.search-bar__field {
-  flex: 1;
-  font-size: var(--font-size-md);
-  color: var(--color-text-primary);
-}
-
-/* 筛选栏 */
-.filter-bar {
-  display: flex;
-  position: sticky;
-  top: 108rpx;
-  z-index: 99;
-  padding: var(--spacing-sm) var(--page-padding);
-  background: var(--color-bg-card);
-  border-bottom: 2rpx solid var(--color-divider);
-}
-
-.filter-item {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: var(--spacing-sm) 0;
-  font-size: var(--font-size-md);
-  color: var(--color-text-secondary);
-}
-
-.filter-item.active {
-  color: var(--color-primary);
-  font-weight: var(--font-weight-medium);
-}
-
-.filter-arrow {
-  width: 20rpx;
-  height: 20rpx;
-  margin-left: 4rpx;
 }
 
 /* 加载状态 */
@@ -78,9 +17,213 @@
   min-height: 60vh;
 }
 
-/* 线路列表 */
+/* ===== 线路列表 ===== */
 .route-list {
-  padding: var(--spacing-md) var(--page-padding);
+  padding: 24rpx var(--page-padding);
+  display: flex;
+  flex-direction: column;
+  gap: 40rpx;
+}
+
+.route-card-wrap {
+  display: block;
+}
+
+/* ===== 新版路线卡片 ===== */
+.list-route-card {
+  background: var(--color-bg-card);
+  border-radius: 32rpx;
+  overflow: hidden;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.03);
+}
+
+/* 图片区 */
+.list-route-card__image-wrap {
+  position: relative;
+  width: 100%;
+  height: 384rpx;
+}
+
+.list-route-card__image {
+  width: 100%;
+  height: 100%;
+}
+
+.list-route-card__location-tag {
+  position: absolute;
+  top: 20rpx;
+  left: 20rpx;
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+  padding: 8rpx 16rpx;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(8rpx);
+  border-radius: var(--radius-full);
+}
+
+.list-route-card__loc-icon {
+  width: 20rpx;
+  height: 24rpx;
+  opacity: 0.9;
+}
+
+.list-route-card__loc-text {
+  font-size: 22rpx;
+  color: var(--color-text-inverse);
+}
+
+.list-route-card__favorite {
+  position: absolute;
+  top: 16rpx;
+  right: 16rpx;
+  width: 64rpx;
+  height: 64rpx;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4rpx);
+}
+
+.list-route-card__fav-icon {
+  font-size: 32rpx;
+  color: var(--color-primary);
+}
+
+/* 内容区 */
+.list-route-card__content {
+  padding: 32rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.list-route-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
+.list-route-card__tag {
+  padding: 6rpx 14rpx;
+  border-radius: 8rpx;
+  font-size: 20rpx;
+  font-weight: var(--font-weight-medium);
+}
+
+/* 第一个标签：主色描边样式（对齐 Figma） */
+.list-route-card__tag--primary {
+  background: var(--color-primary-bg);
+  border: 2rpx solid var(--color-primary-border);
+  color: var(--color-primary);
+}
+
+.list-route-card__tag--orange {
+  background: var(--tag-orange-bg);
+  color: var(--tag-orange-text);
+}
+
+.list-route-card__tag--blue {
+  background: var(--tag-blue-bg);
+  color: var(--tag-blue-text);
+}
+
+.list-route-card__tag--green {
+  background: var(--tag-green-bg);
+  color: var(--tag-green-text);
+}
+
+.list-route-card__tag--purple {
+  background: var(--tag-purple-bg);
+  color: var(--tag-purple-text);
+}
+
+.list-route-card__title {
+  font-size: 36rpx;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.list-route-card__meta {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.list-route-card__rating {
+  font-size: 26rpx;
+  color: var(--color-text-secondary);
+}
+
+.list-route-card__divider {
+  width: 2rpx;
+  height: 24rpx;
+  background: var(--color-border);
+}
+
+.list-route-card__sales {
+  font-size: 26rpx;
+  color: var(--color-text-secondary);
+}
+
+.list-route-card__bottom {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.list-route-card__bottom-left {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.list-route-card__depart {
+  font-size: 22rpx;
+  color: var(--color-text-tertiary);
+}
+
+.list-route-card__price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 2rpx;
+  color: var(--color-primary);
+}
+
+.list-route-card__price-symbol {
+  font-size: 24rpx;
+  font-weight: var(--font-weight-bold);
+}
+
+.list-route-card__price-value {
+  font-size: 48rpx;
+  font-weight: var(--font-weight-bold);
+  line-height: 1;
+}
+
+.list-route-card__price-unit {
+  font-size: 22rpx;
+  color: var(--color-text-secondary);
+}
+
+.list-route-card__cta {
+  background: var(--color-primary);
+  padding: 20rpx 32rpx;
+  border-radius: var(--radius-md);
+}
+
+.list-route-card__cta-text {
+  font-size: 28rpx;
+  color: var(--color-text-inverse);
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
 }
 
 /* 加载更多 */

@@ -1,6 +1,9 @@
 .nav-bar {
   width: 100%;
   z-index: var(--z-index-fixed);
+  /* 磨砂玻璃效果（iOS 原生支持；Android 部分机型不支持，降级为不透明背景） */
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
 }
 
 .nav-bar--fixed {
@@ -33,8 +36,9 @@
 .nav-bar__title {
   flex: 1;
   text-align: center;
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-xl);
   font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary); 
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -88,7 +92,7 @@
 
 /* 主题 - 浅色文字 */
 .nav-bar--light {
-  color: var(--color-text-inverse);
+  color:var(--color-text-inverse);
 }
 
 /* 占位 */
