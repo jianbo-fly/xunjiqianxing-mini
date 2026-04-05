@@ -254,6 +254,8 @@ public class AdminRouteService {
         routeExt.setBookingNotice(request.getBookingNotice());
         routeExt.setTips(request.getTips());
         routeExt.setCostInclude(request.getCostInclude());
+        routeExt.setCityName(request.getCityName());
+        routeExt.setCityCode(request.getCityCode());
 
         // 转换行程数据 (转换为 Map 结构以便 JSON 序列化)
         if (request.getItinerary() != null && !request.getItinerary().isEmpty()) {
@@ -372,6 +374,14 @@ public class AdminRouteService {
         }
         if (request.getCostInclude() != null) {
             routeExt.setCostInclude(request.getCostInclude());
+        }
+
+        if (request.getCityCode() != null) {
+            routeExt.setCityCode(request.getCityCode());
+        }
+
+        if (request.getCityName() != null) {
+            routeExt.setCityName(request.getCityName());
         }
 
         // 转换行程数据 (转换为 Map 结构以便 JSON 序列化)

@@ -4,7 +4,7 @@
 -->
 <view class="page-travel">
 
-  <!-- 导航栏（嵌入 Tab，无底部分割线，与分类行融为一体） -->
+  <!-- 导航栏（嵌入 Tab） -->
   <nav-bar background="rgba(255,255,255,1)" showBack fixed>
     <view slot="title" class="nav-tabs">
       <view
@@ -18,16 +18,34 @@
         <view class="nav-tab__line" wx:if="{{currentTab === index}}"></view>
       </view>
     </view>
-    <view slot="right" class="nav-search-btn" bindtap="handleSearch">
-      <image class="nav-search-icon" src="/assets/icons/common/search.png" mode="aspectFit" />
-    </view>
   </nav-bar>
+
+  <!-- 搜索栏（固定在 nav-bar 正下方） -->
+  <view class="tv-search-bar" style="top: {{navBarTotalHeight}}px;">
+    <view class="tv-search-box">
+      <view class="tv-search-box__city" bindtap="handleCityTap">
+        <image class="tv-search-box__city-icon" src="/assets/icons/common/location.png" mode="aspectFit" />
+        <text class="tv-search-box__city-text">{{departureCity}}出发</text>
+        <view class="tv-search-box__city-arrow"></view>
+      </view>
+      <view class="tv-search-box__input-area" bindtap="handleSearchBarTap">
+        <image class="tv-search-box__search-icon" src="/assets/icons/common/search.png" mode="aspectFit" />
+        <text class="tv-search-box__keyword {{keyword ? '' : 'tv-search-box__keyword--placeholder'}}">{{keyword || '搜索目的地 / 路线'}}</text>
+        <view wx:if="{{keyword}}" class="tv-search-box__clear" catchtap="handleClearKeyword">
+          <image src="/assets/icons/common/close.png" mode="aspectFit" style="width:28rpx;height:28rpx;" />
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 搜索栏高度占位 -->
+  <view style="height: {{searchBarHeight}}px;"></view>
 
   <!-- ===== 跟团游 ===== -->
   <block wx:if="{{currentTab === 0}}">
 
     <!-- 吸顶：分类 + 筛选（整体白色 + 底部阴影） -->
-    <view class="sticky-bar" style="top: {{navBarTotalHeight}}px;">
+    <view class="sticky-bar" style="top: {{contentTop}}px;">
 
       <!-- 分类 Pills -->
       <view class="sub-cat-row">
@@ -412,6 +430,50 @@
     <view class="success-actions">
       <button class="success-btn success-btn--secondary" bindtap="handleBackHome">返回首页</button>
       <button class="success-btn success-btn--primary" bindtap="handleViewMyCustom">查看我的定制</button>
+    </view>
+  </view>
+
+  <!-- 城市选择弹窗 -->
+  <view class="city-picker-mask" wx:if="{{showCityPicker}}" bindtap="handleCloseCityPicker">
+    <view class="city-picker-panel" catchtap="">
+      <view class="city-picker-header">
+        <text class="city-picker-title">选择出发城市</text>
+        <view class="city-picker-close" bindtap="handleCloseCityPicker">
+          <image src="/assets/icons/common/close.png" mode="aspectFit" style="width:36rpx;height:36rpx;" />
+        </view>
+      </view>
+      <scroll-view class="city-picker-scroll" scroll-y scroll-into-view="{{cityScrollTo}}" scroll-with-animation>
+        <view wx:if="{{cityHistory.length > 0}}" class="city-section">
+          <view class="city-section-hd">
+            <text class="city-section-label">历史选择</text>
+            <text class="city-section-clear" bindtap="handleClearCityHistory">清空</text>
+          </view>
+          <view class="city-grid">
+            <view wx:for="{{cityHistory}}" wx:key="*this"
+              class="city-chip {{departureCity === item ? 'city-chip--active' : ''}}"
+              bindtap="handleCitySelect" data-city="{{item}}">{{item}}</view>
+          </view>
+        </view>
+        <view class="city-section">
+          <view class="city-section-hd"><text class="city-section-label">热门出发地</text></view>
+          <view class="city-grid">
+            <view wx:for="{{hotCities}}" wx:key="*this"
+              class="city-chip {{departureCity === item ? 'city-chip--active' : ''}}"
+              bindtap="handleCitySelect" data-city="{{item}}">{{item}}</view>
+          </view>
+        </view>
+        <view wx:for="{{cityGroups}}" wx:key="letter" id="city-letter-{{item.letter}}">
+          <view class="city-letter-header">{{item.letter}}</view>
+          <view wx:for="{{item.cities}}" wx:for-item="city" wx:key="*this"
+            class="city-list-item {{departureCity === city ? 'city-list-item--active' : ''}}"
+            bindtap="handleCitySelect" data-city="{{city}}">{{city}}</view>
+        </view>
+        <view style="height:40rpx;"></view>
+      </scroll-view>
+      <view class="city-index-bar">
+        <text wx:for="{{cityIndexLetters}}" wx:key="*this"
+          class="city-index-letter" bindtap="handleLetterTap" data-letter="{{item}}">{{item}}</text>
+      </view>
     </view>
   </view>
 

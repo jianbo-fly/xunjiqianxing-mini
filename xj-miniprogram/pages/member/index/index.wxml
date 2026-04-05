@@ -40,8 +40,8 @@
       </view>
     </view>
 
-    <!-- 资产卡片行 -->
-    <view class="stats-row" wx:if="{{isLogin}}">
+    <!-- 资产卡片行 TODO: 积分/优惠券接口待接入后启用 -->
+    <!-- <view class="stats-row" wx:if="{{isLogin}}">
       <view class="stat-card">
         <text class="stat-value">{{userInfo.points || 500}}</text>
         <text class="stat-label">我的积分</text>
@@ -51,7 +51,7 @@
         <text class="stat-value">{{userInfo.couponCount || 3}}</text>
         <text class="stat-label">优惠券</text>
       </view>
-    </view>
+    </view> -->
   </view>
 
   <!-- ===== 我的订单卡片 ===== -->

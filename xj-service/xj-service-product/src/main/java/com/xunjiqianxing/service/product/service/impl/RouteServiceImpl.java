@@ -20,7 +20,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 线路服务实现
@@ -38,34 +40,65 @@ public class RouteServiceImpl implements RouteService {
     public PageResult<ProductMain> pageRoutes(PageQuery pageQuery, String category, String departureCity, String keyword) {
         Page<ProductMain> page = new Page<>(pageQuery.getPage(), pageQuery.getPageSize());
 
+        // ── Step 1：从 product_route 按出发城市拿到候选 product_id ──────────────
+        // product_route.city_name = 出发城市标准名（精确匹配）
+        List<Long> departureCityIds = null;
+        if (StringUtils.hasText(departureCity)) {
+            departureCityIds = productRouteMapper.selectList(
+                    new LambdaQueryWrapper<ProductRoute>()
+                            .eq(ProductRoute::getCityName, departureCity)
+                            .select(ProductRoute::getProductId)
+            ).stream().map(ProductRoute::getProductId).collect(Collectors.toList());
+
+            // 出发城市无匹配，直接返回空
+            if (departureCityIds.isEmpty()) {
+                return PageResult.of(Collections.emptyList(), 0L,
+                        pageQuery.getPage(), pageQuery.getPageSize());
+            }
+        }
+
+        // ── Step 2：从 product_route 按目的地关键词拿到候选 product_id ──────────
+        // product_route.destination = 目的地，模糊匹配
+        List<Long> destinationKeywordIds = null;
+        if (StringUtils.hasText(keyword)) {
+            destinationKeywordIds = productRouteMapper.selectList(
+                    new LambdaQueryWrapper<ProductRoute>()
+                            .like(ProductRoute::getDestination, keyword)
+                            .select(ProductRoute::getProductId)
+            ).stream().map(ProductRoute::getProductId).collect(Collectors.toList());
+        }
+
+        // ── Step 3：构建 product_main 查询 ──────────────────────────────────────
         LambdaQueryWrapper<ProductMain> wrapper = new LambdaQueryWrapper<ProductMain>()
                 .eq(ProductMain::getBizType, "route")
                 .eq(ProductMain::getStatus, 1)
                 .eq(ProductMain::getIsDeleted, 0)
                 .eq(ProductMain::getAuditStatus, 1);
 
-        // 关键词搜索
+        // 关键词：name/subtitle LIKE  OR  id IN (destination 命中的 IDs)
         if (StringUtils.hasText(keyword)) {
-            wrapper.and(w -> w
-                    .like(ProductMain::getName, keyword)
-                    .or()
-                    .like(ProductMain::getSubtitle, keyword)
-                    .or()
-                    .like(ProductMain::getCityName, keyword)
-            );
+            final List<Long> destIds = destinationKeywordIds;
+            wrapper.and(w -> {
+                w.like(ProductMain::getName, keyword)
+                 .or()
+                 .like(ProductMain::getSubtitle, keyword);
+                if (destIds != null && !destIds.isEmpty()) {
+                    w.or().in(ProductMain::getId, destIds);
+                }
+            });
         }
 
-        // 城市筛选
-        if (StringUtils.hasText(departureCity)) {
-            wrapper.eq(ProductMain::getCityCode, departureCity);
+        // 出发城市：限制在第一步拿到的 product_id 范围内
+        if (departureCityIds != null) {
+            wrapper.in(ProductMain::getId, departureCityIds);
         }
 
         wrapper.orderByDesc(ProductMain::getSortOrder)
-                .orderByDesc(ProductMain::getCreatedAt);
+               .orderByDesc(ProductMain::getCreatedAt);
 
         Page<ProductMain> result = productMainMapper.selectPage(page, wrapper);
-
-        return PageResult.of(result.getRecords(), result.getTotal(), pageQuery.getPage(), pageQuery.getPageSize());
+        return PageResult.of(result.getRecords(), result.getTotal(),
+                pageQuery.getPage(), pageQuery.getPageSize());
     }
 
     @Override

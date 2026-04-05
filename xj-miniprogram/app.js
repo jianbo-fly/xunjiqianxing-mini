@@ -20,6 +20,8 @@ App({
     this.checkLoginStatus();
     // 更新检查
     this.checkUpdate();
+    // 接管原生 wx.showToast，统一走自定义 xj-toast 组件
+    this.overrideShowToast();
   },
 
   onShow(options) {
@@ -109,6 +111,33 @@ App({
     wx.removeStorageSync(STORAGE_KEYS.USER_INFO);
     this.globalData.isLogin = false;
     this.globalData.userInfo = null;
+  },
+
+  /**
+   * 接管 wx.showToast，将所有调用路由到自定义 xj-toast 组件
+   * 避免原生 toast 与自定义 toast 同时弹出
+   */
+  overrideShowToast() {
+    const _original = wx.showToast.bind(wx);
+    wx.showToast = function (options = {}) {
+      const pages = getCurrentPages();
+      if (pages.length) {
+        const page = pages[pages.length - 1];
+        const toast = page.selectComponent && page.selectComponent('#xj-toast');
+        if (toast) {
+          const type = options.icon === 'success' ? 'success'
+                     : options.icon === 'error' ? 'error'
+                     : 'info';
+          toast.show({
+            message: options.title || '',
+            type,
+            duration: options.duration || 2000,
+          });
+          return;
+        }
+      }
+      _original(options);
+    };
   },
 
   /**

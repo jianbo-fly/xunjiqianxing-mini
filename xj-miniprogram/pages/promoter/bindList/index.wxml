@@ -93,9 +93,7 @@
     </view>
 
     <!-- Empty -->
-    <view class="empty-block" wx:if="{{!loadingScan && scanList.length === 0}}">
-      <text class="empty-text">暂无扫码记录</text>
-    </view>
+    <xj-empty wx:if="{{!loadingScan && scanList.length === 0}}" description="暂无扫码记录" />
 
     <!-- Loading -->
     <view class="list-loading" wx:if="{{loadingScan}}">
@@ -151,9 +149,7 @@
     </view>
 
     <!-- Empty -->
-    <view class="empty-block" wx:if="{{!loadingOrder && orderList.length === 0}}">
-      <text class="empty-text">暂无下单记录</text>
-    </view>
+    <xj-empty wx:if="{{!loadingOrder && orderList.length === 0}}" description="暂无下单记录" />
 
     <!-- Loading -->
     <view class="list-loading" wx:if="{{loadingOrder}}">

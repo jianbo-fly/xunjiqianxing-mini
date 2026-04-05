@@ -3,9 +3,13 @@
  */
 const homeApi = require('../../services/home');
 const promoterApi = require('../../services/promoter');
+const messageApi = require('../../services/message');
+const { HOT_CITIES, CITY_GROUPS } = require('../../config/cities');
 const { go } = require('../../utils/router');
 const { isLogin } = require('../../utils/auth');
 const appConfig = require('../../config/app.config');
+
+const CITY_HISTORY_KEY = 'departureCityHistory';
 
 Page({
   data: {
@@ -14,6 +18,15 @@ Page({
     menuButtonLeft: 0,   // 胶囊按钮左边界（px），用于计算右侧 padding
     // 用户数据
     unreadCount: 0,
+    // 出发城市
+    departureCity: wx.getStorageSync('departureCity') || '上海',
+    // 城市选择弹窗
+    showCityPicker: false,
+    cityScrollTo: '',
+    hotCities: HOT_CITIES,
+    cityGroups: CITY_GROUPS,
+    cityIndexLetters: CITY_GROUPS.map(g => g.letter),
+    cityHistory: [],
     // 轮播图
     banners: [],
     currentBanner: 0,
@@ -117,7 +130,13 @@ Page({
    * 加载未读消息数
    */
   async loadUnreadCount() {
-    // TODO: 调用消息接口获取未读数
+    if (!isLogin()) return;
+    try {
+      const count = await messageApi.getUnreadCount();
+      this.setData({ unreadCount: count || 0 });
+    } catch (e) {
+      // 静默失败，不影响页面展示
+    }
   },
 
   /**
@@ -128,10 +147,54 @@ Page({
   },
 
   /**
+   * 出发城市选择 - 打开弹窗
+   */
+  handleCityTap() {
+    const history = wx.getStorageSync(CITY_HISTORY_KEY) || [];
+    this.setData({ showCityPicker: true, cityScrollTo: '', cityHistory: history });
+  },
+
+  /**
+   * 关闭城市弹窗
+   */
+  handleCloseCityPicker() {
+    this.setData({ showCityPicker: false });
+  },
+
+  /**
+   * 选中城市
+   */
+  handleCitySelect(e) {
+    const city = e.currentTarget.dataset.city;
+    // 更新历史（最多5条，去重）
+    let history = wx.getStorageSync(CITY_HISTORY_KEY) || [];
+    history = [city, ...history.filter(c => c !== city)].slice(0, 5);
+    wx.setStorageSync(CITY_HISTORY_KEY, history);
+    wx.setStorageSync('departureCity', city);
+    this.setData({ departureCity: city, showCityPicker: false, cityHistory: history });
+  },
+
+  /**
+   * 清空历史
+   */
+  handleClearCityHistory() {
+    wx.removeStorageSync(CITY_HISTORY_KEY);
+    this.setData({ cityHistory: [] });
+  },
+
+  /**
+   * 点击右侧字母索引跳转
+   */
+  handleLetterTap(e) {
+    const letter = e.currentTarget.dataset.letter;
+    this.setData({ cityScrollTo: `city-letter-${letter}` });
+  },
+
+  /**
    * 搜索点击
    */
   handleSearchTap() {
-    wx.navigateTo({ url: '/pages/search/index' });
+    wx.navigateTo({ url: `/pages/search/index?departureCity=${encodeURIComponent(this.data.departureCity)}` });
   },
 
   /**

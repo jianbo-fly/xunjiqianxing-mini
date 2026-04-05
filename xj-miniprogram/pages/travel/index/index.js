@@ -2,6 +2,9 @@
  * 旅游页 - 跟团游 & 定制游
  */
 const routeApi = require('../../../services/route');
+const { HOT_CITIES, CITY_GROUPS } = require('../../../config/cities');
+
+const CITY_HISTORY_KEY = 'departureCityHistory';
 
 // 筛选面板选项（与路线列表页保持一致）
 const GROUP_FILTER_OPTIONS = {
@@ -35,6 +38,18 @@ Page({
   data: {
     statusBarHeight: 44,
     navBarTotalHeight: 88,
+    searchBarHeight: 52,
+    contentTop: 140,
+    // 搜索框
+    departureCity: '',
+    keyword: '',
+    // 城市选择弹窗
+    showCityPicker: false,
+    cityScrollTo: '',
+    hotCities: HOT_CITIES,
+    cityGroups: CITY_GROUPS,
+    cityIndexLetters: CITY_GROUPS.map(g => g.letter),
+    cityHistory: [],
     // 顶部Tab
     currentTab: 0, // 0=跟团游, 1=定制游
     tabs: ['跟团游', '定制游'],
@@ -129,11 +144,14 @@ Page({
       const menuButton = wx.getMenuButtonBoundingClientRect();
       navBarHeight = menuButton.height + (menuButton.top - statusBarHeight) * 2;
     } catch (e) {}
+    const navBarTotalHeight = statusBarHeight + navBarHeight;
 
+    const departureCity = wx.getStorageSync('departureCity') || '上海';
     const initialTab = options && options.tab ? parseInt(options.tab) : 0;
     this.setData({
       statusBarHeight,
-      navBarTotalHeight: statusBarHeight + navBarHeight,
+      navBarTotalHeight,
+      departureCity,
       currentTab: initialTab,
     });
 
@@ -141,9 +159,17 @@ Page({
     this.loadUserPhone();
 
     wx.nextTick(() => {
-      const q = wx.createSelectorQuery();
-      q.select('.sticky-bar').boundingClientRect(rect => {
-        if (rect) this.setData({ groupFilterPanelTop: rect.bottom });
+      wx.createSelectorQuery().select('.tv-search-bar').boundingClientRect(barRect => {
+        if (barRect) {
+          const searchBarHeight = barRect.height;
+          const contentTop = navBarTotalHeight + searchBarHeight;
+          this.setData({ searchBarHeight, contentTop });
+          wx.nextTick(() => {
+            wx.createSelectorQuery().select('.sticky-bar').boundingClientRect(rect => {
+              if (rect) this.setData({ groupFilterPanelTop: rect.bottom });
+            }).exec();
+          });
+        }
       }).exec();
     });
   },
@@ -155,11 +181,54 @@ Page({
     wx.navigateBack({ fail: () => wx.switchTab({ url: '/pages/index/index' }) });
   },
 
-  /**
-   * 搜索
-   */
+  // 点击搜索框关键词区域：带关键词跳搜索页
+  handleSearchBarTap() {
+    const { departureCity, keyword } = this.data;
+    let url = `/pages/search/index?departureCity=${encodeURIComponent(departureCity)}`;
+    if (keyword) url += `&keyword=${encodeURIComponent(keyword)}`;
+    wx.navigateTo({ url });
+  },
+
+  // 点击 X：跳搜索页，不带关键词
+  handleClearKeyword() {
+    const { departureCity } = this.data;
+    wx.navigateTo({ url: `/pages/search/index?departureCity=${encodeURIComponent(departureCity)}` });
+  },
+
+  // 保留兼容
   handleSearch() {
-    go.routeList();
+    this.handleSearchBarTap();
+  },
+
+  // ===== 城市选择弹窗 =====
+  handleCityTap() {
+    const history = wx.getStorageSync(CITY_HISTORY_KEY) || [];
+    this.setData({ showCityPicker: true, cityScrollTo: '', cityHistory: history });
+  },
+
+  handleCloseCityPicker() {
+    this.setData({ showCityPicker: false });
+  },
+
+  handleCitySelect(e) {
+    const city = e.currentTarget.dataset.city;
+    let history = wx.getStorageSync(CITY_HISTORY_KEY) || [];
+    history = [city, ...history.filter(c => c !== city)].slice(0, 5);
+    wx.setStorageSync(CITY_HISTORY_KEY, history);
+    wx.setStorageSync('departureCity', city);
+    this.setData({ departureCity: city, showCityPicker: false, cityHistory: history,
+      routePage: 1, routeList: [], routeFinished: false });
+    this.loadRouteList(true);
+  },
+
+  handleClearCityHistory() {
+    wx.removeStorageSync(CITY_HISTORY_KEY);
+    this.setData({ cityHistory: [] });
+  },
+
+  handleLetterTap(e) {
+    const letter = e.currentTarget.dataset.letter;
+    this.setData({ cityScrollTo: `city-letter-${letter}` });
   },
 
   /**
@@ -343,11 +412,14 @@ Page({
 
     try {
       const categoryMap = ['domestic', 'overseas', 'nearby'];
+      const { departureCity, keyword } = this.data;
       const params = {
         page: this.data.routePage,
         pageSize: this.data.routePageSize,
         category: categoryMap[this.data.categoryIndex] || 'domestic',
       };
+      if (departureCity) params.departureCity = departureCity;
+      if (keyword) params.keyword = keyword;
       // 只追加有实际值的筛选条件，避免发送空字符串
       Object.entries(this.data.filters).forEach(([k, v]) => {
         if (v !== '' && v != null) params[k] = v;

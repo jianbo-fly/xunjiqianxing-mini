@@ -44,14 +44,6 @@
   <!-- 筛选栏 -->
   <view class="rth-filter-bar">
     <view
-      class="rth-filter-btn {{filters.departure ? 'rth-filter-btn--active' : ''}}"
-      bindtap="_handleFilterTap"
-      data-type="departure"
-    >
-      <text class="rth-filter-btn__text">{{filters.departure || '出发地'}}</text>
-      <text class="rth-filter-btn__arrow">▾</text>
-    </view>
-    <view
       class="rth-filter-btn {{filters.days ? 'rth-filter-btn--active' : ''}}"
       bindtap="_handleFilterTap"
       data-type="days"

@@ -16,6 +16,7 @@ const DEFAULT_HOT_LIST = [
 Page({
   data: {
     keyword: '',
+    departureCity: '',
     autoFocus: true,
     // 默认态
     historyList: [],
@@ -36,7 +37,13 @@ Page({
   // 搜索防抖定时器
   _searchTimer: null,
 
-  onLoad() {
+  onLoad(options) {
+    const raw = options.departureCity;
+    const departureCity = raw
+      ? decodeURIComponent(raw)
+      : (wx.getStorageSync('departureCity') || '上海');
+    const keyword = options.keyword ? decodeURIComponent(options.keyword) : '';
+    this.setData({ departureCity, keyword });
     this._loadHistory();
   },
 
@@ -164,13 +171,15 @@ Page({
   },
 
   /**
-   * 执行搜索
+   * 执行搜索 - 用 redirectTo 替换当前搜索页，不留在导航栈中
    */
-  async _doSearch(keyword, reset) {
+  _doSearch(keyword) {
+    if (!keyword) return;
     this._saveHistory(keyword);
-    this.setData({ showResult: true, searching: true, page: 1, resultList: [], total: 0, hasMore: false });
-    await this._fetchResult(keyword, 1, reset);
-    this.setData({ searching: false });
+    const { departureCity } = this.data;
+    wx.redirectTo({
+      url: `/pages/route/list/index?keyword=${encodeURIComponent(keyword)}&departureCity=${encodeURIComponent(departureCity)}`,
+    });
   },
 
 

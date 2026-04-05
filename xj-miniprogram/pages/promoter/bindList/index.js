@@ -59,7 +59,7 @@ Page({
   },
 
   handleTabChange(e) {
-    const index = e.currentTarget.dataset.index;
+    const index = +e.currentTarget.dataset.index;
     if (index === this.data.activeTab) return;
     this.setData({ activeTab: index });
     if (index === 0 && this.data.scanList.length === 0) {

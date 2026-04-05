@@ -3,6 +3,9 @@
  */
 const routeApi = require('../../../services/route');
 const { go } = require('../../../utils/router');
+const { HOT_CITIES, CITY_GROUPS } = require('../../../config/cities');
+
+const CITY_HISTORY_KEY = 'departureCityHistory';
 
 const FILTER_OPTIONS = {
   departure: [
@@ -45,8 +48,10 @@ Page({
     page: 1,
     pageSize: 10,
     hasMore: true,
-    // 搜索关键词
+    // 搜索关键词 & 出发城市
     keyword: '',
+    departureCity: '',
+    statusBarHeight: 0,
     // 主 Tab 列表（首页入口不展示分类 tab）
     tabs: [],
     activeTab: '',
@@ -62,14 +67,12 @@ Page({
     activeCategory: '',
     // 筛选条件展示值（传给 header 组件显示）
     filterValues: {
-      departure: '',
       days: '',
       budget: '',
       hasFilter: false,
     },
     // 实际筛选参数（传给 API）
     filterParams: {
-      departureCity: '',
       minDays: '',
       maxDays: '',
       minPrice: '',
@@ -85,33 +88,55 @@ Page({
       pendingValue: '',
     },
     filterPanelTop: 220,
-    // nav-bar 高度（px）
+    // nav-bar 高度（px），用于定位搜索栏
     navBarTotalHeight: 88,
+    // 搜索栏自身高度（px），用于补充占位（nav-bar 已有自己的占位）
+    searchBarHeight: 52,
+    // nav-bar + 搜索栏合计高度（px），用于 route-list-header sticky top 和 filterPanelTop
+    contentTop: 140,
+    // 城市选择弹窗
+    showCityPicker: false,
+    cityScrollTo: '',
+    hotCities: HOT_CITIES,
+    cityGroups: CITY_GROUPS,
+    cityIndexLetters: CITY_GROUPS.map(g => g.letter),
+    cityHistory: [],
   },
 
   onLoad(options) {
-    // 计算 nav-bar 实际高度
     const sysInfo = wx.getSystemInfoSync();
     const statusBarHeight = sysInfo.statusBarHeight || 44;
+    // 计算 nav-bar 高度（与首页相同逻辑）
     let navBarHeight = 44;
     try {
       const menuButton = wx.getMenuButtonBoundingClientRect();
       navBarHeight = menuButton.height + (menuButton.top - statusBarHeight) * 2;
     } catch (e) {}
     const navBarTotalHeight = statusBarHeight + navBarHeight;
-    this.setData({ navBarTotalHeight, filterPanelTop: navBarTotalHeight + 132 });
+
+    const departureCity = options.departureCity
+      ? decodeURIComponent(options.departureCity)
+      : (wx.getStorageSync('departureCity') || '上海');
+    const keyword = options.keyword ? decodeURIComponent(options.keyword) : '';
+
+    this.setData({ statusBarHeight, navBarTotalHeight, departureCity, keyword });
 
     if (options.categoryId) this.setData({ activeCategory: options.categoryId });
-    if (options.keyword) this.setData({ keyword: options.keyword });
 
     this.loadList();
 
-    // 渲染完成后动态测量 route-list-header 的实际高度
+    // 渲染完成后测量搜索栏高度 → 更新 searchBarHeight 和 contentTop
     wx.nextTick(() => {
-      const query = wx.createSelectorQuery();
-      query.select('.route-list-header').boundingClientRect(rect => {
-        if (rect) {
-          this.setData({ filterPanelTop: rect.bottom });
+      wx.createSelectorQuery().select('.rl-search-bar').boundingClientRect(barRect => {
+        if (barRect) {
+          const searchBarHeight = barRect.height;
+          const contentTop = navBarTotalHeight + searchBarHeight;
+          this.setData({ searchBarHeight, contentTop, filterPanelTop: contentTop + 132 });
+          wx.nextTick(() => {
+            wx.createSelectorQuery().select('.route-list-header').boundingClientRect(rect => {
+              if (rect) this.setData({ filterPanelTop: rect.bottom });
+            }).exec();
+          });
         }
       }).exec();
     });
@@ -132,11 +157,11 @@ Page({
    * 构建请求参数
    */
   _buildParams(page) {
-    const { pageSize, keyword, activeCategory, filterParams } = this.data;
+    const { pageSize, keyword, activeCategory, filterParams, departureCity } = this.data;
     const params = { page, pageSize };
     if (keyword) params.keyword = keyword;
     if (activeCategory) params.category = activeCategory;
-    if (filterParams.departureCity) params.departureCity = filterParams.departureCity;
+    if (departureCity) params.departureCity = departureCity;
     if (filterParams.minDays) params.minDays = filterParams.minDays;
     if (filterParams.maxDays) params.maxDays = filterParams.maxDays;
     if (filterParams.minPrice !== '') params.minPrice = filterParams.minPrice;
@@ -249,12 +274,10 @@ Page({
       ...filterValues,
       [type]: option.label && option.label !== '不限' ? option.label : '',
     };
-    newFilterValues.hasFilter = !!(newFilterValues.departure || newFilterValues.days || newFilterValues.budget);
+    newFilterValues.hasFilter = !!(newFilterValues.days || newFilterValues.budget);
 
     const newFilterParams = { ...filterParams };
-    if (type === 'departure') {
-      newFilterParams.departureCity = pendingValue;
-    } else if (type === 'days') {
+    if (type === 'days') {
       newFilterParams.minDays = pendingValue ? option.min : '';
       newFilterParams.maxDays = pendingValue ? option.max : '';
     } else if (type === 'budget') {
@@ -305,9 +328,59 @@ Page({
     this.loadList();
   },
 
+  handleBack() {
+    wx.navigateBack({ delta: 1 });
+  },
+
+  // 点击搜索框：带关键词跳转搜索页（可回显）
+  handleSearchBarTap() {
+    const { departureCity, keyword } = this.data;
+    let url = `/pages/search/index?departureCity=${encodeURIComponent(departureCity)}`;
+    if (keyword) url += `&keyword=${encodeURIComponent(keyword)}`;
+    wx.navigateTo({ url });
+  },
+
+  // 点击 X：清空关键词，跳转搜索页（不回显）
+  handleClearKeyword() {
+    const { departureCity } = this.data;
+    wx.navigateTo({ url: `/pages/search/index?departureCity=${encodeURIComponent(departureCity)}` });
+  },
+
   handleSearchTap() {
-    go.home(); // 跳首页搜索，或直接跳搜索页
-    wx.navigateTo({ url: '/pages/search/index' });
+    this.handleSearchBarTap();
+  },
+
+  // ===== 城市选择弹窗 =====
+
+  handleCityTap() {
+    const history = wx.getStorageSync(CITY_HISTORY_KEY) || [];
+    this.setData({ showCityPicker: true, cityScrollTo: '', cityHistory: history });
+  },
+
+  handleCloseCityPicker() {
+    this.setData({ showCityPicker: false });
+  },
+
+  handleCitySelect(e) {
+    const city = e.currentTarget.dataset.city;
+    let history = wx.getStorageSync(CITY_HISTORY_KEY) || [];
+    history = [city, ...history.filter(c => c !== city)].slice(0, 5);
+    wx.setStorageSync(CITY_HISTORY_KEY, history);
+    wx.setStorageSync('departureCity', city);
+    this.setData({ departureCity: city, showCityPicker: false, cityHistory: history });
+    // 重新加载列表
+    this.setData({ page: 1, list: [], hasMore: true });
+    this.loadList();
+  },
+
+  handleClearCityHistory() {
+    wx.removeStorageSync(CITY_HISTORY_KEY);
+    this.setData({ cityHistory: [] });
+  },
+
+  handleLetterTap(e) {
+    const letter = e.currentTarget.dataset.letter;
+    this.setData({ cityScrollTo: `city-letter-${letter}` });
   },
 
   // ===== 卡片操作 =====
