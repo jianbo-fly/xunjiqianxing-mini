@@ -2,3 +2,4 @@
   <nav-bar title="搭子详情" background="rgba(255,255,255,0.9)" border showBack fixed />
   <xj-empty description="页面开发中..." />
 </view>
+<xj-toast id="xj-toast"/>

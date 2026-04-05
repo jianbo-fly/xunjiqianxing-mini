@@ -13,7 +13,6 @@
         <el-steps :active="getStepActive(order.status ?? 0)" finish-status="success">
           <el-step title="提交订单" :description="order.createdAt" />
           <el-step title="支付成功" :description="order.payTime || ''" />
-          <el-step title="订单确认" :description="order.confirmTime || ''" />
           <el-step title="开始出行" :description="order.startDate || ''" />
           <el-step title="行程结束" :description="order.completeTime || ''" />
         </el-steps>
@@ -84,12 +83,6 @@
         </el-descriptions>
       </template>
 
-      <!-- 操作按钮 -->
-      <div class="action-bar" v-if="order.status === 1">
-        <el-button type="primary" @click="handleConfirm">确认订单</el-button>
-        <el-button type="danger" @click="handleReject">拒绝订单</el-button>
-      </div>
-
       <!-- 备注 -->
       <div class="action-bar">
         <el-input v-model="remarkText" placeholder="添加管理员备注" style="width: 400px; margin-right: 10px" />
@@ -97,14 +90,6 @@
       </div>
     </el-card>
 
-    <!-- 拒绝原因对话框 -->
-    <el-dialog v-model="rejectDialogVisible" title="拒绝订单" width="400px">
-      <el-input v-model="rejectReason" type="textarea" :rows="4" placeholder="请输入拒绝原因" />
-      <template #footer>
-        <el-button @click="rejectDialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="confirmReject">确定</el-button>
-      </template>
-    </el-dialog>
   </div>
 </template>
 
@@ -112,20 +97,18 @@
 import { ref, reactive, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { getOrderDetail, confirmOrder, addOrderRemark } from '@/api/order'
+import { getOrderDetail, addOrderRemark } from '@/api/order'
 import type { OrderDetailVO } from '@/types'
 
 const route = useRoute()
 const loading = ref(false)
 const remarkText = ref('')
-const rejectDialogVisible = ref(false)
-const rejectReason = ref('')
 
 const order = reactive<Partial<OrderDetailVO>>({})
 
 const statusMap: Record<number, string> = {
-  0: 'info', 1: 'warning', 2: 'primary', 3: '', 4: 'success',
-  5: 'info', 6: 'danger', 7: 'info', 8: 'info',
+  0: 'info', 1: 'primary', 2: '', 3: 'success',
+  4: 'info', 5: 'danger', 6: 'info', 7: 'info',
 }
 
 function getStatusType(status: number) {
@@ -133,10 +116,11 @@ function getStatusType(status: number) {
 }
 
 function getStepActive(status: number) {
+  // 步骤：0-提交订单 1-支付成功 2-开始出行 3-行程结束
   const map: Record<number, number> = {
-    0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 0, 6: 2, 7: 2, 8: 0,
+    0: 0, 1: 1, 2: 2, 3: 3, 4: 0, 5: 1, 6: 1, 7: 0,
   }
-  return map[status || 0] || 0
+  return map[status || 0] ?? 0
 }
 
 onMounted(async () => {
@@ -150,38 +134,6 @@ onMounted(async () => {
     loading.value = false
   }
 })
-
-async function handleConfirm() {
-  try {
-    await confirmOrder({ orderNo: order.orderNo!, action: 'confirm' })
-    ElMessage.success('确认成功')
-    order.status = 2
-    order.statusDesc = '已确认'
-  } catch (_e) { /* ignore */ }
-}
-
-function handleReject() {
-  rejectReason.value = ''
-  rejectDialogVisible.value = true
-}
-
-async function confirmReject() {
-  if (!rejectReason.value.trim()) {
-    ElMessage.warning('请输入拒绝原因')
-    return
-  }
-  try {
-    await confirmOrder({
-      orderNo: order.orderNo!,
-      action: 'reject',
-      rejectReason: rejectReason.value,
-    })
-    ElMessage.success('已拒绝')
-    rejectDialogVisible.value = false
-    order.status = 5
-    order.statusDesc = '已取消'
-  } catch (_e) { /* ignore */ }
-}
 
 async function handleAddRemark() {
   if (!remarkText.value.trim()) {

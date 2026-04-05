@@ -57,19 +57,18 @@ Component({
 
   lifetimes: {
     attached() {
-      const app = getApp();
-      const systemInfo = app.globalData.systemInfo || wx.getSystemInfoSync();
+      const windowInfo = wx.getWindowInfo();
 
       let navBarHeight = 44;
       try {
         const menuButton = wx.getMenuButtonBoundingClientRect();
-        navBarHeight = menuButton.height + (menuButton.top - systemInfo.statusBarHeight) * 2;
+        navBarHeight = menuButton.height + (menuButton.top - windowInfo.statusBarHeight) * 2;
       } catch (e) {
         console.warn('获取胶囊按钮信息失败');
       }
 
       this.setData({
-        statusBarHeight: systemInfo.statusBarHeight,
+        statusBarHeight: windowInfo.statusBarHeight,
         navBarHeight: navBarHeight
       });
     }

@@ -31,8 +31,18 @@
           </el-select>
         </el-form-item>
 
+        <el-form-item label="城市编码">
+          <el-input v-model="form.cityCode" placeholder="如：440100（广州）" style="width: 220px" />
+          <span style="margin-left: 10px; color: #909399; font-size: 12px">用于搜索筛选</span>
+        </el-form-item>
+
+        <el-form-item label="城市名称">
+          <el-input v-model="form.cityName" placeholder="如：广州" style="width: 180px" />
+          <span style="margin-left: 10px; color: #909399; font-size: 12px">标准城市全称，用于精确匹配</span>
+        </el-form-item>
+
         <el-form-item label="出发城市">
-          <el-input v-model="form.departureCity" placeholder="请输入出发城市" />
+          <el-input v-model="form.departureCity" placeholder="如：广州出发（展示用，可自定义）" />
         </el-form-item>
 
         <el-form-item label="目的地" prop="destination">
@@ -138,29 +148,44 @@
                   :key="actIndex"
                   class="activity-item"
                 >
-                  <el-select v-model="act.icon" placeholder="图标" style="width: 100px">
-                    <el-option label="飞机" value="plane" />
-                    <el-option label="大巴" value="bus" />
-                    <el-option label="景点" value="scenic" />
-                    <el-option label="酒店" value="hotel" />
-                    <el-option label="餐饮" value="food" />
-                    <el-option label="步行" value="walk" />
-                    <el-option label="游船" value="boat" />
-                    <el-option label="默认" value="default" />
-                  </el-select>
-                  <el-input
-                    v-model="act.time"
-                    placeholder="时间(08:00)"
-                    style="width: 100px"
-                  />
-                  <el-input
-                    v-model="act.content"
-                    placeholder="活动内容"
-                    style="flex: 1"
-                  />
-                  <el-button type="danger" link @click="removeActivity(dayIndex, actIndex)">
-                    删除
-                  </el-button>
+                  <div class="activity-main-row">
+                    <el-select v-model="act.icon" placeholder="图标" style="width: 100px">
+                      <el-option label="飞机" value="plane" />
+                      <el-option label="大巴" value="bus" />
+                      <el-option label="景点" value="scenic" />
+                      <el-option label="酒店" value="hotel" />
+                      <el-option label="餐饮" value="food" />
+                      <el-option label="步行" value="walk" />
+                      <el-option label="游船" value="boat" />
+                      <el-option label="默认" value="default" />
+                    </el-select>
+                    <el-input
+                      v-model="act.time"
+                      placeholder="时间(08:00)"
+                      style="width: 100px"
+                    />
+                    <el-input
+                      v-model="act.content"
+                      placeholder="活动内容"
+                      style="flex: 1"
+                    />
+                    <el-button type="danger" link @click="removeActivity(dayIndex, actIndex)">
+                      删除
+                    </el-button>
+                  </div>
+                  <div class="activity-images-row">
+                    <el-upload
+                      :action="uploadAction"
+                      :headers="uploadHeaders"
+                      list-type="picture-card"
+                      :file-list="getActivityImageFileList(dayIndex, actIndex)"
+                      :on-success="(res: any, file: any, fileList: any) => handleActivityImageSuccess(res, file, fileList, dayIndex, actIndex)"
+                      :on-remove="(_file: any, fileList: any) => handleActivityImageRemove(fileList, dayIndex, actIndex)"
+                      :limit="9"
+                    >
+                      <el-icon><Plus /></el-icon>
+                    </el-upload>
+                  </div>
                 </div>
                 <el-button size="small" @click="addActivity(dayIndex)">+ 添加活动</el-button>
               </div>
@@ -226,6 +251,7 @@ interface Activity {
   icon: string
   time: string
   content: string
+  images: string[]
 }
 
 interface ItineraryDay {
@@ -240,6 +266,8 @@ const form = reactive({
   name: '',
   subtitle: '',
   category: '',
+  cityCode: '',
+  cityName: '',
   departureCity: '',
   destination: '',
   originalPrice: 0,
@@ -289,6 +317,8 @@ async function fetchDetail() {
       name: detail.name,
       subtitle: detail.subtitle || '',
       category: detail.category || '',
+      cityCode: detail.cityCode || '',
+      cityName: detail.cityName || '',
       departureCity: detail.departureCity || '',
       destination: detail.destination || '',
       originalPrice: detail.originalPrice || 0,
@@ -300,7 +330,10 @@ async function fetchDetail() {
       bookingNotice: detail.bookingNotice || '',
       tips: detail.tips || '',
       costInclude: detail.costInclude || '',
-      itinerary: detail.itinerary || [],
+      itinerary: (detail.itinerary || []).map((d: any) => ({
+        ...d,
+        activities: (d.activities || []).map((a: any) => ({ ...a, images: a.images || [] })),
+      })),
       sortOrder: detail.sortOrder || 0,
       isRecommend: detail.isRecommend || 0,
     })
@@ -357,6 +390,26 @@ function addTag() {
   tagInputValue.value = ''
 }
 
+// 行程 - 每个活动配图
+function getActivityImageFileList(dayIndex: number, actIndex: number) {
+  const act = (form.itinerary[dayIndex] as ItineraryDay).activities[actIndex]
+  return (act.images || []).map((url, i) => ({ name: `d${dayIndex}-a${actIndex}-img-${i}`, url, uid: i } as unknown as UploadFile))
+}
+
+function handleActivityImageSuccess(response: any, _file: UploadFile, fileList: UploadFile[], dayIndex: number, actIndex: number) {
+  if (response.code === 0) {
+    const act = (form.itinerary[dayIndex] as ItineraryDay).activities[actIndex]
+    act.images = fileList.map(f => (f.response as any)?.data || f.url).filter(Boolean) as string[]
+  } else {
+    ElMessage.error(response.message || '上传失败')
+  }
+}
+
+function handleActivityImageRemove(fileList: UploadFile[], dayIndex: number, actIndex: number) {
+  const act = (form.itinerary[dayIndex] as ItineraryDay).activities[actIndex]
+  act.images = fileList.map(f => (f.response as any)?.data || f.url).filter(Boolean) as string[]
+}
+
 // 行程编辑方法
 function addDay() {
   form.itinerary.push({
@@ -377,10 +430,11 @@ function removeDay(dayIndex: number) {
 }
 
 function addActivity(dayIndex: number) {
-  form.itinerary[dayIndex].activities.push({
+  (form.itinerary[dayIndex] as ItineraryDay).activities.push({
     icon: 'default',
     time: '',
     content: '',
+    images: [],
   })
 }
 
@@ -403,6 +457,8 @@ async function handleSubmit() {
         images: form.images,
         tags: form.tags,
         category: form.category,
+        cityCode: form.cityCode,
+        cityName: form.cityName,
         departureCity: form.departureCity,
         destination: form.destination,
         originalPrice: form.originalPrice,
@@ -423,6 +479,8 @@ async function handleSubmit() {
         images: form.images,
         tags: form.tags,
         category: form.category,
+        cityCode: form.cityCode,
+        cityName: form.cityName,
         departureCity: form.departureCity,
         destination: form.destination,
         originalPrice: form.originalPrice,
@@ -519,14 +577,28 @@ async function handleSubmit() {
 }
 
 .activity-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 8px;
-  padding: 8px;
+  margin-bottom: 12px;
+  padding: 10px;
   background: white;
   border-radius: 4px;
   border: 1px solid #ebeef5;
+}
+
+.activity-main-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.activity-images-row {
+  margin-top: 8px;
+  padding-left: 4px;
+}
+
+.activity-images-row :deep(.el-upload--picture-card),
+.activity-images-row :deep(.el-upload-list__item) {
+  width: 80px;
+  height: 80px;
 }
 
 .day-footer-inputs {

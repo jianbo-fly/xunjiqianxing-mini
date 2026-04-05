@@ -1,4 +1,171 @@
+<!--
+  推广明细页（含扫码记录 + 下单记录双 Tab）
+-->
 <view class="page-bind-list">
-  <nav-bar title="绑定用户列表" background="rgba(255,255,255,0.9)" border showBack fixed />
-  <xj-empty description="页面开发中..." />
+
+  <!-- Summary header -->
+  <view class="summary-header" style="padding-top: {{statusBarHeight}}px;">
+    <view class="hero-deco-tr"></view>
+    <!-- Nav -->
+    <view class="header-nav" style="height: {{navBarHeight}}px;">
+      <view class="header-back-btn" bindtap="handleBack">
+        <view class="header-back-icon"></view>
+      </view>
+      <text class="header-nav-title">推广明细</text>
+      <view style="width: 64rpx;"></view>
+    </view>
+    <!-- Stats row -->
+    <view class="summary-stats">
+      <view class="summary-stat-item">
+        <text class="summary-stat-value">{{totalScan}}</text>
+        <text class="summary-stat-label">累计扫码</text>
+      </view>
+      <view class="summary-stat-divider"></view>
+      <view class="summary-stat-item">
+        <text class="summary-stat-value">{{totalOrder}}</text>
+        <text class="summary-stat-label">累计成单</text>
+      </view>
+      <view class="summary-stat-divider"></view>
+      <view class="summary-stat-item">
+        <text class="summary-stat-value summary-stat-value--points">{{totalPoints}}</text>
+        <text class="summary-stat-label">累计积分</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- Tab switcher -->
+  <view class="tab-bar">
+    <view
+      class="tab-item {{activeTab === 0 ? 'tab-item--active' : ''}}"
+      bindtap="handleTabChange"
+      data-index="0"
+    >
+      <text class="tab-text">扫码记录</text>
+      <view class="tab-indicator" wx:if="{{activeTab === 0}}"></view>
+    </view>
+    <view
+      class="tab-item {{activeTab === 1 ? 'tab-item--active' : ''}}"
+      bindtap="handleTabChange"
+      data-index="1"
+    >
+      <text class="tab-text">下单记录</text>
+      <view class="tab-indicator" wx:if="{{activeTab === 1}}"></view>
+    </view>
+  </view>
+
+  <!-- ===== Tab 0: Scan records (timeline) ===== -->
+  <view class="tab-content" wx:if="{{activeTab === 0}}">
+
+    <!-- Filter row -->
+    <view class="filter-row">
+      <text class="filter-label">全部时间</text>
+      <view class="filter-arrow-icon"></view>
+    </view>
+
+    <!-- Timeline list -->
+    <view class="timeline-list" wx:if="{{scanList.length > 0}}">
+      <view
+        class="timeline-item"
+        wx:for="{{scanList}}"
+        wx:key="id"
+      >
+        <!-- Dot + line -->
+        <view class="timeline-dot-col">
+          <view class="timeline-dot {{index === 0 ? 'timeline-dot--first' : ''}}"></view>
+          <view class="timeline-line" wx:if="{{index < scanList.length - 1}}"></view>
+        </view>
+        <!-- Card -->
+        <view class="timeline-card">
+          <view class="scan-user-row">
+            <image
+              class="scan-avatar"
+              src="{{item.avatarUrl || '/assets/images/placeholder/avatar.png'}}"
+              mode="aspectFill"
+            />
+            <view class="scan-user-info">
+              <text class="scan-user-phone">{{item.maskedPhone || '用户****'}}</text>
+              <text class="scan-user-id">用户ID: {{item.userId || '—'}}</text>
+            </view>
+            <text class="scan-time">{{item.scanTimeStr}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- Empty -->
+    <view class="empty-block" wx:if="{{!loadingScan && scanList.length === 0}}">
+      <text class="empty-text">暂无扫码记录</text>
+    </view>
+
+    <!-- Loading -->
+    <view class="list-loading" wx:if="{{loadingScan}}">
+      <xj-loading text="加载中..." />
+    </view>
+
+    <!-- Load more -->
+    <view class="load-more" wx:if="{{!loadingScan && scanHasMore}}" bindtap="loadMoreScan">
+      <text class="load-more-text">加载更多</text>
+    </view>
+  </view>
+
+  <!-- ===== Tab 1: Order records ===== -->
+  <view class="tab-content" wx:if="{{activeTab === 1}}">
+
+    <!-- Filter row -->
+    <view class="filter-row">
+      <text class="filter-label">全部时间</text>
+      <view class="filter-arrow-icon"></view>
+    </view>
+
+    <!-- Order list -->
+    <view wx:if="{{orderList.length > 0}}">
+      <view
+        class="order-card"
+        wx:for="{{orderList}}"
+        wx:key="id"
+      >
+        <view class="order-card-top">
+          <image
+            class="order-product-icon"
+            src="{{item.productImage || '/assets/images/placeholder/route.png'}}"
+            mode="aspectFill"
+          />
+          <view class="order-main-info">
+            <text class="order-product-name">{{item.productName || '—'}}</text>
+            <text class="order-buyer-phone">买家: {{item.maskedPhone || '用户****'}}</text>
+          </view>
+        </view>
+        <view class="order-card-bottom">
+          <view class="order-meta">
+            <text class="order-date">{{item.orderDateStr}}</text>
+            <text class="order-no">{{item.orderNo}}</text>
+          </view>
+          <view class="order-right">
+            <text class="order-amount">¥{{item.payAmount}}</text>
+            <view class="order-points-badge">
+              <text class="order-points-text">+{{item.commissionPoints || 0}} 积分</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- Empty -->
+    <view class="empty-block" wx:if="{{!loadingOrder && orderList.length === 0}}">
+      <text class="empty-text">暂无下单记录</text>
+    </view>
+
+    <!-- Loading -->
+    <view class="list-loading" wx:if="{{loadingOrder}}">
+      <xj-loading text="加载中..." />
+    </view>
+
+    <!-- Load more -->
+    <view class="load-more" wx:if="{{!loadingOrder && orderHasMore}}" bindtap="loadMoreOrder">
+      <text class="load-more-text">加载更多</text>
+    </view>
+  </view>
+
+  <view style="height: 60rpx;"></view>
 </view>
+<xj-toast id="xj-toast"/>

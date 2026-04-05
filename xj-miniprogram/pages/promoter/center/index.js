@@ -2,37 +2,57 @@
  * 推广中心页
  */
 const promoterApi = require('../../../services/promoter');
-const { go } = require('../../../utils/router');
+const { go, navigateBack } = require('../../../utils/router');
 
 Page({
   data: {
+    statusBarHeight: 0,
+    navBarHeight: 44,
     loading: true,
     promoter: null,
   },
 
   onLoad() {
+    const windowInfo = wx.getWindowInfo();
+    const deviceInfo = wx.getDeviceInfo();
+    const statusBarHeight = windowInfo.statusBarHeight || 0;
+    const navBarHeight = deviceInfo.platform === 'ios' ? 44 : 48;
+    this.setData({ statusBarHeight, navBarHeight });
     this.loadPromoterInfo();
   },
 
-  /**
-   * 加载推广员信息
-   */
   async loadPromoterInfo() {
+    // 从本地缓存读取用户信息，补充头像和昵称（后端推广员接口暂不返回这两个字段）
+    const userInfo = wx.getStorageSync('userInfo') || {};
+
     try {
       const [info, stats] = await Promise.all([
         promoterApi.getInfo(),
         promoterApi.getStatistics(),
       ]);
 
+      // 未申请推广员，跳转申请页
+      if (!info) {
+        wx.redirectTo({ url: '/pages/promoter/apply/index' });
+        return;
+      }
+
       this.setData({
         promoter: {
           ...info,
-          scanCount: stats.scanCount || 0,
-          orderCount: stats.orderCount || 0,
-          points: stats.points || 0,
+          nickname: userInfo.nickname || userInfo.name || '推广员',
+          avatar: userInfo.avatar || '',
+          scanCount: (stats && stats.scanCount) || 0,
+          orderCount: (stats && stats.orderCount) || 0,
+          points: (stats && stats.availableCommission) || 0,
         },
         loading: false,
       });
+
+      // 已审核通过才生成二维码
+      if (info.status === 1) {
+        this.loadQrCode();
+      }
     } catch (err) {
       console.error('加载推广员信息失败', err);
       wx.showToast({ title: '加载失败', icon: 'none' });
@@ -40,16 +60,29 @@ Page({
     }
   },
 
-  /**
-   * 保存推广码图片
-   */
+  async loadQrCode() {
+    try {
+      const tempPath = await promoterApi.downloadQrCode();
+      this.setData({ 'promoter.qrCodeUrl': tempPath });
+    } catch (err) {
+      console.error('加载推广码失败', err);
+    }
+  },
+
+  handleBack() {
+    navigateBack();
+  },
+
+  handleEditProfile() {
+    go.promoterApply();
+  },
+
   handleSaveImage() {
     const qrCodeUrl = this.data.promoter?.qrCodeUrl;
     if (!qrCodeUrl) {
       wx.showToast({ title: '推广码未生成', icon: 'none' });
       return;
     }
-
     wx.saveImageToPhotosAlbum({
       filePath: qrCodeUrl,
       success: () => {
@@ -70,28 +103,20 @@ Page({
     });
   },
 
-  /**
-   * 分享好友
-   */
   handleShare() {
-    // 触发分享 - 需通过 onShareAppMessage 实现
+    // 触发系统分享，实际分享由 onShareAppMessage 处理
+    wx.showShareMenu({ withShareTicket: true });
   },
 
-  /**
-   * 推广明细
-   */
   handlePromoterDetail() {
     go.promoterBindList();
   },
 
-  /**
-   * 分享
-   */
   onShareAppMessage() {
     const promoter = this.data.promoter || {};
     return {
-      title: `${promoter.name || '好友'}邀你一起旅行`,
-      path: `/pages/index/index?promoterCode=${promoter.promoterCode || ''}`,
+      title: `${promoter.nickname || promoter.name || '好友'}邀你一起旅行`,
+      path: `/pages/index/index?promoterCode=${promoter.promoCode || ''}`,
     };
   },
 });

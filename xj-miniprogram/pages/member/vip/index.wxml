@@ -1,0 +1,156 @@
+<!--
+  会员中心 - 开通会员
+  对齐 Figma Node: 74-6996
+-->
+<view class="page-vip">
+
+  <!-- 导航栏 -->
+  <nav-bar title="会员中心" showBack fixed />
+
+  <!-- 主体内容区 -->
+  <view class="vip-body" style="padding-top: {{navBarTotalHeight}}px;">
+
+    <!-- ===== 会员卡片 ===== -->
+    <view class="vip-card">
+      <!-- 渐变底色 -->
+      <view class="vip-card__bg"></view>
+      <!-- 右上角白色光晕 -->
+      <view class="vip-card__glow"></view>
+      <!-- 下半部暗渐变遮罩 -->
+      <view class="vip-card__overlay"></view>
+
+      <view class="vip-card__content">
+        <!-- 顶部行：Logo + 标题 + VIP 徽章 -->
+        <view class="vip-card__top">
+          <view class="vip-card__logo-wrap">
+            <text class="vip-card__crown">👑</text>
+          </view>
+          <view class="vip-card__info">
+            <text class="vip-card__title">寻迹会员</text>
+            <text class="vip-card__subtitle">XUNJI PREMIUM</text>
+          </view>
+          <view class="vip-card__vip-badge">
+            <text class="vip-card__vip-text">VIP</text>
+          </view>
+        </view>
+
+        <!-- 底部行：标语 + 价格 + 装饰芯片 -->
+        <view class="vip-card__bottom">
+          <view class="vip-card__price-wrap">
+            <text class="vip-card__slogan">畅享户外 探索无限</text>
+            <view class="vip-card__price-row">
+              <text class="vip-card__price">¥99</text>
+              <text class="vip-card__period">/ 年</text>
+            </view>
+          </view>
+          <!-- 金色装饰芯片 -->
+          <view class="vip-card__deco-chip"></view>
+        </view>
+      </view>
+    </view>
+
+    <!-- ===== 限时特惠 Banner ===== -->
+    <view class="vip-banner">
+      <view class="vip-banner__left">
+        <image class="vip-banner__fire" src="/assets/icons/member-vip/fire.png" mode="aspectFit" />
+        <text class="vip-banner__title">限时特惠</text>
+      </view>
+      <text class="vip-banner__hint">每天仅需 ¥0.27</text>
+    </view>
+
+    <!-- ===== 会员权益 ===== -->
+    <view class="vip-benefits">
+      <!-- 标题行 -->
+      <view class="vip-section-hd">
+        <view class="vip-section-bar"></view>
+        <text class="vip-section-title">会员权益</text>
+        <text class="vip-section-sub">Privileges</text>
+      </view>
+
+      <!-- 2×2 权益网格 -->
+      <view class="vip-benefits-grid">
+        <!-- 专属客服 -->
+        <view class="vip-benefit-card">
+          <view class="vip-benefit-icon-wrap" style="background: #FFEDD5;">
+            <image class="vip-benefit-icon" src="/assets/icons/member-vip/benefit-service.png" mode="aspectFit" />
+          </view>
+          <text class="vip-benefit-name">专属客服</text>
+          <text class="vip-benefit-desc">1对1旅行顾问&#10;随时响应需求</text>
+        </view>
+
+        <!-- 免费改期 -->
+        <view class="vip-benefit-card">
+          <view class="vip-benefit-icon-wrap" style="background: #DBEAFE;">
+            <image class="vip-benefit-icon" src="/assets/icons/member-vip/benefit-reschedule.png" mode="aspectFit" />
+          </view>
+          <text class="vip-benefit-name">免费改期</text>
+          <text class="vip-benefit-desc">行程灵活变动&#10;无忧自由调整</text>
+        </view>
+
+        <!-- 会员专线 -->
+        <view class="vip-benefit-card">
+          <view class="vip-benefit-icon-wrap" style="background: #DCFCE7;">
+            <image class="vip-benefit-icon" src="/assets/icons/member-vip/benefit-route.png" mode="aspectFit" />
+          </view>
+          <text class="vip-benefit-name">会员专线</text>
+          <text class="vip-benefit-desc">解锁秘境路线&#10;探索独特风景</text>
+        </view>
+
+        <!-- 优惠券包 -->
+        <view class="vip-benefit-card">
+          <view class="vip-benefit-icon-wrap" style="background: #FEE2E2;">
+            <image class="vip-benefit-icon" src="/assets/icons/member-vip/benefit-coupon.png" mode="aspectFit" />
+          </view>
+          <text class="vip-benefit-name">优惠券包</text>
+          <text class="vip-benefit-desc">价值 ¥200+&#10;出行立减优惠</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- ===== 常见问题 ===== -->
+    <view class="vip-faq" bindtap="handleFaqTap">
+      <view class="vip-faq__left">
+        <image class="vip-faq__icon" src="/assets/icons/member-vip/faq.png" mode="aspectFit" />
+        <text class="vip-faq__text">常见问题解答</text>
+      </view>
+      <image class="vip-faq__chevron" src="/assets/icons/member/chevron.png" mode="aspectFit" />
+    </view>
+
+    <!-- 底部安全区占位 -->
+    <view style="height: calc(160rpx + env(safe-area-inset-bottom));"></view>
+  </view>
+
+  <!-- ===== 固定底部操作栏 ===== -->
+  <view class="vip-bottom">
+    <!-- 协议勾选行 -->
+    <view class="vip-agreement" bindtap="handleAgreementToggle">
+      <view class="vip-checkbox {{agreed ? 'vip-checkbox--checked' : ''}}">
+        <image wx:if="{{agreed}}" class="vip-check-icon" src="/assets/icons/member-vip/check.png" mode="aspectFit" />
+      </view>
+      <text class="vip-agreement__text">我已阅读并同意 </text>
+      <text class="vip-agreement__link" catchtap="handleTermsTap">《会员服务协议》</text>
+    </view>
+
+    <!-- 立即开通按钮 -->
+    <view class="vip-cta {{(!agreed || activating) ? 'vip-cta--disabled' : ''}}" bindtap="handleActivate">
+      <text wx:if="{{activating}}" class="vip-cta__label">处理中...</text>
+      <block wx:else>
+        <text class="vip-cta__label">立即开通</text>
+        <text class="vip-cta__price">¥99</text>
+        <text class="vip-cta__period">/年</text>
+      </block>
+    </view>
+  </view>
+
+  <!-- ===== 支付成功弹窗 ===== -->
+  <view wx:if="{{showSuccess}}" class="success-mask">
+    <view class="success-card">
+      <text class="success-emoji">🎉</text>
+      <text class="success-title">会员开通成功！</text>
+      <text class="success-desc">即日起享受全部会员权益</text>
+      <view class="success-btn" bindtap="handleSuccessConfirm">好的</view>
+    </view>
+  </view>
+
+</view>
+<xj-toast id="xj-toast"/>

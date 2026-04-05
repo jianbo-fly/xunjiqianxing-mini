@@ -1,0 +1,119 @@
+<!--
+  关于我们页
+  对齐 Figma Node: 74-8423
+-->
+<view class="page-about">
+
+  <!-- 顶部导航栏 -->
+  <nav-bar
+    title="关于我们"
+    background="rgba(248,246,246,0.9)"
+    border
+    showBack
+    fixed
+  />
+
+  <!-- 主体内容 -->
+  <view class="about-content">
+
+    <!-- ===== 品牌区域 ===== -->
+    <view class="brand-section">
+      <!-- Logo -->
+      <view class="logo-wrap">
+        <view class="logo-glow"></view>
+        <view class="logo-card">
+          <image class="logo-img" src="/assets/images/logo.png" mode="aspectFit" />
+        </view>
+      </view>
+
+      <!-- 应用名称 -->
+      <text class="app-name">寻迹千行</text>
+
+      <!-- 版本号徽章 -->
+      <view class="version-badge">
+        <text class="version-text">Version V{{version}}</text>
+      </view>
+
+      <!-- 简介 -->
+      <text class="app-desc">寻迹千行致力于为户外爱好者提供最专业的探险路线与旅游服务，用脚步丈量世界，带你领略未知的风景与感动。</text>
+    </view>
+
+    <!-- ===== 联系方式组 ===== -->
+    <view class="card-group">
+
+      <!-- 联系电话 -->
+      <view class="list-item" bindtap="handleCallPhone">
+        <view class="item-left">
+          <view class="icon-wrap icon-wrap--blue">
+            <image class="item-icon" src="/assets/icons/about/phone.png" mode="aspectFit" />
+          </view>
+          <text class="item-label">联系电话</text>
+        </view>
+        <text class="item-value">400-123-4567</text>
+      </view>
+
+      <view class="item-divider"></view>
+
+      <!-- 在线客服 -->
+      <view class="list-item" bindtap="handleCustomerService">
+        <view class="item-left">
+          <view class="icon-wrap icon-wrap--green">
+            <image class="item-icon" src="/assets/icons/about/headset.png" mode="aspectFit" />
+          </view>
+          <text class="item-label">在线客服</text>
+        </view>
+        <view class="item-right">
+          <text class="item-value">点击咨询</text>
+          <text class="item-arrow">›</text>
+        </view>
+      </view>
+
+      <view class="item-divider"></view>
+
+      <!-- 商务邮箱 -->
+      <view class="list-item">
+        <view class="item-left">
+          <view class="icon-wrap icon-wrap--red">
+            <image class="item-icon" src="/assets/icons/about/email.png" mode="aspectFit" />
+          </view>
+          <text class="item-label">商务邮箱</text>
+        </view>
+        <view class="item-right">
+          <text class="item-value">business@xunji.com</text>
+          <view class="copy-btn" bindtap="handleCopyEmail">
+            <image class="copy-icon" src="/assets/icons/about/copy.png" mode="aspectFit" />
+          </view>
+        </view>
+      </view>
+
+    </view>
+
+    <!-- ===== 法律条款组 ===== -->
+    <view class="card-group">
+
+      <!-- 用户协议 -->
+      <view class="list-item" bindtap="handleAgreement">
+        <text class="item-label">用户协议</text>
+        <image class="arrow-icon" src="/assets/icons/about/arrow-right.png" mode="aspectFit" />
+      </view>
+
+      <view class="item-divider"></view>
+
+      <!-- 隐私政策 -->
+      <view class="list-item" bindtap="handlePrivacy">
+        <text class="item-label">隐私政策</text>
+        <image class="arrow-icon" src="/assets/icons/about/arrow-right.png" mode="aspectFit" />
+      </view>
+
+    </view>
+
+  </view>
+
+  <!-- ===== 底部版权 ===== -->
+  <view class="footer">
+    <text class="footer-copyright">COPYRIGHT © 2024 寻迹千行</text>
+    <text class="footer-rights">All Rights Reserved</text>
+  </view>
+
+</view>
+<xj-toast id="xj-toast"/>

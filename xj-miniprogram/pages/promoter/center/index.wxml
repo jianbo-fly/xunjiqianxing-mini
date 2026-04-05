@@ -1,68 +1,157 @@
 <!--
   推广中心页
 -->
-<view class="page-promoter-center-wrap">
-  <nav-bar title="推广中心" background="rgba(255,255,255,0.9)" border showBack fixed />
+<view class="page-promoter-center">
 
-  <view class="page-promoter-center" wx:if="{{!loading}}">
-    <!-- 头部信息 -->
-    <view class="center-header" style="background-image: url('/assets/images/bg/promoter-header.png');">
-      <image class="center-avatar" src="{{promoter.avatar || '/assets/images/placeholder/avatar.png'}}" mode="aspectFill" />
-      <view class="center-name">{{promoter.name || '推广员'}}</view>
-      <view class="center-id">推广员ID: {{promoter.promoterId}}</view>
-    </view>
-
-    <!-- 数据统计 -->
-    <view class="stats-section">
-      <view class="stats-item">
-        <text class="stats-value">{{promoter.scanCount || 0}}</text>
-        <text class="stats-label">扫码人数</text>
+  <!-- Short red header (nav only) -->
+  <view class="center-header" style="padding-top: {{statusBarHeight}}px;">
+    <view class="hero-deco-tr"></view>
+    <view class="hero-deco-bl"></view>
+    <view class="hero-nav" style="height: {{navBarHeight}}px;">
+      <view class="hero-back-btn" bindtap="handleBack">
+        <view class="hero-back-icon"></view>
       </view>
-      <view class="stats-divider"></view>
-      <view class="stats-item">
-        <text class="stats-value">{{promoter.orderCount || 0}}</text>
-        <text class="stats-label">订单数</text>
-      </view>
-      <view class="stats-divider"></view>
-      <view class="stats-item">
-        <text class="stats-value">{{promoter.points || 0}}</text>
-        <text class="stats-label">积分</text>
+      <text class="hero-nav-title">推广中心</text>
+      <view class="hero-nav-right" bindtap="handleEditProfile">
+        <image class="hero-settings-icon" src="/assets/icons/member/settings.png" mode="aspectFit" />
       </view>
     </view>
+  </view>
 
-    <!-- 推广码 -->
-    <view class="section qrcode-section">
-      <view class="section-title">我的推广码</view>
-      <view class="qrcode-wrap">
-        <image
-          class="qrcode-img"
-          wx:if="{{promoter.qrCodeUrl}}"
-          src="{{promoter.qrCodeUrl}}"
-          mode="aspectFit"
-          show-menu-by-longpress
-        />
-        <view class="qrcode-placeholder" wx:else>
-          <text>推广码生成中...</text>
+  <!-- Main content overlaps header -->
+  <view class="main-content">
+
+    <!-- Profile card (floating white card) -->
+    <view class="profile-card" wx:if="{{!loading}}">
+      <view class="profile-avatar-wrap">
+        <view class="avatar-ring">
+          <image
+            class="profile-avatar"
+            src="{{promoter.avatar || '/assets/images/placeholder/avatar.png'}}"
+            mode="aspectFill"
+          />
+        </view>
+        <view class="level-badge">
+          <text class="level-badge-text">V{{promoter.level || 1}}</text>
         </view>
       </view>
-      <view class="qrcode-tip">扫码即可绑定推广关系</view>
-      <view class="qrcode-actions">
-        <view class="qrcode-btn" bindtap="handleSaveImage">保存图片</view>
-        <view class="qrcode-btn qrcode-btn-primary" bindtap="handleShare">分享好友</view>
+      <view class="profile-info">
+        <view class="profile-name-row">
+          <text class="profile-name">{{promoter.nickname || promoter.name || '推广员'}}</text>
+          <view class="status-badge status-badge--active" wx:if="{{promoter.status === 1}}">
+            <text class="status-badge-text">活跃推广员</text>
+          </view>
+          <view class="status-badge status-badge--pending" wx:elif="{{promoter.status === 0}}">
+            <text class="status-badge-text">审核中</text>
+          </view>
+        </view>
+        <text class="profile-id">推广 ID: {{promoter.promoterId || promoter.promoCode || '—'}}</text>
       </view>
     </view>
 
-    <!-- 功能菜单 -->
-    <view class="menu-section">
-      <view class="menu-item" bindtap="handlePromoterDetail">
-        <text class="menu-label">推广明细</text>
-        <text class="menu-arrow">›</text>
+    <!-- 3 Stat cards -->
+    <view class="stat-cards" wx:if="{{!loading}}">
+      <view class="stat-card">
+        <text class="stat-value">{{promoter.scanCount || 0}}</text>
+        <text class="stat-label">累计扫码</text>
+      </view>
+      <view class="stat-card">
+        <text class="stat-value">{{promoter.orderCount || 0}}</text>
+        <text class="stat-label">推广订单</text>
+      </view>
+      <view class="stat-card stat-card--highlight">
+        <text class="stat-value stat-value--highlight">{{promoter.points || 0}}</text>
+        <text class="stat-label">我的积分</text>
       </view>
     </view>
+
+    <!-- Poster section -->
+    <view class="poster-section" wx:if="{{!loading}}">
+      <view class="poster-section-header">
+        <view class="poster-title-row">
+          <image class="poster-title-icon" src="/assets/icons/promoter/qrcode-title.png" mode="aspectFit" />
+          <text class="poster-title">我的推广码</text>
+        </view>
+        <view class="poster-style-btn">
+          <text class="poster-style-text">更换样式</text>
+          <view class="poster-style-arrow"></view>
+        </view>
+      </view>
+
+      <!-- Poster visual -->
+      <view class="poster-visual">
+        <view class="poster-gradient"></view>
+        <!-- Brand text top -->
+        <view class="poster-brand">
+          <text class="poster-brand-en">XUNJI QIANHANG</text>
+          <text class="poster-brand-cn">寻迹千行</text>
+          <text class="poster-brand-sub">探索未知，从这里开始</text>
+        </view>
+        <!-- QR frosted card bottom -->
+        <view class="poster-qr-card">
+          <view class="poster-qr-box">
+            <image
+              wx:if="{{promoter.qrCodeUrl}}"
+              class="poster-qr-img"
+              src="{{promoter.qrCodeUrl}}"
+              mode="aspectFit"
+              show-menu-by-longpress
+            />
+            <view class="poster-qr-placeholder" wx:else>
+              <image class="poster-qr-placeholder-icon" src="/assets/icons/promoter/benefit-points.png" mode="aspectFit" />
+            </view>
+          </view>
+          <view class="poster-qr-info">
+            <text class="poster-qr-from">来自推广员</text>
+            <text class="poster-qr-name">{{promoter.nickname || promoter.name || '推广员'}}</text>
+            <text class="poster-qr-hint">长按识别二维码加入</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- Action buttons -->
+      <view class="poster-actions">
+        <view class="poster-btn" bindtap="handleSaveImage">
+          <image class="poster-btn-icon" src="/assets/icons/promoter/btn-save.png" mode="aspectFit" />
+          <text class="poster-btn-text">保存图片</text>
+        </view>
+        <view class="poster-btn poster-btn--primary" bindtap="handleShare">
+          <image class="poster-btn-icon" src="/assets/icons/promoter/btn-share.png" mode="aspectFit" />
+          <text class="poster-btn-text poster-btn-text--primary">立即分享</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- Utility links -->
+    <view class="util-section" wx:if="{{!loading}}">
+      <view class="util-item" bindtap="handleEditProfile">
+        <view class="util-icon-bg util-icon-bg--edit">
+          <image class="util-icon" src="/assets/icons/promoter/menu-edit.png" mode="aspectFit" />
+        </view>
+        <text class="util-label">修改资料</text>
+        <image class="util-arrow-icon" src="/assets/icons/promoter/menu-chevron.png" mode="aspectFit" />
+      </view>
+      <view class="util-divider"></view>
+      <view class="util-item" bindtap="handlePromoterDetail">
+        <view class="util-icon-bg util-icon-bg--detail">
+          <image class="util-icon" src="/assets/icons/promoter/menu-detail.png" mode="aspectFit" />
+        </view>
+        <text class="util-label">推广明细</text>
+        <image class="util-arrow-icon" src="/assets/icons/promoter/menu-chevron.png" mode="aspectFit" />
+      </view>
+    </view>
+
+    <!-- Footer -->
+    <view class="footer-quote" wx:if="{{!loading}}">
+      <text class="footer-quote-text">让每一次旅行都值得铭记</text>
+    </view>
+
+    <!-- Loading -->
+    <view class="loading-block" wx:if="{{loading}}">
+      <xj-loading text="加载中..." vertical />
+    </view>
+
   </view>
 
-  <!-- 加载中 -->
-  <view class="loading-container" wx:if="{{loading}}">
-    <xj-loading text="加载中..." vertical />
-  </view>
 </view>
+<xj-toast id="xj-toast"/>

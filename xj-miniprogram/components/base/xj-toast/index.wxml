@@ -1,0 +1,8 @@
+<view class="xj-toast-container {{visible ? 'xj-toast-container--visible' : ''}}">
+  <view class="xj-toast xj-toast--{{type}}">
+    <text wx:if="{{type === 'success'}}" class="xj-toast-icon">✓</text>
+    <text wx:elif="{{type === 'error'}}" class="xj-toast-icon">✕</text>
+    <text wx:elif="{{type === 'warning'}}" class="xj-toast-icon">!</text>
+    <text class="xj-toast-text">{{message}}</text>
+  </view>
+</view>

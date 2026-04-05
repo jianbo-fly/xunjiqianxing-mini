@@ -97,24 +97,52 @@ const hideLoading = () => {
 };
 
 /**
- * 显示提示
+ * 获取当前页面的 xj-toast 组件实例（如页面已挂载）
  */
-const showToast = (title, icon = 'none', duration = 2000) => {
-  wx.showToast({ title, icon, duration });
+const _getToast = () => {
+  const pages = getCurrentPages();
+  if (!pages.length) return null;
+  const page = pages[pages.length - 1];
+  return page.selectComponent && page.selectComponent('#xj-toast');
+};
+
+/**
+ * 显示提示（优先使用自定义 xj-toast，降级使用原生 wx.showToast）
+ * @param {string} title    提示文字
+ * @param {string} [type]   类型: info / success / error / warning
+ * @param {number} [duration] 时长(ms)，默认 2000
+ */
+const showToast = (title, type = 'info', duration = 2000) => {
+  const toast = _getToast();
+  if (toast) {
+    toast.show({ message: title, type, duration });
+  } else {
+    wx.showToast({ title, icon: 'none', duration });
+  }
 };
 
 /**
  * 显示成功提示
  */
 const showSuccess = (title = '操作成功') => {
-  wx.showToast({ title, icon: 'success' });
+  const toast = _getToast();
+  if (toast) {
+    toast.show({ message: title, type: 'success' });
+  } else {
+    wx.showToast({ title, icon: 'success' });
+  }
 };
 
 /**
  * 显示错误提示
  */
 const showError = (title = '操作失败') => {
-  wx.showToast({ title, icon: 'error' });
+  const toast = _getToast();
+  if (toast) {
+    toast.show({ message: title, type: 'error' });
+  } else {
+    wx.showToast({ title, icon: 'error' });
+  }
 };
 
 /**
@@ -133,19 +161,42 @@ const showConfirm = (content, title = '提示') => {
 };
 
 /**
+ * 获取系统信息（兼容新旧 API）
+ * 返回包含 statusBarHeight / platform / windowWidth / windowHeight 的对象
+ */
+const getSystemInfo = () => {
+  try {
+    const windowInfo = wx.getWindowInfo();
+    const deviceInfo = wx.getDeviceInfo();
+    return {
+      statusBarHeight: windowInfo.statusBarHeight || 0,
+      windowWidth: windowInfo.windowWidth,
+      windowHeight: windowInfo.windowHeight,
+      pixelRatio: windowInfo.pixelRatio,
+      platform: deviceInfo.platform,
+      model: deviceInfo.model,
+      system: deviceInfo.system,
+    };
+  } catch (e) {
+    // 降级使用旧 API
+    return wx.getSystemInfoSync();
+  }
+};
+
+/**
  * rpx转px
  */
 const rpx2px = (rpx) => {
-  const systemInfo = wx.getSystemInfoSync();
-  return rpx * systemInfo.windowWidth / 750;
+  const { windowWidth } = getSystemInfo();
+  return rpx * windowWidth / 750;
 };
 
 /**
  * px转rpx
  */
 const px2rpx = (px) => {
-  const systemInfo = wx.getSystemInfoSync();
-  return px * 750 / systemInfo.windowWidth;
+  const { windowWidth } = getSystemInfo();
+  return px * 750 / windowWidth;
 };
 
 module.exports = {
@@ -162,6 +213,7 @@ module.exports = {
   showSuccess,
   showError,
   showConfirm,
+  getSystemInfo,
   rpx2px,
   px2rpx,
 };

@@ -167,3 +167,4 @@
     <text class="footer-text">登录即表示您同意我们的服务条款</text>
   </view>
 </view>
+<xj-toast id="xj-toast"/>

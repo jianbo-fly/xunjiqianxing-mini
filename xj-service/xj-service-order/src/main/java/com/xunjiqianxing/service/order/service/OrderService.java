@@ -6,6 +6,7 @@ import com.xunjiqianxing.service.order.entity.OrderMain;
 import com.xunjiqianxing.service.order.entity.OrderTraveler;
 
 import java.util.List;
+import java.time.LocalDateTime;
 
 /**
  * 订单服务
@@ -56,4 +57,28 @@ public interface OrderService {
      * 申请退款
      */
     boolean applyRefund(Long orderId, Long userId, String reason);
+
+    /**
+     * 记录订单操作日志
+     *
+     * @param orderId      订单ID
+     * @param orderNo      订单编号
+     * @param fromStatus   变更前状态（创建时传 null）
+     * @param toStatus     变更后状态
+     * @param operatorType 操作者类型: user / admin / system
+     * @param operatorId   操作者ID（system 传 null）
+     * @param remark       备注
+     */
+    void addLog(Long orderId, String orderNo, Integer fromStatus, Integer toStatus,
+                String operatorType, Long operatorId, String remark);
+
+    /**
+     * 查询超时未支付的订单（expireAt < now AND status = 0）
+     */
+    List<OrderMain> getExpiredPendingOrders(LocalDateTime now);
+
+    /**
+     * 关闭超时订单（系统自动）
+     */
+    boolean closeExpiredOrder(Long orderId);
 }

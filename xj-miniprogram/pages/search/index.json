@@ -1,0 +1,8 @@
+{
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "nav-bar": "/components/layout/nav-bar/index",
+    "xj-loading": "/components/base/xj-loading/index",
+    "xj-empty": "/components/base/xj-empty/index"
+  }
+}

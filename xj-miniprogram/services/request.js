@@ -4,6 +4,7 @@
 
 const apiConfig = require('../config/api');
 const { getToken, clearToken } = require('../utils/auth');
+const { showToast, showError } = require('../utils/util');
 
 /**
  * 请求封装
@@ -19,6 +20,7 @@ const request = (options) => {
       header: {
         'Content-Type': 'application/json',
         'Authorization': token ? `${token}` : '',
+        'ngrok-skip-browser-warning': 'true',
         ...options.header
       },
       timeout: options.timeout || 30000,
@@ -34,7 +36,7 @@ const request = (options) => {
           } else if (data.code === 401) {
             // 登录过期
             clearToken();
-            wx.showToast({ title: '登录已过期', icon: 'none' });
+            showToast('登录已过期', 'warning');
             // 延迟跳转，让用户看到提示
             setTimeout(() => {
               const pages = getCurrentPages();
@@ -48,17 +50,14 @@ const request = (options) => {
           } else {
             // 业务错误
             if (options.showError !== false) {
-              wx.showToast({
-                title: data.message || '操作失败',
-                icon: 'none'
-              });
+              showError(data.message || '操作失败');
             }
             reject(data);
           }
         } else {
           const errorMsg = `HTTP Error: ${statusCode}`;
           if (options.showError !== false) {
-            wx.showToast({ title: '服务器异常', icon: 'none' });
+            showError('服务器异常');
           }
           reject({ code: statusCode, message: errorMsg });
         }
@@ -66,7 +65,7 @@ const request = (options) => {
 
       fail: (err) => {
         if (options.showError !== false) {
-          wx.showToast({ title: '网络异常', icon: 'none' });
+          showError('网络异常，请检查连接');
         }
         reject({ code: -1, message: err.errMsg || '网络异常' });
       }

@@ -16,14 +16,9 @@ public enum OrderStatus {
     PENDING_PAY("pending_pay", "待支付"),
 
     /**
-     * 待确认
+     * 已预订
      */
-    PENDING_CONFIRM("pending_confirm", "待确认"),
-
-    /**
-     * 已确认
-     */
-    CONFIRMED("confirmed", "已确认"),
+    BOOKED("booked", "已预订"),
 
     /**
      * 已完成
@@ -78,7 +73,7 @@ public enum OrderStatus {
      * 是否可以申请退款
      */
     public boolean canRefund() {
-        return this == PENDING_CONFIRM || this == CONFIRMED;
+        return this == BOOKED;
     }
 
     /**

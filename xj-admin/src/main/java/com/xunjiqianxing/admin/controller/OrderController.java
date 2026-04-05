@@ -33,13 +33,6 @@ public class OrderController {
         return Result.success(adminOrderService.getDetail(orderNo));
     }
 
-    @Operation(summary = "确认/驳回订单")
-    @PostMapping("/confirm")
-    public Result<Void> confirmOrReject(@Valid @RequestBody OrderConfirmRequest request) {
-        adminOrderService.confirmOrReject(request);
-        return Result.success();
-    }
-
     @Operation(summary = "添加备注")
     @PostMapping("/remark")
     public Result<Void> addRemark(@Valid @RequestBody OrderRemarkRequest request) {

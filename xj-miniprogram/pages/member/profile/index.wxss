@@ -8,6 +8,19 @@
   padding-top: var(--spacing-md);
 }
 
+/* button 重置，让头像行和 view 行视觉一致 */
+.profile-item--btn {
+  border-radius: 0;
+  padding: 0;
+  margin: 0;
+  line-height: normal;
+  background: transparent;
+}
+
+.profile-item--btn::after {
+  border: none;
+}
+
 .profile-item {
   display: flex;
   align-items: center;

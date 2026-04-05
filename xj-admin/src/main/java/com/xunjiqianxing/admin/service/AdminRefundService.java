@@ -9,15 +9,20 @@ import com.xunjiqianxing.admin.dto.order.RefundListVO;
 import com.xunjiqianxing.admin.dto.order.RefundQueryRequest;
 import com.xunjiqianxing.common.exception.BizException;
 import com.xunjiqianxing.common.result.PageResult;
+import com.xunjiqianxing.service.message.service.MessageService;
 import com.xunjiqianxing.service.order.entity.OrderMain;
 import com.xunjiqianxing.service.order.entity.OrderRefund;
 import com.xunjiqianxing.service.order.enums.OrderStatus;
+import com.xunjiqianxing.service.order.mapper.OrderLogMapper;
 import com.xunjiqianxing.service.order.mapper.OrderMainMapper;
 import com.xunjiqianxing.service.order.mapper.OrderRefundMapper;
+import com.xunjiqianxing.service.order.service.OrderService;
+import com.xunjiqianxing.service.payment.service.PaymentService;
 import com.xunjiqianxing.service.user.entity.UserInfo;
 import com.xunjiqianxing.service.user.mapper.UserInfoMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -38,6 +43,11 @@ public class AdminRefundService {
     private final OrderRefundMapper orderRefundMapper;
     private final OrderMainMapper orderMainMapper;
     private final UserInfoMapper userInfoMapper;
+    private final MessageService messageService;
+    private final OrderService orderService;
+
+    @Autowired(required = false)
+    private PaymentService paymentService;
 
     /**
      * 分页查询退款列表
@@ -134,10 +144,49 @@ public class AdminRefundService {
             order.setRefundAmount(refund.getActualAmount());
             orderMainMapper.updateById(order);
 
-            // TODO: 触发微信退款
+            // 触发退款（Mock模式，真实环境需配置微信支付证书）
+            if (paymentService != null) {
+                try {
+                    com.xunjiqianxing.service.payment.entity.PaymentRecord payRecord =
+                            paymentService.getByBiz("order", order.getId());
+                    if (payRecord != null) {
+                        String refundTradeNo = paymentService.refund(
+                                payRecord.getPaymentNo(),
+                                refund.getActualAmount(),
+                                refund.getReason()
+                        );
+                        refund.setRefundTradeNo(refundTradeNo);
+                        refund.setRefundTime(LocalDateTime.now());
+                    }
+                } catch (Exception e) {
+                    log.warn("退款调用失败: {}", e.getMessage());
+                }
+            }
 
-            log.info("退款审核通过: refundNo={}, actualAmount={}", 
+            orderService.addLog(order.getId(), order.getOrderNo(),
+                    OrderStatus.REFUND_APPLY.getCode(), OrderStatus.REFUNDED.getCode(),
+                    "admin", userId, "退款审核通过，实退¥" + refund.getActualAmount().toPlainString());
+            log.info("退款审核通过: refundNo={}, actualAmount={}",
                     refund.getRefundNo(), refund.getActualAmount());
+
+            // 发送退款成功消息
+            try {
+                String content = String.format("您申请退款的订单「%s」已审核通过，退款金额¥%s 将在3-5个工作日内原路退回。",
+                        order.getProductName(), refund.getActualAmount().stripTrailingZeros().toPlainString());
+                messageService.sendMessage(
+                        refund.getUserId(),
+                        "refund_success",
+                        "order",
+                        "退款审核通过",
+                        content,
+                        "order",
+                        order.getId(),
+                        refund.getRefundNo(),
+                        "/pages/order/detail/index?id=" + order.getId()
+                );
+            } catch (Exception e) {
+                log.warn("发送退款成功消息失败: {}", e.getMessage());
+            }
 
         } else if (request.getStatus() == 2) {
             // 审核驳回
@@ -150,12 +199,34 @@ public class AdminRefundService {
             refund.setAuditBy(userId);
             refund.setAuditRemark(request.getAuditRemark());
 
-            // 恢复订单状态为已确认
-            order.setStatus(OrderStatus.CONFIRMED.getCode());
+            // 退款驳回，恢复订单状态为已预订
+            order.setStatus(OrderStatus.BOOKED.getCode()); // = 1
             orderMainMapper.updateById(order);
 
-            log.info("退款审核驳回: refundNo={}, reason={}", 
+            orderService.addLog(order.getId(), order.getOrderNo(),
+                    OrderStatus.REFUND_APPLY.getCode(), OrderStatus.BOOKED.getCode(),
+                    "admin", userId, "退款驳回: " + request.getAuditRemark());
+            log.info("退款审核驳回: refundNo={}, reason={}",
                     refund.getRefundNo(), request.getAuditRemark());
+
+            // 发送退款驳回消息
+            try {
+                String content = String.format("您申请退款的订单「%s」审核未通过，原因：%s。如有疑问请联系客服。",
+                        order.getProductName(), request.getAuditRemark());
+                messageService.sendMessage(
+                        refund.getUserId(),
+                        "refund_reject",
+                        "order",
+                        "退款申请未通过",
+                        content,
+                        "order",
+                        order.getId(),
+                        refund.getRefundNo(),
+                        "/pages/order/detail/index?id=" + order.getId()
+                );
+            } catch (Exception e) {
+                log.warn("发送退款驳回消息失败: {}", e.getMessage());
+            }
 
         } else {
             throw new BizException("无效的审核状态");

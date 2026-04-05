@@ -170,6 +170,12 @@ public class RouteController {
                                                 actVO.setIcon((String) actMap.get("icon"));
                                                 actVO.setTime((String) actMap.get("time"));
                                                 actVO.setContent((String) actMap.get("content"));
+                                                Object imgs = actMap.get("images");
+                                                if (imgs instanceof java.util.List) {
+                                                    @SuppressWarnings("unchecked")
+                                                    java.util.List<String> imgList = (java.util.List<String>) imgs;
+                                                    actVO.setImages(imgList);
+                                                }
                                                 return actVO;
                                             })
                                             .collect(Collectors.toList()));

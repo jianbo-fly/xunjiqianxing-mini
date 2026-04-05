@@ -45,28 +45,6 @@
   gap: 24rpx;
 }
 
-/* 积分徽章 */
-.points-badge {
-  display: flex;
-  align-items: center;
-  gap: 8rpx;
-  padding: 10rpx 18rpx;
-  background: #ffedd5;
-  border: 2rpx solid #fed7aa;
-  border-radius: var(--radius-full);
-}
-
-.points-badge__icon {
-  width: 24rpx;
-  height: 24rpx;
-}
-
-.points-badge__text {
-  font-size: 24rpx;
-  font-weight: var(--font-weight-bold);
-  color: var(--color-primary);
-}
-
 /* 消息通知 */
 .notification {
   position: relative;
@@ -210,6 +188,13 @@
 }
 
 /* ===== 功能入口 ===== */
+.entry-card {
+  background: #ffffff;
+  border-radius: 24rpx;
+  padding: 28rpx 8rpx;
+  box-shadow: 0 2rpx 16rpx rgba(0,0,0,0.06);
+}
+
 .entry-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -220,27 +205,29 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16rpx;
+  gap: 10rpx;
 }
 
+
 .entry-icon-bg {
-  width: 96rpx;
-  height: 96rpx;
-  background: var(--color-primary-light);
-  border-radius: 24rpx;
+  width: 88rpx;
+  height: 88rpx;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .entry-icon {
-  width: 44rpx;
-  height: 44rpx;
+  width: 48rpx;
+  height: 48rpx;
 }
 
+
 .entry-name {
-  font-size: 24rpx;
-  color: #4b5563;
+  font-size: 22rpx;
+  font-weight: 500;
+  color: #374151;
+  line-height: 1.4;
 }
 
 /* ===== 热门路线 ===== */

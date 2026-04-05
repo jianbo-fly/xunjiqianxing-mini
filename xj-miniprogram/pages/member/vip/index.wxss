@@ -1,0 +1,504 @@
+/**
+ * 会员中心 - 开通会员
+ * 对齐 Figma Node: 74-6996
+ */
+
+.page-vip {
+  min-height: 100vh;
+  background: #F8F6F6;
+}
+
+/* ===== 主体内容 ===== */
+.vip-body {
+  padding: 0 40rpx calc(160rpx + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+/* ===== 会员卡片 ===== */
+/* Figma: red gradient card, rounded-16, shadow red */
+.vip-card {
+  position: relative;
+  border-radius: 32rpx;
+  overflow: hidden;
+  box-shadow: 0px 40rpx 50rpx -24rpx rgba(236, 55, 19, 0.2),
+              0px 16rpx 20rpx -24rpx rgba(236, 55, 19, 0.2);
+}
+
+/* 渐变底色 */
+.vip-card__bg {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(148deg, #EC3713 0%, #B92B0F 100%);
+}
+
+/* 右上角白色光晕 */
+.vip-card__glow {
+  position: absolute;
+  top: -80rpx;
+  right: -80rpx;
+  width: 320rpx;
+  height: 320rpx;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  filter: blur(64rpx);
+  pointer-events: none;
+}
+
+/* 下半部暗遮罩 */
+.vip-card__overlay {
+  position: absolute;
+  top: 50%;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to bottom, rgba(0,0,0,0), rgba(0,0,0,0.2));
+  pointer-events: none;
+}
+
+/* 卡片内容 */
+.vip-card__content {
+  position: relative;
+  padding: 48rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 144rpx;
+}
+
+/* 顶部行 */
+.vip-card__top {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+}
+
+/* 王冠 Logo 圆形背景 */
+.vip-card__logo-wrap {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  border: 2rpx solid rgba(255, 255, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.vip-card__crown {
+  font-size: 36rpx;
+  line-height: 1;
+}
+
+.vip-card__info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.vip-card__title {
+  font-size: 40rpx;
+  font-weight: 700;
+  color: #FFFFFF;
+  letter-spacing: -1rpx;
+  line-height: 1.4;
+  display: block;
+}
+
+.vip-card__subtitle {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.8);
+  letter-spacing: 0.6rpx;
+  text-transform: uppercase;
+  display: block;
+}
+
+/* VIP 徽章 */
+.vip-card__vip-badge {
+  background: rgba(255, 255, 255, 0.2);
+  border: 2rpx solid rgba(255, 255, 255, 0.1);
+  border-radius: 9999rpx;
+  padding: 10rpx 26rpx;
+  flex-shrink: 0;
+}
+
+.vip-card__vip-text {
+  font-size: 24rpx;
+  font-weight: 500;
+  color: #FFFFFF;
+  letter-spacing: 0.6rpx;
+}
+
+/* 底部行 */
+.vip-card__bottom {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.vip-card__price-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.vip-card__slogan {
+  font-size: 28rpx;
+  color: rgba(255, 255, 255, 0.9);
+  display: block;
+}
+
+.vip-card__price-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 8rpx;
+}
+
+.vip-card__price {
+  font-size: 48rpx;
+  font-weight: 700;
+  color: #FFFFFF;
+  line-height: 1.2;
+}
+
+.vip-card__period {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.8);
+  padding-bottom: 6rpx;
+}
+
+/* 金色装饰芯片 */
+/* Figma: 48×32, gradient gold, rounded-4, subtle shine overlay */
+.vip-card__deco-chip {
+  width: 96rpx;
+  height: 64rpx;
+  border-radius: 8rpx;
+  background: linear-gradient(146deg, rgba(254, 240, 138, 0.4) 0%, rgba(234, 179, 8, 0.4) 100%);
+  border: 2rpx solid rgba(255, 255, 255, 0.2);
+  flex-shrink: 0;
+}
+
+/* ===== 限时特惠 Banner ===== */
+/* Figma: bg #EC3713/5, border #EC3713/10, rounded-12, px-13 py-13 */
+.vip-banner {
+  background: rgba(236, 55, 19, 0.05);
+  border: 2rpx solid rgba(236, 55, 19, 0.1);
+  border-radius: 24rpx;
+  padding: 26rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.vip-banner__left {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.vip-banner__fire {
+  width: 28rpx;
+  height: 32rpx;
+  flex-shrink: 0;
+}
+
+.vip-banner__title {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #EC3713;
+}
+
+.vip-banner__hint {
+  font-size: 24rpx;
+  color: #6B7280;
+}
+
+/* ===== 会员权益区 ===== */
+.vip-benefits {
+  display: flex;
+  flex-direction: column;
+  gap: 40rpx;
+  padding: 16rpx 0;
+}
+
+/* 标题行 */
+.vip-section-hd {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+/* 红色竖条 */
+.vip-section-bar {
+  width: 8rpx;
+  height: 40rpx;
+  background: #EC3713;
+  border-radius: 9999rpx;
+  margin-right: 24rpx;
+  flex-shrink: 0;
+}
+
+.vip-section-title {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #111827;
+  line-height: 1.4;
+}
+
+.vip-section-sub {
+  font-size: 24rpx;
+  color: #9CA3AF;
+  margin-left: 16rpx;
+  font-weight: 400;
+}
+
+/* 2×2 权益网格 */
+.vip-benefits-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24rpx;
+}
+
+/* 单个权益卡片 */
+/* Figma: bg white, border #f3f4f6, rounded-12, p-17, shadow */
+.vip-benefit-card {
+  background: #FFFFFF;
+  border: 2rpx solid #F3F4F6;
+  border-radius: 24rpx;
+  padding: 34rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  box-shadow: 0px 2rpx 4rpx 0px rgba(0, 0, 0, 0.05);
+}
+
+/* 图标圆角方块 40×40 */
+.vip-benefit-icon-wrap {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24rpx;
+  flex-shrink: 0;
+}
+
+.vip-benefit-icon {
+  width: 40rpx;
+  height: 40rpx;
+}
+
+.vip-benefit-name {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #111827;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.vip-benefit-desc {
+  font-size: 24rpx;
+  color: #6B7280;
+  line-height: 1.625;
+  display: block;
+  white-space: pre-line;
+}
+
+/* ===== 常见问题 ===== */
+/* Figma: bg white, border #f3f4f6, rounded-12, p-17, flex justify-between */
+.vip-faq {
+  background: #FFFFFF;
+  border: 2rpx solid #F3F4F6;
+  border-radius: 24rpx;
+  padding: 34rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0px 2rpx 4rpx 0px rgba(0, 0, 0, 0.05);
+}
+
+.vip-faq__left {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+}
+
+.vip-faq__icon {
+  width: 40rpx;
+  height: 40rpx;
+  flex-shrink: 0;
+}
+
+.vip-faq__text {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #374151;
+}
+
+.vip-faq__chevron {
+  width: 14rpx;
+  height: 14rpx;
+  opacity: 0.5;
+}
+
+/* ===== 固定底部操作栏 ===== */
+/* Figma: bg white, border-top #f3f4f6, shadow upward */
+.vip-bottom {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #FFFFFF;
+  border-top: 2rpx solid #F3F4F6;
+  padding: 32rpx 48rpx calc(32rpx + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: 30rpx;
+  box-shadow: 0px -8rpx 40rpx -8rpx rgba(0, 0, 0, 0.1);
+  z-index: 100;
+}
+
+/* 协议勾选行 */
+.vip-agreement {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+}
+
+/* 复选框 */
+.vip-checkbox {
+  width: 36rpx;
+  height: 36rpx;
+  border-radius: 8rpx;
+  border: 2rpx solid #D1D5DB;
+  background: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-right: 16rpx;
+}
+
+.vip-checkbox--checked {
+  background: #EC3713;
+  border-color: #EC3713;
+}
+
+.vip-check-icon {
+  width: 24rpx;
+  height: 24rpx;
+}
+
+.vip-agreement__text {
+  font-size: 24rpx;
+  color: #6B7280;
+  line-height: 32rpx;
+}
+
+.vip-agreement__link {
+  font-size: 24rpx;
+  font-weight: 500;
+  color: #1F2937;
+  text-decoration: underline;
+  text-decoration-color: #D1D5DB;
+  line-height: 32rpx;
+}
+
+/* 立即开通 CTA 按钮 */
+/* Figma: bg #ec3713, rounded-8, shadow red, py-14 */
+.vip-cta {
+  background: #EC3713;
+  border-radius: 16rpx;
+  padding: 28rpx 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 0;
+  box-shadow: 0px 20rpx 30rpx -6rpx rgba(236, 55, 19, 0.3),
+              0px 8rpx 12rpx -8rpx rgba(236, 55, 19, 0.3);
+}
+
+.vip-cta--disabled {
+  opacity: 0.6;
+}
+
+.vip-cta__label {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #FFFFFF;
+  letter-spacing: 0.8rpx;
+  margin-right: 16rpx;
+}
+
+.vip-cta__price {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #FFFFFF;
+  line-height: 1.4;
+}
+
+.vip-cta__period {
+  font-size: 24rpx;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.8);
+  padding-bottom: 4rpx;
+  margin-left: 4rpx;
+}
+
+/* ===== 支付成功弹窗 ===== */
+.success-mask {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.success-card {
+  width: 560rpx;
+  background: #FFFFFF;
+  border-radius: 24rpx;
+  padding: 60rpx 40rpx;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.success-emoji {
+  font-size: 72rpx;
+}
+
+.success-title {
+  display: block;
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #111827;
+  margin-top: 24rpx;
+}
+
+.success-desc {
+  display: block;
+  font-size: 28rpx;
+  color: #6B7280;
+  margin-top: 16rpx;
+}
+
+.success-btn {
+  margin-top: 48rpx;
+  width: 100%;
+  background: #EC3713;
+  color: #FFFFFF;
+  border-radius: 48rpx;
+  padding: 20rpx 0;
+  font-size: 30rpx;
+  font-weight: 600;
+  text-align: center;
+}

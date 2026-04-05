@@ -41,7 +41,7 @@ public class OrderListVO {
     @Schema(description = "实付金额")
     private BigDecimal payAmount;
 
-    @Schema(description = "订单状态: 0待支付 1待确认 2已确认 3出行中 4已完成 5已取消 6退款申请中 7已退款 8已关闭")
+    @Schema(description = "订单状态: 0待支付 1已预订 2出行中 3已完成 4已取消 5退款申请中 6已退款 7已关闭")
     private Integer status;
 
     @Schema(description = "状态文本")

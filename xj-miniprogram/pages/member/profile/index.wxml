@@ -4,13 +4,13 @@
 <view class="page-profile">
   <nav-bar title="个人信息" background="rgba(255,255,255,0.9)" border showBack fixed />
   <!-- 头像 -->
-  <view class="profile-item" bindtap="handleChooseAvatar">
+  <button class="profile-item profile-item--btn" open-type="chooseAvatar" bindchooseavatar="handleChooseAvatar">
     <text class="profile-label">头像</text>
     <view class="profile-right">
       <image class="profile-avatar" src="{{userInfo.avatar || '/assets/images/placeholder/avatar.png'}}" mode="aspectFill" />
       <text class="profile-arrow">›</text>
     </view>
-  </view>
+  </button>
 
   <!-- 昵称 -->
   <view class="profile-item">
@@ -45,3 +45,4 @@
     </view>
   </view>
 </view>
+<xj-toast id="xj-toast"/>

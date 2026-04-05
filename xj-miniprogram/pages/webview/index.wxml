@@ -24,3 +24,4 @@
     <text class="loading__text">加载中...</text>
   </view>
 </view>
+<xj-toast id="xj-toast"/>

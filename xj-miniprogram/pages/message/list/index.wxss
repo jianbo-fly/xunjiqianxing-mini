@@ -1,4 +1,182 @@
-.page-message-list {
+/**
+ * 消息中心
+ */
+
+.page-msg {
   min-height: 100vh;
-  background: var(--color-bg-page);
+  background: #f8f6f6;
+}
+
+/* 全部已读按钮（nav-bar right slot） */
+.msg-all-read {
+  font-size: 28rpx;
+  color: #5c4d4a;
+  padding: 8rpx 0 8rpx 16rpx;
+}
+
+/* ===== Tabs ===== */
+.msg-tabs {
+  position: sticky;
+  z-index: 10;
+  background: rgba(248, 246, 246, 0.95);
+  display: flex;
+  align-items: flex-end;
+  padding: 0 32rpx;
+  border-bottom: 2rpx solid #e6e0df;
+}
+
+.msg-tab {
+  position: relative;
+  padding: 24rpx 0 24rpx;
+  margin-right: 48rpx;
+  font-size: 32rpx;
+  color: #5c4d4a;
+  font-weight: 500;
+}
+
+.msg-tab--active {
+  color: #ec3713;
+  font-weight: 600;
+}
+
+.msg-tab--active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 32rpx;
+  height: 8rpx;
+  background: #ec3713;
+  border-radius: 99rpx 99rpx 0 0;
+}
+
+/* ===== 中心加载 ===== */
+.msg-center {
+  display: flex;
+  justify-content: center;
+  padding-top: 160rpx;
+}
+
+/* ===== 列表 ===== */
+.msg-scroll {
+  flex: 1;
+}
+
+.msg-list {
+  padding: 24rpx 32rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+/* ===== 消息卡片 ===== */
+.msg-card {
+  display: flex;
+  gap: 32rpx;
+  align-items: flex-start;
+  background: #fff;
+  border: 2rpx solid rgba(230, 224, 223, 0.5);
+  border-radius: 24rpx;
+  padding: 34rpx;
+  box-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.05);
+}
+
+/* ===== 图标 ===== */
+.msg-icon {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 16rpx;
+  flex-shrink: 0;
+}
+
+.msg-icon--order {
+  background: rgba(236, 55, 19, 0.1);
+}
+
+.msg-icon--travel {
+  background: #ffedd5;
+}
+
+.msg-icon--refund {
+  background: #dcfce7;
+}
+
+.msg-icon--payment {
+  background: rgba(236, 55, 19, 0.1);
+}
+
+.msg-icon--system {
+  background: #eff6ff;
+}
+
+.msg-icon--promo {
+  background: #fce7f3;
+}
+
+/* ===== 内容区 ===== */
+.msg-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.msg-header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+
+.msg-title-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.msg-title {
+  font-size: 32rpx;
+  color: #1f1412;
+  line-height: 1.5;
+}
+
+.msg-title--unread {
+  font-weight: 600;
+}
+
+/* 未读蓝点 */
+.msg-dot {
+  width: 20rpx;
+  height: 20rpx;
+  background: #2563eb;
+  border-radius: 50%;
+  margin-left: 8rpx;
+  flex-shrink: 0;
+}
+
+.msg-time {
+  font-size: 24rpx;
+  color: #a89c9a;
+  flex-shrink: 0;
+  line-height: 1.5;
+}
+
+.msg-preview {
+  font-size: 28rpx;
+  color: #5c4d4a;
+  line-height: 1.625;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+/* ===== 底部 ===== */
+.msg-no-more {
+  text-align: center;
+  padding: 32rpx;
+  font-size: 24rpx;
+  color: #9ca3af;
 }

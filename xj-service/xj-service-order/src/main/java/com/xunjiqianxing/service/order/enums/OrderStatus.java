@@ -14,14 +14,13 @@ import java.util.List;
 public enum OrderStatus {
 
     PENDING_PAY(0, "待支付"),
-    PENDING_CONFIRM(1, "待确认"),
-    CONFIRMED(2, "已确认"),
-    TRAVELING(3, "出行中"),
-    COMPLETED(4, "已完成"),
-    CANCELLED(5, "已取消"),
-    REFUND_APPLY(6, "退款申请中"),
-    REFUNDED(7, "已退款"),
-    CLOSED(8, "已关闭");
+    BOOKED(1, "已预订"),
+    TRAVELING(2, "出行中"),
+    COMPLETED(3, "已完成"),
+    CANCELLED(4, "已取消"),
+    REFUND_APPLY(5, "退款申请中"),
+    REFUNDED(6, "已退款"),
+    CLOSED(7, "已关闭");
 
     private final Integer code;
     private final String desc;
@@ -52,8 +51,7 @@ public enum OrderStatus {
      */
     public static List<Integer> refundableStatuses() {
         return Arrays.asList(
-                PENDING_CONFIRM.code,
-                CONFIRMED.code,
+                BOOKED.code,
                 TRAVELING.code
         );
     }

@@ -2,6 +2,7 @@ package com.xunjiqianxing.service.promotion.service;
 
 import com.xunjiqianxing.service.promotion.entity.PromoterCommission;
 import com.xunjiqianxing.service.promotion.entity.PromoterInfo;
+import com.xunjiqianxing.service.promotion.entity.PromoterScanRecord;
 import com.xunjiqianxing.service.promotion.entity.PromoterWithdraw;
 
 import java.math.BigDecimal;
@@ -26,6 +27,16 @@ public interface PromoterService {
      * 根据推广码获取推广员
      */
     PromoterInfo getByPromoCode(String promoCode);
+
+    /**
+     * 记录扫码（无需登录，写入明细并计数）
+     */
+    void recordScan(String promoCode);
+
+    /**
+     * 查询扫码记录列表（分页）
+     */
+    List<PromoterScanRecord> listScanRecords(Long promoterUserId, int page, int pageSize);
 
     /**
      * 绑定推广员

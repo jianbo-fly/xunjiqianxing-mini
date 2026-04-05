@@ -82,6 +82,7 @@ export interface ActivityVO {
   icon: string
   time: string
   content: string
+  images?: string[]
 }
 
 // 行程天
@@ -534,6 +535,23 @@ export interface SupplierCreateRequest {
   licenseImages?: string[]
   username: string
   password: string
+  // 公司信息
+  companyName?: string
+  companyAddress?: string
+  // 联系人1
+  contact1Name?: string
+  contact1Title?: string
+  contact1Phone?: string
+  // 联系人2（选填）
+  contact2Name?: string
+  contact2Title?: string
+  contact2Phone?: string
+  // 资质证件
+  businessLicense?: string
+  tourismLicense?: string
+  idCardFront?: string
+  idCardBack?: string
+  insuranceImage?: string
 }
 
 // 供应商更新请求
@@ -544,6 +562,23 @@ export interface SupplierUpdateRequest {
   phone?: string
   intro?: string
   licenseImages?: string[]
+  // 公司信息
+  companyName?: string
+  companyAddress?: string
+  // 联系人1
+  contact1Name?: string
+  contact1Title?: string
+  contact1Phone?: string
+  // 联系人2（选填）
+  contact2Name?: string
+  contact2Title?: string
+  contact2Phone?: string
+  // 资质证件
+  businessLicense?: string
+  tourismLicense?: string
+  idCardFront?: string
+  idCardBack?: string
+  insuranceImage?: string
 }
 
 // 供应商列表项
@@ -558,4 +593,21 @@ export interface SupplierVO {
   routeCount: number
   username: string
   createdAt: string
+  // 公司信息
+  companyName: string
+  companyAddress: string
+  // 联系人1
+  contact1Name: string
+  contact1Title: string
+  contact1Phone: string
+  // 联系人2（选填）
+  contact2Name: string
+  contact2Title: string
+  contact2Phone: string
+  // 资质证件
+  businessLicense: string
+  tourismLicense: string
+  idCardFront: string
+  idCardBack: string
+  insuranceImage: string
 }

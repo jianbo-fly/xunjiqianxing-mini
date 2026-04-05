@@ -24,18 +24,14 @@ Page({
 
   /**
    * 选择头像
+   * 真机返回 https://thirdwx.qlogo.cn/... 存后端
+   * DevTools 返回本地临时路径，只本地展示不存后端
    */
-  handleChooseAvatar() {
-    wx.chooseMedia({
-      count: 1,
-      mediaType: ['image'],
-      sourceType: ['album', 'camera'],
-      success: (res) => {
-        const tempFilePath = res.tempFiles[0].tempFilePath;
-        this.updateProfile({ avatar: tempFilePath });
-        this.setData({ 'userInfo.avatar': tempFilePath });
-      },
-    });
+  handleChooseAvatar(e) {
+    const avatarUrl = e.detail.avatarUrl;
+    if (!avatarUrl) return;
+    this.setData({ 'userInfo.avatar': avatarUrl });
+    this.updateProfile({ avatar: avatarUrl });
   },
 
   /**

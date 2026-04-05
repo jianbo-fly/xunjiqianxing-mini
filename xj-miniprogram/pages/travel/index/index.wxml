@@ -42,27 +42,21 @@
 
       <!-- 4 按钮筛选栏（按钮自适应宽度，左对齐） -->
       <view class="filter-bar">
-        <picker mode="selector" range="{{departures}}" bindchange="handleDepartureChange">
-          <view class="filter-bar__btn {{filters.departure ? 'filter-bar__btn--active' : ''}}">
-            <text class="filter-bar__label">{{filters.departure || '出发地'}}</text>
-            <text class="filter-bar__arrow">▾</text>
-          </view>
-        </picker>
-        <picker mode="selector" range="{{daysOptions}}" bindchange="handleDaysChange">
-          <view class="filter-bar__btn {{filters.days ? 'filter-bar__btn--active' : ''}}">
-            <text class="filter-bar__label">{{filters.days || '行程天数'}}</text>
-            <text class="filter-bar__arrow">▾</text>
-          </view>
-        </picker>
-        <picker mode="selector" range="{{filterBudgets}}" bindchange="handleFilterBudgetChange">
-          <view class="filter-bar__btn {{filters.budgetLabel ? 'filter-bar__btn--active' : ''}}">
-            <text class="filter-bar__label">{{filters.budgetLabel || '价格预算'}}</text>
-            <text class="filter-bar__arrow">▾</text>
-          </view>
-        </picker>
-        <view class="filter-bar__btn" bindtap="handleShowFilter">
-          <text class="filter-bar__label">筛选</text>
+        <view class="filter-bar__btn {{filters.departure ? 'filter-bar__btn--active' : ''}}" bindtap="handleGroupFilterTap" data-type="departure">
+          <text class="filter-bar__label">{{filters.departure || '出发地'}}</text>
           <text class="filter-bar__arrow">▾</text>
+        </view>
+        <view class="filter-bar__btn {{filters.days ? 'filter-bar__btn--active' : ''}}" bindtap="handleGroupFilterTap" data-type="days">
+          <text class="filter-bar__label">{{filters.days || '行程天数'}}</text>
+          <text class="filter-bar__arrow">▾</text>
+        </view>
+        <view class="filter-bar__btn {{filters.budgetLabel ? 'filter-bar__btn--active' : ''}}" bindtap="handleGroupFilterTap" data-type="budget">
+          <text class="filter-bar__label">{{filters.budgetLabel || '价格预算'}}</text>
+          <text class="filter-bar__arrow">▾</text>
+        </view>
+        <view class="filter-bar__btn" bindtap="handleShowFilter">
+          <image class="filter-bar__icon" src="/assets/icons/common/filter.png" mode="aspectFit" />
+          <text class="filter-bar__label">筛选</text>
         </view>
       </view>
 
@@ -151,6 +145,25 @@
 
     <view style="height: calc(32rpx + env(safe-area-inset-bottom));"></view>
 
+    <!-- 自定义筛选下拉面板 -->
+    <view class="gfp-mask" wx:if="{{groupFilterPanel.show}}" bindtap="handleGroupFilterClose"></view>
+    <view class="gfp-panel" wx:if="{{groupFilterPanel.show}}" style="top: {{groupFilterPanelTop}}px;">
+      <text class="gfp-panel__title">{{groupFilterPanel.title}}</text>
+      <view class="gfp-grid gfp-grid--{{groupFilterPanel.type}}">
+        <view
+          class="gfp-chip {{groupFilterPanel.pendingValue === item.value ? 'gfp-chip--active' : ''}}"
+          wx:for="{{groupFilterPanel.options}}"
+          wx:key="value"
+          data-value="{{item.value}}"
+          bindtap="handleGroupFilterChipTap"
+        >{{item.label}}</view>
+      </view>
+      <view class="gfp-footer">
+        <view class="gfp-btn gfp-btn--reset" bindtap="handleGroupFilterReset">重置</view>
+        <view class="gfp-btn gfp-btn--confirm" bindtap="handleGroupFilterConfirm">确定</view>
+      </view>
+    </view>
+
     <!-- 筛选侧边弹窗 -->
     <view class="filter-mask" wx:if="{{showFilter}}" bindtap="handleCloseFilter"></view>
     <view class="filter-popup {{showFilter ? 'filter-popup--show' : ''}}">
@@ -236,16 +249,17 @@
             class="cs-pill {{selectedTime === item ? 'cs-pill--active' : ''}}"
             wx:for="{{timeOptions}}"
             wx:key="index"
+            wx:if="{{item !== '选择日期'}}"
             data-time="{{item}}"
             bindtap="handleTimeSelect"
-          >
-            <image wx:if="{{item === '选择日期'}}" class="cs-pill__icon" src="/assets/icons/custom/calendar-sm.png" mode="aspectFit" />
-            <text>{{item === '选择日期' && customDate ? customDate : item}}</text>
-          </view>
+          >{{item}}</view>
+          <picker mode="date" start="{{today}}" bindchange="handleDateChange">
+            <view class="cs-pill cs-pill--date-picker {{selectedTime === '选择日期' ? 'cs-pill--active' : ''}}">
+              <image wx:if="{{!customDate}}" class="cs-pill__icon" src="/assets/icons/custom/calendar-sm.png" mode="aspectFit" />
+              <text>{{customDate || '选择日期'}}</text>
+            </view>
+          </picker>
         </view>
-        <picker wx:if="{{showDatePicker}}" mode="date" start="{{today}}" bindchange="handleDateChange">
-          <view class="cs-date-trigger">选择日期 ›</view>
-        </picker>
 
         <!-- 分隔线 -->
         <view class="cs-divider"></view>
@@ -402,3 +416,4 @@
   </view>
 
 </view>
+<xj-toast id="xj-toast"/>

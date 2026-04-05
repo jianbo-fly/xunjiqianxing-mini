@@ -96,15 +96,16 @@ Page({
       app.setLoginInfo(res.token);
 
       // 判断是否新用户
-      if (res.isNewUser) {
-        // 新用户，进入完善信息步骤
+      if (res.isNewUser || res.needsProfile) {
+        // 新用户 或 老用户头像/昵称缺失，进入完善信息步骤
+        await this.loadUserInfo(); // 预填已有昵称
         this.setData({
           step: 2,
-          isNewUser: true,
+          isNewUser: !!res.isNewUser,
           logging: false,
         });
       } else {
-        // 老用户，获取用户信息后跳转
+        // 老用户资料完整，直接跳转
         await this.loadUserInfo();
         this.loginSuccess();
       }
@@ -141,6 +142,13 @@ Page({
       const userInfo = await userApi.getInfo();
       app.globalData.userInfo = userInfo;
       wx.setStorageSync('userInfo', userInfo);
+      // 预填已有昵称（排除默认值）和头像
+      if (userInfo.nickname && userInfo.nickname !== '微信用户') {
+        this.setData({ 'userInfo.nickname': userInfo.nickname });
+      }
+      if (userInfo.avatar && userInfo.avatar.startsWith('https://')) {
+        this.setData({ 'userInfo.avatar': userInfo.avatar });
+      }
     } catch (e) {
       console.error('获取用户信息失败', e);
     }
@@ -175,16 +183,9 @@ Page({
     this.setData({ submitting: true });
 
     try {
-      // 如果有头像，先上传
-      let avatarUrl = avatar;
-      if (avatar && avatar.startsWith('wxfile://')) {
-        avatarUrl = await this.uploadAvatar(avatar);
-      }
-
-      // 更新用户信息
       await userApi.updateInfo({
         nickname: nickname.trim(),
-        avatar: avatarUrl,
+        avatar: avatar || '',
       });
 
       // 进入绑定手机号步骤
@@ -193,36 +194,6 @@ Page({
       console.error('更新用户信息失败', e);
       this.setData({ submitting: false });
     }
-  },
-
-  /**
-   * 上传头像
-   */
-  async uploadAvatar(filePath) {
-    return new Promise((resolve, reject) => {
-      const token = wx.getStorageSync('token');
-      wx.uploadFile({
-        url: apiConfig.baseUrl + '/api/common/upload',
-        filePath,
-        name: 'file',
-        header: {
-          'Authorization': token || '',
-        },
-        success: (res) => {
-          if (res.statusCode === 200) {
-            const data = JSON.parse(res.data);
-            if (data.code === 200 || data.code === 0) {
-              resolve(data.data.url || data.data);
-            } else {
-              reject(new Error(data.message));
-            }
-          } else {
-            reject(new Error('上传失败'));
-          }
-        },
-        fail: reject,
-      });
-    });
   },
 
   /**

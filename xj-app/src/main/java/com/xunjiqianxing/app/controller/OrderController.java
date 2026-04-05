@@ -6,6 +6,8 @@ import com.xunjiqianxing.common.base.PageQuery;
 import com.xunjiqianxing.common.exception.BizException;
 import com.xunjiqianxing.common.result.PageResult;
 import com.xunjiqianxing.common.result.Result;
+import com.xunjiqianxing.common.utils.IdCardEncryptor;
+import com.xunjiqianxing.service.message.service.MessageService;
 import com.xunjiqianxing.service.order.entity.OrderMain;
 import com.xunjiqianxing.service.order.entity.OrderTraveler;
 import com.xunjiqianxing.service.order.enums.OrderStatus;
@@ -44,6 +46,8 @@ public class OrderController {
     private final RouteService routeService;
     private final ProductService productService;
     private final UserService userService;
+    private final MessageService messageService;
+    private final IdCardEncryptor idCardEncryptor;
 
 
     /**
@@ -72,11 +76,11 @@ public class OrderController {
             throw new BizException("所选日期不可预订");
         }
 
-        // 检查库存
+        // 原子锁定库存（同时完成库存检查，防止并发超售）
         int totalCount = request.getAdultCount() + (request.getChildCount() != null ? request.getChildCount() : 0);
-        int remaining = priceStock.getStock() - priceStock.getSold() - priceStock.getLocked();
-        if (remaining < totalCount) {
-            throw new BizException("库存不足");
+        boolean stockLocked = routeService.lockStock(request.getSkuId(), request.getStartDate(), totalCount);
+        if (!stockLocked) {
+            throw new BizException("库存不足，请重新选择日期");
         }
 
         // 计算价格
@@ -124,17 +128,40 @@ public class OrderController {
                 .map(dto -> {
                     OrderTraveler traveler = new OrderTraveler();
                     traveler.setName(dto.getName());
-                    traveler.setIdCard(dto.getIdCard()); // TODO: 加密存储
+                    traveler.setIdCard(idCardEncryptor.encrypt(dto.getIdCard()));
                     traveler.setPhone(dto.getPhone());
                     traveler.setTravelerType(dto.getTravelerType());
                     return traveler;
                 })
                 .collect(Collectors.toList());
 
-        // 创建订单
-        OrderMain createdOrder = orderService.createOrder(order, travelers);
+        // 创建订单（库存已锁定，若订单创建异常则释放锁）
+        OrderMain createdOrder;
+        try {
+            createdOrder = orderService.createOrder(order, travelers);
+        } catch (Exception e) {
+            routeService.releaseStock(request.getSkuId(), request.getStartDate(), totalCount);
+            throw e;
+        }
 
-        // TODO: 锁定库存
+        // 发送订单确认消息
+        try {
+            String content = String.format("您的订单「%s」已提交，订单号 %s，请在30分钟内完成支付。",
+                    createdOrder.getProductName(), createdOrder.getOrderNo());
+            messageService.sendMessage(
+                    userId,
+                    "order_confirm",
+                    "order",
+                    "订单已提交",
+                    content,
+                    "order",
+                    createdOrder.getId(),
+                    createdOrder.getOrderNo(),
+                    "/pages/order/detail/index?id=" + createdOrder.getId()
+            );
+        } catch (Exception e) {
+            log.warn("发送订单确认消息失败: {}", e.getMessage());
+        }
 
         return Result.success(toOrderDetailVO(createdOrder, travelers));
     }
@@ -192,7 +219,26 @@ public class OrderController {
             @Parameter(description = "取消原因") @RequestParam(required = false) String reason) {
 
         Long userId = StpUtil.getLoginIdAsLong();
+
+        // 取消前获取订单信息，用于后续释放锁定库存
+        OrderMain order = orderService.getById(id);
+        if (order == null) {
+            throw new BizException("订单不存在");
+        }
+
         orderService.cancelOrder(id, userId, reason);
+
+        // 取消成功，释放锁定库存（失败不影响取消结果）
+        try {
+            int quantity = (order.getAdultCount() != null ? order.getAdultCount() : 0)
+                    + (order.getChildCount() != null ? order.getChildCount() : 0);
+            if (order.getSkuId() != null && order.getStartDate() != null && quantity > 0) {
+                routeService.releaseStock(order.getSkuId(), order.getStartDate(), quantity);
+            }
+        } catch (Exception e) {
+            log.warn("取消订单后释放库存失败: orderId={}, error={}", id, e.getMessage());
+        }
+
         return Result.success();
     }
 
@@ -230,7 +276,7 @@ public class OrderController {
                     .map(t -> {
                         OrderDetailVO.TravelerVO tv = new OrderDetailVO.TravelerVO();
                         tv.setName(t.getName());
-                        tv.setIdCard(maskIdCard(t.getIdCard()));
+                        tv.setIdCard(maskIdCard(idCardEncryptor.decrypt(t.getIdCard())));
                         tv.setPhone(maskPhone(t.getPhone()));
                         tv.setTravelerType(t.getTravelerType());
                         return tv;

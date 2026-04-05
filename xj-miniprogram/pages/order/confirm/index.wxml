@@ -320,3 +320,4 @@
     </view>
   </xj-popup>
 </view>
+<xj-toast id="xj-toast"/>

@@ -7,20 +7,45 @@ const { navigateBack } = require('../../../utils/router');
 
 Page({
   data: {
+    statusBarHeight: 0,
+    navBarHeight: 44,
     form: {
-      realName: '',
-      phone: '',
-      reason: '',
+      avatarUrl: '',
+      nickname: '',
     },
+    agreed: false,
     submitting: false,
   },
 
   onLoad() {
-    // 自动填充手机号
-    const userInfo = app.globalData.userInfo || {};
-    if (userInfo.phone) {
-      this.setData({ 'form.phone': userInfo.phone });
+    const windowInfo = wx.getWindowInfo();
+    const deviceInfo = wx.getDeviceInfo();
+    const statusBarHeight = windowInfo.statusBarHeight || 0;
+    // nav bar content height
+    const navBarHeight = deviceInfo.platform === 'ios' ? 44 : 48;
+    this.setData({ statusBarHeight, navBarHeight });
+
+    // 预填用户信息
+    const userInfo = app.globalData.userInfo || wx.getStorageSync('userInfo') || {};
+    if (userInfo.nickname && userInfo.nickname !== '微信用户') {
+      this.setData({ 'form.nickname': userInfo.nickname });
     }
+    if (userInfo.avatar) {
+      this.setData({ 'form.avatarUrl': userInfo.avatar });
+    }
+  },
+
+  handleBack() {
+    navigateBack();
+  },
+
+  /**
+   * 选择头像（微信原生头像选择器）
+   */
+  handleChooseAvatar(e) {
+    const avatarUrl = e.detail.avatarUrl;
+    if (!avatarUrl) return;
+    this.setData({ 'form.avatarUrl': avatarUrl });
   },
 
   /**
@@ -32,19 +57,24 @@ Page({
   },
 
   /**
+   * 切换协议勾选
+   */
+  handleToggleAgree() {
+    this.setData({ agreed: !this.data.agreed });
+  },
+
+  /**
    * 提交申请
    */
   async handleSubmit() {
-    const { form, submitting } = this.data;
+    const { form, agreed, submitting } = this.data;
     if (submitting) return;
-
-    // 验证
-    if (!form.realName.trim()) {
-      wx.showToast({ title: '请输入真实姓名', icon: 'none' });
+    if (!agreed) {
+      wx.showToast({ title: '请先阅读并同意推广员协议', icon: 'none' });
       return;
     }
-    if (!/^1\d{10}$/.test(form.phone)) {
-      wx.showToast({ title: '请输入正确的手机号', icon: 'none' });
+    if (!form.nickname.trim()) {
+      wx.showToast({ title: '请输入昵称', icon: 'none' });
       return;
     }
 
@@ -53,9 +83,8 @@ Page({
     try {
       wx.showLoading({ title: '提交中...' });
       await promoterApi.apply({
-        realName: form.realName.trim(),
-        phone: form.phone,
-        reason: form.reason.trim(),
+        nickname: form.nickname.trim(),
+        avatarUrl: form.avatarUrl,
       });
       wx.hideLoading();
 

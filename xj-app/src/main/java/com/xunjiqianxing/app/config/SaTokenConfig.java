@@ -29,6 +29,7 @@ public class SaTokenConfig implements WebMvcConfigurer {
             "/api/route/package/*/calendar",
             "/api/member/benefits",
             "/api/promoter/bindByCode",
+            "/api/promoter/scan",
             "/notify/**"
     };
 

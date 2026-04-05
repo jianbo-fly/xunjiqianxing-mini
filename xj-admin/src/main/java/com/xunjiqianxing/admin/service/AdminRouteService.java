@@ -145,6 +145,12 @@ public class AdminRouteService {
                                                 actVO.setIcon((String) actMap.get("icon"));
                                                 actVO.setTime((String) actMap.get("time"));
                                                 actVO.setContent((String) actMap.get("content"));
+                                                Object imgs = actMap.get("images");
+                                                if (imgs instanceof List) {
+                                                    @SuppressWarnings("unchecked")
+                                                    List<String> imgList = (List<String>) imgs;
+                                                    actVO.setImages(imgList);
+                                                }
                                                 return actVO;
                                             })
                                             .collect(Collectors.toList()));
@@ -162,6 +168,7 @@ public class AdminRouteService {
                                                 actVO.setIcon(act.getIcon());
                                                 actVO.setTime(act.getTime());
                                                 actVO.setContent(act.getContent());
+                                                actVO.setImages(act.getImages());
                                                 return actVO;
                                             })
                                             .collect(Collectors.toList()));
@@ -264,6 +271,7 @@ public class AdminRouteService {
                                         actMap.put("icon", act.getIcon());
                                         actMap.put("time", act.getTime());
                                         actMap.put("content", act.getContent());
+                                        actMap.put("images", act.getImages());
                                         return actMap;
                                     })
                                     .collect(Collectors.toList());
@@ -382,6 +390,7 @@ public class AdminRouteService {
                                         actMap.put("icon", act.getIcon());
                                         actMap.put("time", act.getTime());
                                         actMap.put("content", act.getContent());
+                                        actMap.put("images", act.getImages());
                                         return actMap;
                                     })
                                     .collect(Collectors.toList());

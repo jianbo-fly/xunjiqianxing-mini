@@ -27,7 +27,17 @@ public class ProductRoute {
     private String category;
 
     /**
-     * 出发城市
+     * 出发城市编码（用于搜索筛选）
+     */
+    private String cityCode;
+
+    /**
+     * 出发城市名称（标准城市全称，用于精确匹配）
+     */
+    private String cityName;
+
+    /**
+     * 出发城市（展示用，可自定义文案）
      */
     private String departureCity;
 
@@ -92,5 +102,7 @@ public class ProductRoute {
         private String time;
         /** 活动内容 */
         private String content;
+        /** 活动配图URL列表 */
+        private List<String> images;
     }
 }

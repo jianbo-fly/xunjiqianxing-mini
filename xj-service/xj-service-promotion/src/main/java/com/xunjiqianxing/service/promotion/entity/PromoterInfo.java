@@ -62,7 +62,12 @@ public class PromoterInfo extends BaseEntity {
     private BigDecimal withdrawnAmount;
 
     /**
-     * 推广人数
+     * 累计扫码次数（含未登录用户）
+     */
+    private Integer scanCount;
+
+    /**
+     * 推广人数（成功绑定的用户数）
      */
     private Integer promotedCount;
 

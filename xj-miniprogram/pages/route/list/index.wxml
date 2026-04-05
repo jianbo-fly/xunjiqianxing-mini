@@ -5,7 +5,6 @@
 
   <nav-bar title="线路列表" background="rgba(248, 246, 246, 0.9)" border showBack fixed />
 
-  <!-- 顶部导航组件（Tabs + 分类 + 筛选） -->
   <route-list-header
     tabs="{{tabs}}"
     activeTab="{{activeTab}}"
@@ -112,4 +111,38 @@
       <text>- 没有更多了 -</text>
     </view>
   </view>
+
+  <!-- 筛选遮罩 -->
+  <view
+    class="filter-mask"
+    wx:if="{{filterPanel.show}}"
+    bindtap="handleFilterClose"
+    style="top: {{filterPanelTop}}px;"
+  />
+
+  <!-- 筛选下拉面板 -->
+  <view
+    class="filter-panel"
+    wx:if="{{filterPanel.show}}"
+    style="top: {{filterPanelTop}}px;"
+    catchtap
+  >
+    <text class="filter-panel__title">{{filterPanel.title}}</text>
+    <view class="filter-panel__grid filter-panel__grid--{{filterPanel.type}}">
+      <view
+        class="filter-chip {{filterPanel.pendingValue === item.value ? 'filter-chip--active' : ''}}"
+        wx:for="{{filterPanel.options}}"
+        wx:key="value"
+        wx:if="{{item.value !== ''}}"
+        data-value="{{item.value}}"
+        bindtap="handleFilterChipTap"
+      >{{item.label}}</view>
+    </view>
+    <view class="filter-panel__footer">
+      <view class="filter-panel__btn filter-panel__btn--reset" bindtap="handleFilterReset">重置</view>
+      <view class="filter-panel__btn filter-panel__btn--confirm" bindtap="handleFilterConfirm">确定</view>
+    </view>
+  </view>
+
 </view>
+<xj-toast id="xj-toast"/>

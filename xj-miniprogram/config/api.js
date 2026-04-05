@@ -8,7 +8,7 @@
 // 环境配置
 const ENV = {
   dev: {
-    baseUrl: 'http://localhost:8080',
+    baseUrl: 'https://facetious-synaptically-jestine.ngrok-free.dev',
   },
   test: {
     baseUrl: 'https://test-api.xunjiqianxing.com',
@@ -102,10 +102,14 @@ module.exports = {
       info: '/api/promoter/info',
       apply: '/api/promoter/apply',
       bind: '/api/promoter/bind',
+      qrcode: '/api/promoter/qrcode',
+      scan: '/api/promoter/scan',
       commissions: '/api/promoter/commissions',
       withdraw: '/api/promoter/withdraw',
       withdraws: '/api/promoter/withdraws',
       statistics: '/api/promoter/statistics',
+      scanList: '/api/promoter/scan/list',
+      orderList: '/api/promoter/order/list',
     },
 
     // 支付模块 /api/payment

@@ -15,11 +15,8 @@ public class OrderStatsVO {
     @Schema(description = "待支付订单数")
     private Long pendingPayCount;
 
-    @Schema(description = "待确认订单数")
-    private Long pendingConfirmCount;
-
-    @Schema(description = "待出行订单数")
-    private Long pendingTravelCount;
+    @Schema(description = "已预订订单数")
+    private Long bookedCount;
 
     @Schema(description = "出行中订单数")
     private Long travelingCount;

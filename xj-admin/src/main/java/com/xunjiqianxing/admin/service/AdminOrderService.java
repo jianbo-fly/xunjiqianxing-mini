@@ -6,7 +6,11 @@ import cn.hutool.core.util.DesensitizedUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.xunjiqianxing.admin.dto.order.*;
+import com.xunjiqianxing.admin.dto.order.OrderDetailVO;
+import com.xunjiqianxing.admin.dto.order.OrderListVO;
+import com.xunjiqianxing.admin.dto.order.OrderQueryRequest;
+import com.xunjiqianxing.admin.dto.order.OrderRemarkRequest;
+import com.xunjiqianxing.admin.dto.order.OrderStatsVO;
 import com.xunjiqianxing.admin.entity.SystemSupplier;
 import com.xunjiqianxing.admin.mapper.SystemSupplierMapper;
 import com.xunjiqianxing.common.exception.BizException;
@@ -175,48 +179,6 @@ public class AdminOrderService {
     }
 
     /**
-     * 确认/驳回订单
-     */
-    @Transactional(rollbackFor = Exception.class)
-    public void confirmOrReject(OrderConfirmRequest request) {
-        OrderMain order = getOrderByNo(request.getOrderNo());
-
-        // 检查权限
-        checkOrderPermission(order);
-
-        // 只有待确认状态可以操作
-        if (order.getStatus() != OrderStatus.PENDING_CONFIRM.getCode()) {
-            throw new BizException("当前订单状态不允许此操作");
-        }
-
-        if ("confirm".equals(request.getAction())) {
-            // 确认订单
-            order.setStatus(OrderStatus.CONFIRMED.getCode());
-            order.setConfirmTime(LocalDateTime.now());
-            log.info("订单已确认: orderNo={}", request.getOrderNo());
-        } else if ("reject".equals(request.getAction())) {
-            // 驳回订单
-            if (!StringUtils.hasText(request.getRejectReason())) {
-                throw new BizException("请填写驳回原因");
-            }
-            order.setStatus(OrderStatus.CANCELLED.getCode());
-            order.setRejectReason(request.getRejectReason());
-            order.setCancelTime(LocalDateTime.now());
-            order.setCancelType(2); // 商家驳回
-            // TODO: 触发退款
-            log.info("订单已驳回: orderNo={}, reason={}", request.getOrderNo(), request.getRejectReason());
-        } else {
-            throw new BizException("无效的操作类型");
-        }
-
-        if (StringUtils.hasText(request.getRemark())) {
-            order.setAdminRemark(request.getRemark());
-        }
-
-        orderMainMapper.updateById(order);
-    }
-
-    /**
      * 添加备注
      */
     public void addRemark(OrderRemarkRequest request) {
@@ -241,8 +203,7 @@ public class AdminOrderService {
 
         // 各状态订单数
         stats.setPendingPayCount(countByStatus(supplierId, OrderStatus.PENDING_PAY.getCode()));
-        stats.setPendingConfirmCount(countByStatus(supplierId, OrderStatus.PENDING_CONFIRM.getCode()));
-        stats.setPendingTravelCount(countByStatus(supplierId, OrderStatus.CONFIRMED.getCode()));
+        stats.setBookedCount(countByStatus(supplierId, OrderStatus.BOOKED.getCode()));
         stats.setTravelingCount(countByStatus(supplierId, OrderStatus.TRAVELING.getCode()));
         stats.setCompletedCount(countByStatus(supplierId, OrderStatus.COMPLETED.getCode()));
         stats.setRefundingCount(countByStatus(supplierId, OrderStatus.REFUND_APPLY.getCode()));

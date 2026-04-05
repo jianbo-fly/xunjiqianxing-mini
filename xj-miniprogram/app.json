@@ -2,10 +2,6 @@
   "pages": [
     "pages/index/index",
     "pages/login/index",
-    "pages/travel/index/index",
-    "pages/custom/list/index",
-    "pages/route/list/index",
-    "pages/route/detail/index",
     "pages/companion/list/index",
     "pages/companion/detail/index",
     "pages/trip/list/index",
@@ -17,17 +13,83 @@
     "pages/member/coupon/index",
     "pages/member/settings/index",
     "pages/member/about/index",
-    "pages/member/vip/index",
-    "pages/order/confirm/index",
-    "pages/order/list/index",
-    "pages/order/detail/index",
-    "pages/order/refund/index",
-    "pages/promoter/apply/index",
-    "pages/promoter/center/index",
-    "pages/promoter/bindList/index",
-    "pages/message/list/index",
-    "pages/webview/index"
+    "pages/member/vip/index"
   ],
+  "subPackages": [
+    {
+      "root": "pages/route",
+      "name": "route",
+      "pages": [
+        "list/index",
+        "detail/index"
+      ]
+    },
+    {
+      "root": "pages/search",
+      "name": "search",
+      "pages": [
+        "index"
+      ]
+    },
+    {
+      "root": "pages/order",
+      "name": "order",
+      "pages": [
+        "confirm/index",
+        "list/index",
+        "detail/index",
+        "refund/index",
+        "result/index"
+      ]
+    },
+    {
+      "root": "pages/promoter",
+      "name": "promoter",
+      "pages": [
+        "apply/index",
+        "center/index",
+        "bindList/index"
+      ]
+    },
+    {
+      "root": "pages/message",
+      "name": "message",
+      "pages": [
+        "list/index"
+      ]
+    },
+    {
+      "root": "pages/custom",
+      "name": "custom",
+      "pages": [
+        "list/index"
+      ]
+    },
+    {
+      "root": "pages/travel",
+      "name": "travel",
+      "pages": [
+        "index/index"
+      ]
+    },
+    {
+      "root": "pages/webview",
+      "name": "webview",
+      "pages": [
+        "index"
+      ]
+    }
+  ],
+  "preloadRule": {
+    "pages/index/index": {
+      "network": "all",
+      "packages": ["route", "search"]
+    },
+    "pages/member/index/index": {
+      "network": "all",
+      "packages": ["order", "promoter", "message"]
+    }
+  },
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#FFFFFF",
@@ -69,6 +131,7 @@
     ]
   },
   "usingComponents": {
+    "xj-toast": "/components/base/xj-toast/index",
     "xj-button": "/components/base/xj-button/index",
     "xj-card": "/components/base/xj-card/index",
     "xj-icon": "/components/base/xj-icon/index",

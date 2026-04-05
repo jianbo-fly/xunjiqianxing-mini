@@ -482,15 +482,12 @@ Page({
       // 调起微信支付
       await payApi.wxPay(payParams);
 
-      // 支付成功
-      wx.showToast({ title: '支付成功', icon: 'success' });
-
-      // 跳转订单详情
-      setTimeout(() => {
-        wx.redirectTo({
-          url: `/pages/order/detail/index?id=${orderId}`,
-        });
-      }, 1500);
+      // 跳转支付结果页
+      const { route, packageInfo, date, adultCount, childCount, payAmount } = this.data;
+      const travelerCount = adultCount + childCount;
+      wx.redirectTo({
+        url: `/pages/order/result/index?orderId=${orderId}&amount=${encodeURIComponent(payAmount)}&routeName=${encodeURIComponent(route ? route.name : '')}&packageName=${encodeURIComponent(packageInfo ? packageInfo.name : '')}&departureDate=${encodeURIComponent(date)}&travelerCount=${travelerCount}`,
+      });
 
     } catch (err) {
       wx.hideLoading();

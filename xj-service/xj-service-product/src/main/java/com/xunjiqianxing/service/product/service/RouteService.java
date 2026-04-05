@@ -49,4 +49,24 @@ public interface RouteService {
      * 获取指定日期的价格库存
      */
     ProductPriceStock getPriceStock(Long skuId, LocalDate date);
+
+    /**
+     * 锁定库存（创建订单时调用）
+     * 原子操作：locked += quantity，当且仅当 stock - sold - locked >= quantity 时成功
+     *
+     * @return true=锁定成功；false=库存不足
+     */
+    boolean lockStock(Long skuId, LocalDate date, int quantity);
+
+    /**
+     * 释放锁定库存（订单取消/超时时调用）
+     * 原子操作：locked -= quantity
+     */
+    boolean releaseStock(Long skuId, LocalDate date, int quantity);
+
+    /**
+     * 确认销售（支付成功时调用）
+     * 原子操作：sold += quantity，locked -= quantity
+     */
+    boolean confirmStock(Long skuId, LocalDate date, int quantity);
 }

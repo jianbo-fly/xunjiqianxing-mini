@@ -3,20 +3,17 @@
   <view class="top-bar">
     <!-- 状态栏占位（高度由 JS 动态设置，兼容所有机型） -->
     <view style="height: {{statusBarHeight}}px;"></view>
-    <view class="top-bar__left">
-      <image class="top-bar__logo" src="/assets/images/logo.png" mode="aspectFit" />
-      <text class="top-bar__title">寻迹千行</text>
-    </view>
-    <view class="top-bar__right">
-      <!-- 积分徽章 -->
-      <view class="points-badge">
-        <image class="points-badge__icon" src="/assets/icons/common/points.png" mode="aspectFit" />
-        <text class="points-badge__text">{{points}} 积分</text>
+    <view class="top-bar__content">
+      <view class="top-bar__left">
+        <image class="top-bar__logo" src="/assets/images/logo.png" mode="aspectFit" />
+        <text class="top-bar__title">寻迹千行</text>
       </view>
-      <!-- 消息入口 -->
-      <view class="notification" bindtap="handleMessageTap">
-        <image class="notification__icon" src="/assets/icons/common/message.png" mode="aspectFit" />
-        <view wx:if="{{unreadCount > 0}}" class="notification__dot"></view>
+      <!-- 消息入口：右侧 padding 与胶囊按钮对齐，避免被遮挡 -->
+      <view class="top-bar__right" style="padding-right: {{menuButtonLeft}}rpx;">
+        <view class="notification" bindtap="handleMessageTap">
+          <image class="notification__icon" src="/assets/icons/common/message.png" mode="aspectFit" />
+          <view wx:if="{{unreadCount > 0}}" class="notification__dot"></view>
+        </view>
       </view>
     </view>
   </view>
@@ -73,18 +70,20 @@
     </view>
 
     <!-- 功能入口 -->
-    <view class="entry-grid">
-      <view
-        class="entry-item"
-        wx:for="{{entries}}"
-        wx:key="id"
-        data-item="{{item}}"
-        bindtap="handleEntryTap"
-      >
-        <view class="entry-icon-bg">
-          <image class="entry-icon" src="{{item.icon}}" mode="aspectFit" />
+    <view class="entry-card">
+      <view class="entry-grid">
+        <view
+          class="entry-item"
+          wx:for="{{entries}}"
+          wx:key="id"
+          data-item="{{item}}"
+          bindtap="handleEntryTap"
+        >
+          <view class="entry-icon-bg">
+            <image class="entry-icon" src="{{item.icon}}" mode="aspectFit" />
+          </view>
+          <text class="entry-name">{{item.name}}</text>
         </view>
-        <text class="entry-name">{{item.name}}</text>
       </view>
     </view>
 
@@ -206,3 +205,4 @@
     <image class="service-icon" src="/assets/icons/common/service.png" mode="aspectFit" />
   </view>
 </view>
+<xj-toast id="xj-toast"/>

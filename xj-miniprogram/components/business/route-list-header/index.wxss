@@ -1,0 +1,196 @@
+/**
+ * 线路列表顶部导航组件样式
+ * 对齐 Figma Node: 74-6610（Sticky Header Section）
+ */
+
+/* ===== 整体容器 ===== */
+.route-list-header {
+  background: var(--color-bg-card);
+  box-shadow: var(--shadow-card);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+/* ===== 主 Tab 行（pb-8px px-16px） ===== */
+.rth-nav {
+  display: flex;
+  align-items: center;
+  padding: 0 32rpx 16rpx;
+}
+
+/*
+ * Tab 居中区域
+ * Figma: flex-[1_0_0] justify-center pl-[32px]
+ * pl-[32px]=64rpx 用于向右偏移，视觉补偿右侧搜索按钮，使 Tabs 视觉居中
+ */
+.rth-nav__tabs {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-left: 64rpx;
+}
+
+/* Tab 项基础样式 */
+.rth-tab-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 16rpx; /* 为下划线留出空间 */
+}
+
+/* 第 2 个 Tab 向左偏移（Figma: pl-[24px] = 48rpx） */
+.rth-tab-item + .rth-tab-item {
+  margin-left: 48rpx;
+}
+
+/* Tab 文字：默认灰色中等字重 */
+.rth-tab-item__text {
+  font-size: 36rpx;
+  color: var(--color-text-tertiary);
+  font-weight: var(--font-weight-medium);
+  line-height: 1;
+  height: 56rpx;
+  display: flex;
+  align-items: center;
+}
+
+/* 激活态：黑色粗体 */
+.rth-tab-item--active .rth-tab-item__text {
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+/*
+ * 激活下划线条
+ * Figma: absolute bottom-[-4px] h-[4px] w-[24px] bg-[#ec3713]
+ * bottom-[-4px] 让它凸出到 tab 底部以外，贴近整个导航栏底部
+ */
+.rth-tab-item__bar {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 48rpx;
+  height: 8rpx;
+  background: var(--color-primary);
+  border-radius: var(--radius-full);
+}
+
+/* 搜索按钮（Figma: bg-[#f3f4f6] p-[8px] rounded-full） */
+.rth-nav__search {
+  width: 66rpx;
+  height: 66rpx;
+  background: var(--color-border-light);
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.rth-nav__search-icon {
+  width: 34rpx;
+  height: 34rpx;
+}
+
+/* ===== 分类标签行（pt-12px pb-13px px-16px border-b） ===== */
+.rth-cat-scroll {
+  white-space: nowrap;
+  border-bottom: 2rpx solid var(--color-border-light);
+}
+
+.rth-cat-list {
+  display: flex;
+  align-items: center;
+  padding: 24rpx 32rpx 26rpx;
+}
+
+/* 分类标签项（Figma: px-[16px] py-[6px] rounded-full） */
+.rth-cat-item {
+  flex-shrink: 0;
+  padding: 12rpx 32rpx;
+  border-radius: var(--radius-full);
+  background: transparent;
+}
+
+/* 第 2 个以后分类标签的间距（Figma: pl-[16px] = 32rpx） */
+.rth-cat-item + .rth-cat-item {
+  margin-left: 32rpx;
+}
+
+/* 分类标签文字（Figma: text-[14px]=28rpx font-medium） */
+.rth-cat-item__text {
+  font-size: 28rpx;
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-medium);
+}
+
+/* 激活态（Figma: bg-[#ec3713] + shadow） */
+.rth-cat-item--active {
+  background: var(--color-primary);
+  box-shadow: 0 8rpx 12rpx -2rpx var(--color-primary-border), 0 4rpx 8rpx -4rpx var(--color-primary-border);
+}
+
+.rth-cat-item--active .rth-cat-item__text {
+  color: var(--color-text-inverse);
+}
+
+/* ===== 筛选栏（py-12px px-16px） ===== */
+.rth-filter-bar {
+  display: flex;
+  align-items: center;
+  padding: 24rpx 32rpx;
+  gap: 16rpx;
+  overflow: hidden;
+}
+
+/*
+ * 筛选按钮
+ * Figma: shrink-0（内容宽度，非等宽），bg-[#f9fafb] rounded-[8px] px-[13px] py-[7px]
+ * 注意：NOT flex-1，不等宽
+ */
+.rth-filter-btn {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 14rpx 26rpx;
+  background: var(--color-bg-gray);
+  border-radius: var(--radius-sm);
+}
+
+.rth-filter-btn--active {
+  background: var(--color-primary-light);
+}
+
+/* 筛选按钮文字（Figma: text-[12px]=24rpx text-[#374151] font-normal） */
+.rth-filter-btn__text {
+  font-size: 24rpx;
+  color: var(--color-text-body);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.rth-filter-btn--active .rth-filter-btn__text {
+  color: var(--color-primary);
+}
+
+.rth-filter-btn__arrow {
+  font-size: 18rpx;
+  color: var(--color-text-tertiary);
+  flex-shrink: 0;
+}
+
+.rth-filter-btn--active .rth-filter-btn__arrow {
+  color: var(--color-primary);
+}
+
+.rth-filter-btn__icon {
+  width: 22rpx;
+  height: 22rpx;
+  opacity: 0.55;
+  flex-shrink: 0;
+}

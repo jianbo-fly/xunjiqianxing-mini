@@ -4,6 +4,7 @@ import cn.dev33.satoken.stp.StpUtil;
 import com.xunjiqianxing.app.dto.TravelerRequest;
 import com.xunjiqianxing.app.dto.TravelerVO;
 import com.xunjiqianxing.common.result.Result;
+import com.xunjiqianxing.common.utils.IdCardEncryptor;
 import com.xunjiqianxing.service.user.entity.UserTraveler;
 import com.xunjiqianxing.service.user.service.TravelerService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
 public class TravelerController {
 
     private final TravelerService travelerService;
+    private final IdCardEncryptor idCardEncryptor;
 
     /**
      * 获取出行人列表
@@ -69,7 +71,7 @@ public class TravelerController {
         traveler.setUserId(userId);
         traveler.setName(request.getName());
         traveler.setIdType(request.getIdType());
-        traveler.setIdNo(request.getIdNo());
+        traveler.setIdNo(idCardEncryptor.encrypt(request.getIdNo()));
         traveler.setPhone(request.getPhone());
         traveler.setGender(request.getGender());
         traveler.setBirthday(request.getBirthday());
@@ -97,7 +99,7 @@ public class TravelerController {
         traveler.setUserId(userId);
         traveler.setName(request.getName());
         traveler.setIdType(request.getIdType());
-        traveler.setIdNo(request.getIdNo());
+        traveler.setIdNo(idCardEncryptor.encrypt(request.getIdNo()));
         traveler.setPhone(request.getPhone());
         traveler.setGender(request.getGender());
         traveler.setBirthday(request.getBirthday());
@@ -144,7 +146,7 @@ public class TravelerController {
         vo.setName(traveler.getName());
         vo.setIdType(traveler.getIdType());
         vo.setIdTypeDesc(TravelerVO.getIdTypeDesc(traveler.getIdType()));
-        vo.setIdNo(TravelerVO.maskIdNo(traveler.getIdNo()));
+        vo.setIdNo(TravelerVO.maskIdNo(idCardEncryptor.decrypt(traveler.getIdNo())));
         vo.setPhone(TravelerVO.maskPhone(traveler.getPhone()));
         vo.setGender(traveler.getGender());
         vo.setBirthday(traveler.getBirthday());
@@ -163,7 +165,7 @@ public class TravelerController {
         vo.setName(traveler.getName());
         vo.setIdType(traveler.getIdType());
         vo.setIdTypeDesc(TravelerVO.getIdTypeDesc(traveler.getIdType()));
-        vo.setIdNo(traveler.getIdNo()); // 完整证件号
+        vo.setIdNo(idCardEncryptor.decrypt(traveler.getIdNo())); // 完整证件号（解密后返回）
         vo.setPhone(traveler.getPhone()); // 完整手机号
         vo.setGender(traveler.getGender());
         vo.setBirthday(traveler.getBirthday());

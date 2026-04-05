@@ -29,12 +29,8 @@ Page({
   },
 
   onLoad() {
-    try {
-      const sysInfo = wx.getSystemInfoSync();
-      this.setData({ statusBarHeight: sysInfo.statusBarHeight });
-    } catch (e) {
-      this.setData({ statusBarHeight: 20 });
-    }
+    const windowInfo = wx.getWindowInfo();
+    this.setData({ statusBarHeight: windowInfo.statusBarHeight || 20 });
     this.checkLogin();
   },
 

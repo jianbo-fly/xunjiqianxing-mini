@@ -119,9 +119,6 @@ public class OrderDetailVO {
     @Schema(description = "订单状态描述")
     private String statusDesc;
 
-    @Schema(description = "支付状态")
-    private Integer payStatus;
-
     @Schema(description = "支付时间")
     private LocalDateTime payTime;
 

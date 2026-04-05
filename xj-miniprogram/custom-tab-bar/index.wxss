@@ -1,0 +1,55 @@
+.tab-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border-top: 1rpx solid #f0f0f0;
+  box-shadow: 0 -2rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.tab-bar__content {
+  display: flex;
+  height: 112rpx;
+}
+
+.tab-bar__safe-area {
+  height: env(safe-area-inset-bottom);
+}
+
+/* ===== Tab 项 ===== */
+.tab-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6rpx;
+  position: relative;
+}
+
+.tab-item__icon {
+  width: 44rpx;
+  height: 44rpx;
+}
+
+.tab-item__label {
+  font-size: 20rpx;
+  line-height: 1;
+  color: #9ca3af;
+}
+
+.tab-item--active .tab-item__label {
+  color: #EC3713;
+  font-weight: 600;
+}
+
+/* 选中底部指示线（与路线详情 content-tab 一致） */
+.tab-item__line {
+  position: absolute;
+  bottom: 0;
+  width: 48rpx;
+  height: 6rpx;
+  background: #EC3713;
+  border-radius: 3rpx 3rpx 0 0;
+}

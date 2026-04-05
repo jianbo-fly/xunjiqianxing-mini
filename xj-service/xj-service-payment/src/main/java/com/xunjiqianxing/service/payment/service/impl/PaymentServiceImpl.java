@@ -249,6 +249,9 @@ public class PaymentServiceImpl implements PaymentService {
 
         String refundNo = generateRefundNo();
 
+        // TODO: 微信支付证书未配置，暂时使用mock模式
+        // 真实调用（证书配置后取消注释）：
+        /*
         try {
             WxPayRefundV3Request request = new WxPayRefundV3Request();
             request.setOutTradeNo(paymentNo);
@@ -273,6 +276,11 @@ public class PaymentServiceImpl implements PaymentService {
             log.error("退款失败: {}", e.getMessage(), e);
             throw new BizException("退款失败: " + e.getErrCodeDes());
         }
+        */
+
+        // Mock退款：直接返回模拟退款流水号
+        log.info("退款成功(Mock): paymentNo={}, refundNo={}, amount={}", paymentNo, refundNo, refundAmount);
+        return refundNo;
     }
 
     @Override

@@ -216,8 +216,6 @@ CREATE TABLE order_main (
     contact_phone VARCHAR(20) NOT NULL COMMENT '联系人电话',
 
     status TINYINT NOT NULL DEFAULT 0 COMMENT '订单状态: 0待支付 1待确认 2已确认 3出行中 4已完成 5已取消 6退款申请中 7已退款 8已关闭',
-
-    pay_status TINYINT DEFAULT 0 COMMENT '支付状态: 0未支付 1已支付',
     pay_time DATETIME COMMENT '支付时间',
     pay_trade_no VARCHAR(64) COMMENT '支付流水号',
 
@@ -304,22 +302,19 @@ CREATE TABLE order_refund (
 -- 订单日志表
 DROP TABLE IF EXISTS order_log;
 CREATE TABLE order_log (
-    id BIGINT PRIMARY KEY,
-    order_id BIGINT NOT NULL COMMENT '订单ID',
-
-    action VARCHAR(50) NOT NULL COMMENT '操作类型',
-    from_status TINYINT COMMENT '原状态',
-    to_status TINYINT COMMENT '新状态',
-
-    content VARCHAR(500) COMMENT '操作内容',
-    operator_type TINYINT COMMENT '操作人类型: 1用户 2供应商 3管理员 4系统',
-    operator_id BIGINT COMMENT '操作人ID',
-    operator_name VARCHAR(50) COMMENT '操作人名称',
-
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-
-    INDEX idx_order (order_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='订单日志表';
+                           id          BIGINT       NOT NULL COMMENT '主键',
+                           order_id    BIGINT       NOT NULL COMMENT '订单ID',
+                           order_no    VARCHAR(32)  NOT NULL COMMENT '订单编号',
+                           from_status TINYINT      NULL     COMMENT '变更前状态（null=初始创建）',
+                           to_status   TINYINT      NOT NULL COMMENT '变更后状态',
+                           operator_type VARCHAR(16) NOT NULL COMMENT '操作者类型: user/admin/system',
+                           operator_id BIGINT       NULL     COMMENT '操作者ID',
+                           remark      VARCHAR(255) NULL     COMMENT '操作备注',
+                           created_at  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+                           PRIMARY KEY (id),
+                           INDEX idx_order_id (order_id),
+                           INDEX idx_order_no (order_no)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='订单操作日志';
 
 -- =============================================
 -- 支付域

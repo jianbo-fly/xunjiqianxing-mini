@@ -128,6 +128,49 @@ public class AdminSupplierService {
         if (request.getLicenseImages() != null) {
             supplier.setLicenseImages(request.getLicenseImages());
         }
+        // 公司信息
+        if (request.getCompanyName() != null) {
+            supplier.setCompanyName(request.getCompanyName());
+        }
+        if (request.getCompanyAddress() != null) {
+            supplier.setCompanyAddress(request.getCompanyAddress());
+        }
+        // 联系人1
+        if (request.getContact1Name() != null) {
+            supplier.setContact1Name(request.getContact1Name());
+        }
+        if (request.getContact1Title() != null) {
+            supplier.setContact1Title(request.getContact1Title());
+        }
+        if (request.getContact1Phone() != null) {
+            supplier.setContact1Phone(request.getContact1Phone());
+        }
+        // 联系人2
+        if (request.getContact2Name() != null) {
+            supplier.setContact2Name(request.getContact2Name());
+        }
+        if (request.getContact2Title() != null) {
+            supplier.setContact2Title(request.getContact2Title());
+        }
+        if (request.getContact2Phone() != null) {
+            supplier.setContact2Phone(request.getContact2Phone());
+        }
+        // 资质证件
+        if (request.getBusinessLicense() != null) {
+            supplier.setBusinessLicense(request.getBusinessLicense());
+        }
+        if (request.getTourismLicense() != null) {
+            supplier.setTourismLicense(request.getTourismLicense());
+        }
+        if (request.getIdCardFront() != null) {
+            supplier.setIdCardFront(request.getIdCardFront());
+        }
+        if (request.getIdCardBack() != null) {
+            supplier.setIdCardBack(request.getIdCardBack());
+        }
+        if (request.getInsuranceImage() != null) {
+            supplier.setInsuranceImage(request.getInsuranceImage());
+        }
 
         supplierMapper.updateById(supplier);
         log.info("更新供应商: id={}", request.getId());

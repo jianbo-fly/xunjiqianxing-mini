@@ -146,14 +146,9 @@ public class OrderMain extends BaseEntity {
     private String contactPhone;
 
     /**
-     * 订单状态: 0待支付 1已支付 2已确认 3出行中 4已完成 5已取消 6退款中 7已退款 8已关闭
+     * 订单状态: 0待支付 1已预订 2出行中 3已完成 4已取消 5退款申请中 6已退款 7已关闭
      */
     private Integer status;
-
-    /**
-     * 支付状态
-     */
-    private Integer payStatus;
 
     /**
      * 支付时间

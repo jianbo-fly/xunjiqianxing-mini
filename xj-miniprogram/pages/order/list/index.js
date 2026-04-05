@@ -25,9 +25,9 @@ Page({
     tabs: [
       { status: '', label: '全部' },
       { status: '0', label: '待支付' },
-      { status: '1', label: '待确认' },
-      { status: '2', label: '已确认' },
-      { status: '4', label: '已完成' },
+      { status: '1', label: '已预订' },
+      { status: '2', label: '出行中' },
+      { status: '3', label: '已完成' },
     ],
     // 空状态
     isEmpty: false,
@@ -140,15 +140,15 @@ Page({
       // 按钮状态
       showPayBtn: order.status === 0,
       showCancelBtn: order.status === 0,
-      showRefundBtn: [1, 2, 3].includes(order.status),
-      showBuyAgainBtn: [4, 5, 7, 8].includes(order.status),
+      showRefundBtn: [1, 2].includes(order.status),
+      showBuyAgainBtn: [3, 4, 6, 7].includes(order.status),
       // 状态文本
-      statusText: order.statusText || { 0: '待支付', 1: '待确认', 2: '已确认', 3: '行程中', 4: '已完成', 5: '已取消', 6: '退款中', 7: '已退款', 8: '已关闭' }[order.status] || '',
+      statusText: order.statusText || '',
       // 状态徽章颜色类
       statusBadgeClass: order.status === 0 ? 'orange'
-        : [1, 2, 3].includes(order.status) ? 'primary'
-        : order.status === 4 ? 'green'
-        : [5, 8].includes(order.status) ? 'gray'
+        : [1, 2].includes(order.status) ? 'primary'
+        : order.status === 3 ? 'green'
+        : [4, 7].includes(order.status) ? 'gray'
         : 'blue',
     };
   },

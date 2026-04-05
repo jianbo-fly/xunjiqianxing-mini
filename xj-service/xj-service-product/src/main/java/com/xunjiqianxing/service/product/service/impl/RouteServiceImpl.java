@@ -1,6 +1,7 @@
 package com.xunjiqianxing.service.product.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xunjiqianxing.common.base.PageQuery;
 import com.xunjiqianxing.common.result.PageResult;
@@ -15,6 +16,7 @@ import com.xunjiqianxing.service.product.mapper.ProductSkuMapper;
 import com.xunjiqianxing.service.product.service.RouteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
@@ -116,5 +118,48 @@ public class RouteServiceImpl implements RouteService {
                         .eq(ProductPriceStock::getSkuId, skuId)
                         .eq(ProductPriceStock::getDate, date)
         );
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean lockStock(Long skuId, LocalDate date, int quantity) {
+        // 原子操作：locked += quantity，WHERE 确保剩余可用库存 >= quantity，防止超售
+        int rows = productPriceStockMapper.update(null,
+                new LambdaUpdateWrapper<ProductPriceStock>()
+                        .eq(ProductPriceStock::getSkuId, skuId)
+                        .eq(ProductPriceStock::getDate, date)
+                        .eq(ProductPriceStock::getStatus, 1)
+                        .apply("(stock - sold - locked) >= {0}", quantity)
+                        .setSql("locked = locked + " + quantity)
+        );
+        return rows > 0;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean releaseStock(Long skuId, LocalDate date, int quantity) {
+        // 原子操作：locked -= quantity，WHERE 防止 locked 变负
+        int rows = productPriceStockMapper.update(null,
+                new LambdaUpdateWrapper<ProductPriceStock>()
+                        .eq(ProductPriceStock::getSkuId, skuId)
+                        .eq(ProductPriceStock::getDate, date)
+                        .ge(ProductPriceStock::getLocked, quantity)
+                        .setSql("locked = locked - " + quantity)
+        );
+        return rows > 0;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean confirmStock(Long skuId, LocalDate date, int quantity) {
+        // 原子操作：sold += quantity, locked -= quantity
+        int rows = productPriceStockMapper.update(null,
+                new LambdaUpdateWrapper<ProductPriceStock>()
+                        .eq(ProductPriceStock::getSkuId, skuId)
+                        .eq(ProductPriceStock::getDate, date)
+                        .ge(ProductPriceStock::getLocked, quantity)
+                        .setSql("sold = sold + " + quantity + ", locked = locked - " + quantity)
+        );
+        return rows > 0;
     }
 }

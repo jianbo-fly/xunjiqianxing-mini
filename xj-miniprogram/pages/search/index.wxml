@@ -1,0 +1,194 @@
+<!--
+  搜索页
+-->
+<view class="page-search">
+
+  <!-- 导航栏 -->
+  <nav-bar
+    title="寻迹千行"
+    background="rgba(248, 246, 246, 0.92)"
+    border
+    showBack
+    fixed
+  />
+
+  <!-- 搜索框 -->
+  <view class="search-bar-wrap">
+    <view class="search-bar {{showResult ? 'search-bar--active' : ''}}">
+      <image class="search-bar__icon" src="/assets/icons/common/search.png" mode="aspectFit" />
+      <input
+        class="search-bar__input"
+        type="text"
+        placeholder="搜索目的地/游记"
+        placeholder-class="search-bar__placeholder"
+        value="{{keyword}}"
+        focus="{{autoFocus}}"
+        confirm-type="search"
+        bindinput="handleInput"
+        bindconfirm="handleSearch"
+      />
+      <view
+        class="search-bar__clear"
+        wx:if="{{keyword}}"
+        bindtap="handleClear"
+      >
+        <image src="/assets/icons/common/close.png" mode="aspectFit" style="width: 28rpx; height: 28rpx;" />
+      </view>
+    </view>
+    <view class="search-cancel" bindtap="handleCancel">取消</view>
+  </view>
+
+  <!-- 搜索结果 -->
+  <block wx:if="{{showResult}}">
+
+    <!-- 排序筛选栏 -->
+    <view class="filter-bar">
+      <view class="filter-tabs">
+        <view
+          class="filter-tab {{sortType === 'default' ? 'filter-tab--active' : ''}}"
+          bindtap="handleSort"
+          data-type="default"
+        >
+          <text>综合</text>
+          <view wx:if="{{sortType === 'default'}}" class="filter-tab__line"></view>
+        </view>
+        <view
+          class="filter-tab {{sortType === 'sales' ? 'filter-tab--active' : ''}}"
+          bindtap="handleSort"
+          data-type="sales"
+        >
+          <text>销量</text>
+          <view wx:if="{{sortType === 'sales'}}" class="filter-tab__line"></view>
+        </view>
+        <view
+          class="filter-tab {{sortType === 'price' ? 'filter-tab--active' : ''}}"
+          bindtap="handleSort"
+          data-type="price"
+        >
+          <text>价格</text>
+          <view wx:if="{{sortType === 'price'}}" class="filter-tab__line"></view>
+        </view>
+      </view>
+      <view class="filter-btn" bindtap="handleFilter">
+        <text>筛选</text>
+      </view>
+    </view>
+
+    <!-- 搜索中 -->
+    <view class="loading-container" wx:if="{{searching}}">
+      <xj-loading text="搜索中..." vertical />
+    </view>
+
+    <!-- 无结果 -->
+    <xj-empty
+      wx:elif="{{resultList.length === 0}}"
+      type="search"
+      description="没有找到相关线路"
+      tip="试试其他关键词"
+    />
+
+    <!-- 搜索结果列表 -->
+    <view class="result-list" wx:else>
+      <view class="result-count-row">
+        <text class="result-count__text">共找到 <text class="result-count__num">{{total}}</text> 条相关路线</text>
+        <view class="xj-badge">寻迹严选</view>
+      </view>
+
+      <view
+        class="result-card"
+        wx:for="{{resultList}}"
+        wx:key="id"
+        data-id="{{item.id}}"
+        bindtap="handleRouteTap"
+      >
+        <view class="result-card__cover">
+          <image class="result-card__image" src="{{item.coverImage}}" mode="aspectFill" lazy-load />
+          <view class="result-card__score" wx:if="{{item.score}}">
+            <text class="result-card__score-icon">★</text>
+            <text class="result-card__score-num">{{item.score}}</text>
+          </view>
+        </view>
+        <view class="result-card__body">
+          <view class="result-card__title">{{item.name}}</view>
+          <view class="result-card__tags" wx:if="{{item.tags && item.tags.length}}">
+            <view
+              class="result-card__tag"
+              wx:for="{{item.tags}}"
+              wx:for-item="tag"
+              wx:key="*this"
+              wx:if="{{index < 3}}"
+            >{{tag}}</view>
+          </view>
+          <view class="result-card__footer">
+            <view class="result-card__meta">
+              <text wx:if="{{item.salesCount}}">已售 {{item.salesCount}}</text>
+              <text wx:if="{{item.salesCount && item.departureCity}}"> · </text>
+              <text wx:if="{{item.departureCity}}">{{item.departureCity}}出发</text>
+            </view>
+            <view class="result-card__price">
+              <text class="result-card__price-unit">¥</text>
+              <text class="result-card__price-num">{{item.minPrice}}</text>
+              <text class="result-card__price-suffix">起</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 加载更多 -->
+      <view class="load-more" wx:if="{{hasMore}}" bindtap="handleLoadMore">
+        <text wx:if="{{loadingMore}}">加载中...</text>
+        <text wx:else>加载更多</text>
+      </view>
+      <view class="load-more--end" wx:elif="{{resultList.length > 0}}">— 已经到底了 —</view>
+    </view>
+
+  </block>
+
+  <!-- 默认态：热门搜索 + 历史记录 -->
+  <block wx:else>
+
+    <!-- 热门搜索 -->
+    <view class="section">
+      <view class="section__header">
+        <text class="section__title">热门搜索</text>
+      </view>
+      <view class="hot-grid">
+        <view
+          wx:for="{{hotList}}"
+          wx:key="*this"
+          data-keyword="{{item}}"
+          bindtap="handleTagTap"
+          class="hot-item {{index === 0 ? 'hot-item--rank1' : index === 1 ? 'hot-item--rank2' : index === 2 ? 'hot-item--rank3' : 'hot-item--other'}}"
+        >
+          <view class="hot-item__rank {{index === 0 ? 'hot-item__rank--1' : index === 1 ? 'hot-item__rank--2' : index === 2 ? 'hot-item__rank--3' : ''}}">{{index + 1}}</view>
+          <text class="hot-item__name">{{item}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 分隔线 -->
+    <view class="section-divider"></view>
+
+    <!-- 历史记录 -->
+    <view class="section" wx:if="{{historyList.length > 0}}">
+      <view class="section__header">
+        <text class="section__title">历史搜索</text>
+        <view class="section__action" bindtap="handleClearHistory">
+          <image src="/assets/icons/common/delete.png" mode="aspectFit" class="section__delete-icon" />
+        </view>
+      </view>
+      <view class="tag-list">
+        <view
+          class="tag-item"
+          wx:for="{{historyList}}"
+          wx:key="*this"
+          data-keyword="{{item}}"
+          bindtap="handleTagTap"
+        >{{item}}</view>
+      </view>
+    </view>
+
+  </block>
+
+</view>
+<xj-toast id="xj-toast"/>

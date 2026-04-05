@@ -3,11 +3,14 @@ package com.xunjiqianxing.service.promotion.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.xunjiqianxing.common.exception.BizException;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xunjiqianxing.service.promotion.entity.PromoterCommission;
 import com.xunjiqianxing.service.promotion.entity.PromoterInfo;
+import com.xunjiqianxing.service.promotion.entity.PromoterScanRecord;
 import com.xunjiqianxing.service.promotion.entity.PromoterWithdraw;
 import com.xunjiqianxing.service.promotion.mapper.PromoterCommissionMapper;
 import com.xunjiqianxing.service.promotion.mapper.PromoterInfoMapper;
+import com.xunjiqianxing.service.promotion.mapper.PromoterScanRecordMapper;
 import com.xunjiqianxing.service.promotion.mapper.PromoterWithdrawMapper;
 import com.xunjiqianxing.service.promotion.service.PromoterService;
 import com.xunjiqianxing.service.user.entity.UserInfo;
@@ -33,6 +36,7 @@ public class PromoterServiceImpl implements PromoterService {
     private final PromoterInfoMapper promoterInfoMapper;
     private final PromoterCommissionMapper commissionMapper;
     private final PromoterWithdrawMapper withdrawMapper;
+    private final PromoterScanRecordMapper scanRecordMapper;
     private final UserService userService;
 
     // 默认佣金比例
@@ -93,6 +97,36 @@ public class PromoterServiceImpl implements PromoterService {
                         .eq(PromoterInfo::getStatus, 1)
                         .eq(PromoterInfo::getIsDeleted, 0)
         );
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void recordScan(String promoCode) {
+        PromoterInfo promoter = getByPromoCode(promoCode);
+        if (promoter == null) return;
+        // 写入明细记录
+        PromoterScanRecord record = new PromoterScanRecord();
+        record.setPromoterId(promoter.getId());
+        record.setPromoterUserId(promoter.getUserId());
+        record.setPromoCode(promoCode);
+        scanRecordMapper.insert(record);
+        // 更新计数
+        promoterInfoMapper.update(null,
+                new LambdaUpdateWrapper<PromoterInfo>()
+                        .eq(PromoterInfo::getId, promoter.getId())
+                        .setSql("scan_count = scan_count + 1")
+        );
+        log.info("推广码扫码: promoCode={}", promoCode);
+    }
+
+    @Override
+    public List<PromoterScanRecord> listScanRecords(Long promoterUserId, int page, int pageSize) {
+        Page<PromoterScanRecord> p = new Page<>(page, pageSize);
+        return scanRecordMapper.selectPage(p,
+                new LambdaQueryWrapper<PromoterScanRecord>()
+                        .eq(PromoterScanRecord::getPromoterUserId, promoterUserId)
+                        .orderByDesc(PromoterScanRecord::getCreatedAt)
+        ).getRecords();
     }
 
     @Override
@@ -160,6 +194,14 @@ public class PromoterServiceImpl implements PromoterService {
         commission.setStatus(0); // 待结算
 
         commissionMapper.insert(commission);
+
+        // 实时更新推广订单数和成交金额（支付成功即计入，无需等待结算）
+        promoterInfoMapper.update(null,
+                new LambdaUpdateWrapper<PromoterInfo>()
+                        .eq(PromoterInfo::getId, promoter.getId())
+                        .setSql("order_count = order_count + 1")
+                        .setSql("order_amount = order_amount + " + orderAmount)
+        );
         log.info("记录佣金: orderNo={}, amount={}", orderNo, commissionAmount);
         return true;
     }
@@ -186,14 +228,12 @@ public class PromoterServiceImpl implements PromoterService {
         );
 
         if (rows > 0) {
-            // 更新推广员统计
+            // 结算时只更新佣金金额（order_count/order_amount 在 recordCommission 时已计入）
             promoterInfoMapper.update(null,
                     new LambdaUpdateWrapper<PromoterInfo>()
                             .eq(PromoterInfo::getId, commission.getPromoterId())
                             .setSql("total_commission = total_commission + " + commission.getCommissionAmount())
                             .setSql("available_commission = available_commission + " + commission.getCommissionAmount())
-                            .setSql("order_count = order_count + 1")
-                            .setSql("order_amount = order_amount + " + commission.getOrderAmount())
             );
             log.info("结算佣金: orderNo={}", orderNo);
         }
@@ -221,16 +261,18 @@ public class PromoterServiceImpl implements PromoterService {
                         .set(PromoterCommission::getStatus, 2)
         );
 
-        if (rows > 0 && oldStatus == 1) {
-            // 如果已结算，需要扣回
-            promoterInfoMapper.update(null,
-                    new LambdaUpdateWrapper<PromoterInfo>()
-                            .eq(PromoterInfo::getId, commission.getPromoterId())
-                            .setSql("total_commission = total_commission - " + commission.getCommissionAmount())
-                            .setSql("available_commission = available_commission - " + commission.getCommissionAmount())
-                            .setSql("order_count = order_count - 1")
-                            .setSql("order_amount = order_amount - " + commission.getOrderAmount())
-            );
+        if (rows > 0) {
+            // order_count/order_amount 在支付时已计入，退款时无论结算状态都需扣回
+            LambdaUpdateWrapper<PromoterInfo> wrapper = new LambdaUpdateWrapper<PromoterInfo>()
+                    .eq(PromoterInfo::getId, commission.getPromoterId())
+                    .setSql("order_count = order_count - 1")
+                    .setSql("order_amount = order_amount - " + commission.getOrderAmount());
+            if (oldStatus == 1) {
+                // 已结算的还需扣回佣金
+                wrapper.setSql("total_commission = total_commission - " + commission.getCommissionAmount())
+                        .setSql("available_commission = available_commission - " + commission.getCommissionAmount());
+            }
+            promoterInfoMapper.update(null, wrapper);
             log.info("取消佣金: orderNo={}", orderNo);
         }
         return rows > 0;

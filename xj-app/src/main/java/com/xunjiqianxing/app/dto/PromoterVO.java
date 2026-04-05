@@ -36,7 +36,10 @@ public class PromoterVO {
     @Schema(description = "已提现金额")
     private BigDecimal withdrawnAmount;
 
-    @Schema(description = "推广人数")
+    @Schema(description = "累计扫码次数（含未登录用户）")
+    private Integer scanCount;
+
+    @Schema(description = "推广人数（成功绑定数）")
     private Integer promotedCount;
 
     @Schema(description = "成交订单数")

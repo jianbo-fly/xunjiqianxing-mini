@@ -1,7 +1,6 @@
 /**
  * Message Service - 消息相关API
  */
-
 const { get, post } = require('./request');
 const { paths } = require('../config/api');
 
@@ -9,24 +8,23 @@ const messageApi = {
   /**
    * 获取消息列表
    * @param {Object} params
-   * @param {number} params.page - 页码
-   * @param {number} params.pageSize - 每页数量
-   * @param {number} params.type - 消息类型（可选）
+   * @param {number} params.page
+   * @param {number} params.pageSize
    */
   getList(params) {
     return get(paths.message.list, params);
   },
 
   /**
-   * 标记消息已读
-   * @param {number} id - 消息ID
+   * 标记已读
+   * @param {number|string} id - 消息ID，传 'all' 表示全部已读
    */
-  read(id) {
-    return post(paths.message.read, { id });
+  markRead(id) {
+    return post(`${paths.message.read}/${id}`);
   },
 
   /**
-   * 获取未读消息数量
+   * 获取未读数量
    */
   getUnreadCount() {
     return get(paths.message.unreadCount);

@@ -7,10 +7,14 @@ import com.xunjiqianxing.common.base.PageQuery;
 import com.xunjiqianxing.common.exception.BizException;
 import com.xunjiqianxing.common.result.PageResult;
 import com.xunjiqianxing.common.utils.IdGenerator;
+import com.xunjiqianxing.service.order.entity.OrderLog;
 import com.xunjiqianxing.service.order.entity.OrderMain;
+import com.xunjiqianxing.service.order.entity.OrderRefund;
 import com.xunjiqianxing.service.order.entity.OrderTraveler;
 import com.xunjiqianxing.service.order.enums.OrderStatus;
+import com.xunjiqianxing.service.order.mapper.OrderLogMapper;
 import com.xunjiqianxing.service.order.mapper.OrderMainMapper;
+import com.xunjiqianxing.service.order.mapper.OrderRefundMapper;
 import com.xunjiqianxing.service.order.mapper.OrderTravelerMapper;
 import com.xunjiqianxing.service.order.service.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +36,8 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderMainMapper orderMainMapper;
     private final OrderTravelerMapper orderTravelerMapper;
+    private final OrderRefundMapper orderRefundMapper;
+    private final OrderLogMapper orderLogMapper;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -40,7 +46,6 @@ public class OrderServiceImpl implements OrderService {
         String orderNo = generateOrderNo();
         order.setOrderNo(orderNo);
         order.setStatus(OrderStatus.PENDING_PAY.getCode());
-        order.setPayStatus(0);
         order.setIsDeleted(0);
 
         // 设置支付超时时间（30分钟）
@@ -56,6 +61,8 @@ public class OrderServiceImpl implements OrderService {
             }
         }
 
+        addLog(order.getId(), order.getOrderNo(), null, OrderStatus.PENDING_PAY.getCode(),
+                "user", order.getUserId(), "创建订单");
         log.info("订单创建成功: orderNo={}, userId={}", orderNo, order.getUserId());
         return order;
     }
@@ -130,8 +137,10 @@ public class OrderServiceImpl implements OrderService {
         );
 
         if (rows > 0) {
+            addLog(orderId, order.getOrderNo(), OrderStatus.PENDING_PAY.getCode(),
+                    OrderStatus.CANCELLED.getCode(), "user", userId,
+                    reason != null ? "用户取消: " + reason : "用户取消");
             log.info("订单取消成功: orderId={}, userId={}", orderId, userId);
-            // TODO: 释放库存
         }
         return rows > 0;
     }
@@ -143,15 +152,18 @@ public class OrderServiceImpl implements OrderService {
                 new LambdaUpdateWrapper<OrderMain>()
                         .eq(OrderMain::getOrderNo, orderNo)
                         .eq(OrderMain::getStatus, OrderStatus.PENDING_PAY.getCode())
-                        .set(OrderMain::getStatus, OrderStatus.PENDING_CONFIRM.getCode())
-                        .set(OrderMain::getPayStatus, 1)
+                        .set(OrderMain::getStatus, OrderStatus.BOOKED.getCode())
                         .set(OrderMain::getPayTime, LocalDateTime.now())
                         .set(OrderMain::getPayTradeNo, payTradeNo)
         );
 
         if (rows > 0) {
+            OrderMain paid = getByOrderNo(orderNo);
+            if (paid != null) {
+                addLog(paid.getId(), orderNo, OrderStatus.PENDING_PAY.getCode(),
+                        OrderStatus.BOOKED.getCode(), "system", null, "支付成功");
+            }
             log.info("订单支付成功: orderNo={}", orderNo);
-            // TODO: 发送通知
         }
         return rows > 0;
     }
@@ -193,10 +205,74 @@ public class OrderServiceImpl implements OrderService {
         );
 
         if (rows > 0) {
+            addLog(orderId, order.getOrderNo(), order.getStatus(),
+                    OrderStatus.REFUND_APPLY.getCode(), "user", userId,
+                    reason != null ? "申请退款: " + reason : "申请退款");
             log.info("申请退款成功: orderId={}, userId={}", orderId, userId);
-            // TODO: 创建退款记录
+            // 创建退款记录
+            OrderRefund refund = new OrderRefund();
+            refund.setRefundNo(generateRefundNo());
+            refund.setOrderId(order.getId());
+            refund.setOrderNo(order.getOrderNo());
+            refund.setUserId(userId);
+            refund.setRefundAmount(order.getPayAmount());
+            refund.setRefundRatio(100);
+            refund.setReason(reason);
+            refund.setStatus(0);
+            orderRefundMapper.insert(refund);
         }
         return rows > 0;
+    }
+
+    @Override
+    public List<OrderMain> getExpiredPendingOrders(LocalDateTime now) {
+        return orderMainMapper.selectList(
+                new LambdaQueryWrapper<OrderMain>()
+                        .eq(OrderMain::getStatus, OrderStatus.PENDING_PAY.getCode())
+                        .eq(OrderMain::getIsDeleted, 0)
+                        .lt(OrderMain::getExpireAt, now)
+        );
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean closeExpiredOrder(Long orderId) {
+        OrderMain order = getById(orderId);
+        if (order == null) return false;
+
+        int rows = orderMainMapper.update(null,
+                new LambdaUpdateWrapper<OrderMain>()
+                        .eq(OrderMain::getId, orderId)
+                        .eq(OrderMain::getStatus, OrderStatus.PENDING_PAY.getCode())
+                        .set(OrderMain::getStatus, OrderStatus.CLOSED.getCode())
+                        .set(OrderMain::getCancelTime, LocalDateTime.now())
+                        .set(OrderMain::getCancelReason, "支付超时自动关闭")
+                        .set(OrderMain::getCancelType, 2)
+        );
+        if (rows > 0) {
+            addLog(orderId, order.getOrderNo(), OrderStatus.PENDING_PAY.getCode(),
+                    OrderStatus.CLOSED.getCode(), "system", null, "支付超时自动关闭");
+        }
+        return rows > 0;
+    }
+
+    @Override
+    public void addLog(Long orderId, String orderNo, Integer fromStatus, Integer toStatus,
+                       String operatorType, Long operatorId, String remark) {
+        try {
+            OrderLog entry = new OrderLog();
+            entry.setOrderId(orderId);
+            entry.setOrderNo(orderNo);
+            entry.setFromStatus(fromStatus);
+            entry.setToStatus(toStatus);
+            entry.setOperatorType(operatorType);
+            entry.setOperatorId(operatorId);
+            entry.setRemark(remark);
+            orderLogMapper.insert(entry);
+        } catch (Exception e) {
+            // 日志写入失败不影响主流程
+            log.warn("订单日志写入失败: orderId={}, error={}", orderId, e.getMessage());
+        }
     }
 
     /**
@@ -206,5 +282,14 @@ public class OrderServiceImpl implements OrderService {
         String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
         long seq = IdGenerator.nextId() % 100000;
         return "XJ" + date + String.format("%05d", seq);
+    }
+
+    /**
+     * 生成退款编号
+     */
+    private String generateRefundNo() {
+        String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+        long seq = IdGenerator.nextId() % 100000;
+        return "TK" + date + String.format("%05d", seq);
     }
 }

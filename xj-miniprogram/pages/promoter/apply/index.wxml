@@ -2,92 +2,117 @@
   推广员申请页
 -->
 <view class="page-promoter-apply">
-  <nav-bar title="推广员申请" background="rgba(255,255,255,0.9)" border showBack fixed />
-  <!-- 顶部介绍 -->
-  <view class="apply-header">
-    <image class="apply-icon" src="/assets/icons/common/share.png" mode="aspectFit" />
-    <view class="apply-title">成为推广员</view>
-    <view class="apply-desc">推广好友下单，获得丰厚积分奖励</view>
-  </view>
 
-  <!-- 推广员权益 -->
-  <view class="section benefits-section">
-    <view class="section-title">推广员权益</view>
-    <view class="benefit-list">
-      <view class="benefit-item">
-        <image class="benefit-icon" src="/assets/icons/common/share.png" mode="aspectFit" />
-        <view class="benefit-info">
-          <view class="benefit-name">专属推广码</view>
-          <view class="benefit-desc">生成个人推广码，分享即可绑定关系</view>
-        </view>
+  <!-- Hero (includes nav) -->
+  <view class="apply-hero" style="padding-top: {{statusBarHeight}}px;">
+    <view class="hero-deco-tr"></view>
+    <view class="hero-deco-bl"></view>
+    <view class="hero-nav" style="height: {{navBarHeight}}px;">
+      <view class="hero-back-btn" bindtap="handleBack">
+        <image class="hero-back-icon" src="/assets/icons/promoter/back-arrow.png" mode="aspectFit" />
       </view>
-      <view class="benefit-item">
-        <image class="benefit-icon" src="/assets/icons/common/star.png" mode="aspectFit" />
-        <view class="benefit-info">
-          <view class="benefit-name">积分奖励</view>
-          <view class="benefit-desc">推广好友下单成功，获得积分奖励</view>
-        </view>
+      <text class="hero-nav-title">申请推广员</text>
+      <view class="hero-placeholder"></view>
+    </view>
+    <view class="hero-content">
+      <view class="hero-icon-bg">
+        <image class="hero-icon" src="/assets/icons/promoter/hero-megaphone.png" mode="aspectFit" />
       </view>
-      <view class="benefit-item">
-        <image class="benefit-icon" src="/assets/icons/common/user.png" mode="aspectFit" />
-        <view class="benefit-info">
-          <view class="benefit-name">推广数据</view>
-          <view class="benefit-desc">实时查看推广数据，掌握推广效果</view>
-        </view>
-      </view>
+      <text class="hero-title">成为寻迹推广员</text>
+      <text class="hero-subtitle">分享旅途美好 · 赚取丰厚佣金</text>
     </view>
   </view>
 
-  <!-- 申请表单 -->
-  <view class="section form-section">
-    <view class="section-title">申请信息</view>
-
-    <view class="form-item">
-      <text class="form-label">真实姓名</text>
-      <input
-        class="form-input"
-        placeholder="请输入真实姓名"
-        value="{{form.realName}}"
-        bindinput="handleInput"
-        data-field="realName"
-      />
-    </view>
-
-    <view class="form-item">
-      <text class="form-label">手机号码</text>
-      <input
-        class="form-input"
-        placeholder="请输入手机号"
-        type="number"
-        maxlength="11"
-        value="{{form.phone}}"
-        bindinput="handleInput"
-        data-field="phone"
-      />
-    </view>
-
-    <view class="form-item form-item-vertical">
-      <text class="form-label">申请理由</text>
-      <textarea
-        class="form-textarea"
-        placeholder="请简要描述您的推广资源和优势（选填）"
-        maxlength="200"
-        value="{{form.reason}}"
-        bindinput="handleInput"
-        data-field="reason"
-      ></textarea>
-      <view class="form-count">{{form.reason.length}}/200</view>
+  <!-- Benefits card (floats over hero) -->
+  <view class="benefits-card">
+    <text class="benefits-label">专属权益</text>
+    <view class="benefits-grid">
+      <view class="benefit-item">
+        <view class="benefit-icon-bg">
+          <image class="benefit-icon" src="/assets/icons/promoter/benefit-poster.png" mode="aspectFit" />
+        </view>
+        <text class="benefit-name">专属海报</text>
+        <text class="benefit-sub">一键生成</text>
+      </view>
+      <view class="benefit-item">
+        <view class="benefit-icon-bg">
+          <image class="benefit-icon" src="/assets/icons/promoter/benefit-points.png" mode="aspectFit" />
+        </view>
+        <text class="benefit-name">积分奖励</text>
+        <text class="benefit-sub">即时到账</text>
+      </view>
+      <view class="benefit-item">
+        <view class="benefit-icon-bg">
+          <image class="benefit-icon" src="/assets/icons/promoter/benefit-dashboard.png" mode="aspectFit" />
+        </view>
+        <text class="benefit-name">数据看板</text>
+        <text class="benefit-sub">透明追踪</text>
+      </view>
     </view>
   </view>
 
-  <!-- 提交按钮 -->
-  <view class="submit-section">
+  <!-- Form section -->
+  <view class="form-section">
+    <text class="form-section-title">完善信息</text>
+
+    <!-- Avatar -->
+    <button class="form-card form-card--row avatar-btn" open-type="chooseAvatar" bindchooseavatar="handleChooseAvatar">
+      <text class="form-label">头像</text>
+      <view class="avatar-wrap">
+        <image
+          class="avatar-img"
+          src="{{form.avatarUrl || '/assets/images/placeholder/avatar.png'}}"
+          mode="aspectFill"
+        />
+        <image class="avatar-edit-dot" src="/assets/icons/promoter/avatar-edit.png" mode="aspectFit" />
+      </view>
+    </button>
+
+    <!-- Nickname -->
+    <view class="form-card form-card--column" style="margin-top: 24rpx;">
+      <text class="form-label">昵称</text>
+      <view class="input-bg">
+        <input
+          class="form-input"
+          placeholder="寻迹行者"
+          placeholder-style="color: #9ca3af;"
+          value="{{form.nickname}}"
+          bindinput="handleInput"
+          data-field="nickname"
+        />
+        <image class="input-edit-icon" src="/assets/icons/promoter/edit-pencil.png" mode="aspectFit" />
+      </view>
+      <view class="form-hint-row">
+        <image class="hint-icon" src="/assets/icons/promoter/info-circle.png" mode="aspectFit" />
+        <text class="form-hint">该昵称将展示在您的推广海报上</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- Official cert card -->
+  <view class="cert-card">
+    <image class="cert-bg-icon" src="/assets/icons/promoter/cert-badge.png" mode="aspectFit" />
+    <view class="cert-info">
+      <text class="cert-title">官方认证</text>
+      <text class="cert-desc">审核通过后，您将获得「寻迹千行」官方认证标识，提升信任度，助力更好推广。</text>
+    </view>
+  </view>
+
+  <view style="height: 280rpx;"></view>
+
+  <!-- Fixed footer -->
+  <view class="apply-footer">
+    <view class="agreement-row" bindtap="handleToggleAgree">
+      <view class="agree-box {{agreed ? 'agree-box--checked' : ''}}"></view>
+      <text class="agree-text">我已阅读并同意 <text class="agree-link">《推广员协议》</text></text>
+    </view>
     <view
-      class="submit-btn {{submitting ? 'disabled' : ''}}"
+      class="submit-btn {{(!agreed || submitting) ? 'submit-btn--disabled' : ''}}"
       bindtap="handleSubmit"
     >
-      {{submitting ? '提交中...' : '提交申请'}}
+      <text class="submit-text">{{submitting ? '提交中...' : '立即提交申请 →'}}</text>
     </view>
-    <view class="submit-tip">提交后需审核，审核通过后即可开始推广</view>
   </view>
+
 </view>
+<xj-toast id="xj-toast"/>

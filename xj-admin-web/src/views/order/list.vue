@@ -57,17 +57,9 @@
         </el-table-column>
         <el-table-column prop="startDate" label="出发日期" width="110" />
         <el-table-column prop="createdAt" label="下单时间" width="170" />
-        <el-table-column label="操作" width="150" fixed="right">
+        <el-table-column label="操作" width="100" fixed="right">
           <template #default="{ row }">
             <el-button type="primary" link @click="handleDetail(row)">详情</el-button>
-            <el-button
-              v-if="row.status === 1"
-              type="success"
-              link
-              @click="handleConfirm(row)"
-            >
-              确认
-            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -91,8 +83,8 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { ElMessage, ElMessageBox } from 'element-plus'
-import { getOrderList, confirmOrder } from '@/api/order'
+import { ElMessage } from 'element-plus'
+import { getOrderList } from '@/api/order'
 import type { OrderListVO } from '@/types'
 
 const router = useRouter()
@@ -115,14 +107,13 @@ const pagination = reactive({
 
 const statusMap: Record<number, { text: string; type: string }> = {
   0: { text: '待支付', type: 'info' },
-  1: { text: '待确认', type: 'warning' },
-  2: { text: '已确认', type: 'primary' },
-  3: { text: '出行中', type: '' },
-  4: { text: '已完成', type: 'success' },
-  5: { text: '已取消', type: 'info' },
-  6: { text: '退款中', type: 'danger' },
-  7: { text: '已退款', type: 'info' },
-  8: { text: '已关闭', type: 'info' },
+  1: { text: '已预订', type: 'primary' },
+  2: { text: '出行中', type: '' },
+  3: { text: '已完成', type: 'success' },
+  4: { text: '已取消', type: 'info' },
+  5: { text: '退款中', type: 'danger' },
+  6: { text: '已退款', type: 'info' },
+  7: { text: '已关闭', type: 'info' },
 }
 
 function getStatusType(status: number) {
@@ -172,15 +163,6 @@ function handleReset() {
 
 function handleDetail(row: OrderListVO) {
   router.push(`/order/detail/${row.orderNo}`)
-}
-
-async function handleConfirm(row: OrderListVO) {
-  try {
-    await ElMessageBox.confirm('确定确认该订单吗？', '提示', { type: 'warning' })
-    await confirmOrder({ orderNo: row.orderNo, action: 'confirm' })
-    ElMessage.success('确认成功')
-    fetchData()
-  } catch (_e) { /* ignore */ }
 }
 </script>
 

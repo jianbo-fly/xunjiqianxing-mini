@@ -2,6 +2,32 @@
  * 旅游页 - 跟团游 & 定制游
  */
 const routeApi = require('../../../services/route');
+
+// 筛选面板选项（与路线列表页保持一致）
+const GROUP_FILTER_OPTIONS = {
+  departure: [
+    { label: '北京', value: '北京' },
+    { label: '上海', value: '上海' },
+    { label: '广州', value: '广州' },
+    { label: '深圳', value: '深圳' },
+    { label: '成都', value: '成都' },
+    { label: '杭州', value: '杭州' },
+    { label: '南京', value: '南京' },
+    { label: '武汉', value: '武汉' },
+  ],
+  days: [
+    { label: '1-3天', value: '1-3天' },
+    { label: '4-6天', value: '4-6天' },
+    { label: '7-9天', value: '7-9天' },
+    { label: '10天+', value: '10天+' },
+  ],
+  budget: [
+    { label: '3000以下', value: '3000以下' },
+    { label: '3000-5000', value: '3000-5000' },
+    { label: '5000-8000', value: '5000-8000' },
+    { label: '8000以上', value: '8000以上' },
+  ],
+};
 const customApi = require('../../../services/custom');
 const { go } = require('../../../utils/router');
 
@@ -20,6 +46,14 @@ Page({
 
     // 筛选条件
     showFilter: false,
+    groupFilterPanel: {
+      show: false,
+      type: '',
+      title: '',
+      options: [],
+      pendingValue: '',
+    },
+    groupFilterPanelTop: 0,
     filters: {
       departure: '',
       days: '',
@@ -55,7 +89,6 @@ Page({
     timeOptions: ['本周末', '下周', '本月', '选择日期'],
     selectedTime: '',
     customDate: '',
-    showDatePicker: false,
 
     // 出行天数
     daysChoices: ['3-5天', '6-8天', '9天+', '待定'],
@@ -106,6 +139,13 @@ Page({
 
     this.loadRouteList(true);
     this.loadUserPhone();
+
+    wx.nextTick(() => {
+      const q = wx.createSelectorQuery();
+      q.select('.sticky-bar').boundingClientRect(rect => {
+        if (rect) this.setData({ groupFilterPanelTop: rect.bottom });
+      }).exec();
+    });
   },
 
   /**
@@ -217,6 +257,74 @@ Page({
     this.setData({ 'filters.priceMax': e.detail.value });
   },
 
+  // ==================== 跟团游 自定义筛选面板 ====================
+
+  handleGroupFilterTap(e) {
+    const { type } = e.currentTarget.dataset;
+    const { groupFilterPanel, filters } = this.data;
+    if (groupFilterPanel.show && groupFilterPanel.type === type) {
+      this.setData({ 'groupFilterPanel.show': false });
+      return;
+    }
+    const TITLES = { departure: '热门出发城市', days: '行程天数', budget: '价格预算' };
+    const options = GROUP_FILTER_OPTIONS[type] || [];
+    const currentLabel = type === 'budget' ? filters.budgetLabel : filters[type];
+    const selected = (options.find(o => o.label === currentLabel) || {}).value || '';
+    this.setData({
+      groupFilterPanel: {
+        show: true,
+        type,
+        title: TITLES[type] || '',
+        options,
+        pendingValue: selected,
+      },
+    });
+  },
+
+  handleGroupFilterChipTap(e) {
+    const { value } = e.currentTarget.dataset;
+    const current = this.data.groupFilterPanel.pendingValue;
+    this.setData({ 'groupFilterPanel.pendingValue': current === value ? '' : value });
+  },
+
+  handleGroupFilterReset() {
+    this.setData({ 'groupFilterPanel.pendingValue': '' });
+  },
+
+  handleGroupFilterConfirm() {
+    const { groupFilterPanel, filters } = this.data;
+    const { type, pendingValue } = groupFilterPanel;
+    const newFilters = { ...filters };
+    if (type === 'departure') {
+      newFilters.departure = pendingValue;
+    } else if (type === 'days') {
+      newFilters.days = pendingValue;
+    } else if (type === 'budget') {
+      newFilters.budgetLabel = pendingValue;
+      const budgetRanges = {
+        '3000以下': { priceMin: '', priceMax: '3000' },
+        '3000-5000': { priceMin: '3000', priceMax: '5000' },
+        '5000-8000': { priceMin: '5000', priceMax: '8000' },
+        '8000以上': { priceMin: '8000', priceMax: '' },
+      };
+      const range = budgetRanges[pendingValue] || { priceMin: '', priceMax: '' };
+      newFilters.priceMin = range.priceMin;
+      newFilters.priceMax = range.priceMax;
+    }
+    this.setData({
+      filters: newFilters,
+      'groupFilterPanel.show': false,
+      routePage: 1,
+      routeList: [],
+      routeFinished: false,
+    });
+    this.loadRouteList(true);
+  },
+
+  handleGroupFilterClose() {
+    this.setData({ 'groupFilterPanel.show': false });
+  },
+
   /**
    * 确认筛选
    */
@@ -326,18 +434,14 @@ Page({
    */
   handleTimeSelect(e) {
     const time = e.currentTarget.dataset.time;
-    if (time === '选择日期') {
-      this.setData({ showDatePicker: true, selectedTime: time });
-    } else {
-      this.setData({ selectedTime: time, customDate: '', showDatePicker: false });
-    }
+    this.setData({ selectedTime: time, customDate: '' });
   },
 
   /**
    * 日期选择
    */
   handleDateChange(e) {
-    this.setData({ customDate: e.detail.value, showDatePicker: false });
+    this.setData({ customDate: e.detail.value, selectedTime: '选择日期' });
   },
 
   /**

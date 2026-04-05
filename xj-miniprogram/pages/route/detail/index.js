@@ -10,6 +10,15 @@ Page({
   data: {
     // 状态栏高度
     statusBarHeight: 44,
+    // fixed tabs header 的 top 值（精确对齐胶囊按钮底部）
+    navBarBottom: 88,
+    navBarContentHeight: 44,
+    // 是否显示 fixed tabs header（滚动到 content-section 才显示）
+    showStickyHeader: false,
+    // content-section 距 scroll-view 顶部的距离（px），用于判断显隐
+    contentSectionTop: 9999,
+    // 导航栏是否变为不透明（滑过 banner 后）
+    navOpaque: false,
     // 页面状态
     loading: true,
     // 线路ID
@@ -24,8 +33,10 @@ Page({
     packages: [],
     // 选中的套餐
     selectedPackage: null,
-    // 价格日历
+    // 价格日历（横向日期条，当月有价数据）
     calendar: [],
+    // 日期条 scroll-left（px，用于选中日期居中）
+    dateStripScrollLeft: 0,
     // 选中的日期
     selectedDate: '',
     // 选中日期的价格
@@ -35,18 +46,20 @@ Page({
     // 内容Tab
     contentTab: 0,
     contentTabs: ['行程介绍', '费用说明', '预订须知'],
+    // 行程介绍 Day 导航
+    itineraryNavIndex: 0,
+    itineraryScrollIntoView: '',
+    dayNavScrollLeft: 0,
+    // 各 Day 卡片距离 scroll-view 顶部的距离（px），用于滚动联动
+    dayCardTops: [],
     // 显示套餐选择弹窗
     showPackagePopup: false,
     // 显示日期选择弹窗
     showCalendarPopup: false,
-    // 当前月份显示文本
-    currentMonth: '',
-    // 日历年份
-    calendarYear: 0,
-    // 日历月份
-    calendarMonth: 0,
-    // 是否可以切换到上个月
-    canGoPrevMonth: false,
+    // 弹窗日历：多月数据（瀑布流）
+    calendarMonths: [],
+    loadedMonthCount: 0,
+    calendarLoadingMore: false,
     // 成人数量
     adultCount: 1,
     // 儿童数量
@@ -60,9 +73,24 @@ Page({
   },
 
   onLoad(options) {
-    // 获取状态栏高度
+    // 获取状态栏高度，计算吸顶偏移
     const sysInfo = wx.getSystemInfoSync();
-    this.setData({ statusBarHeight: sysInfo.statusBarHeight || 44 });
+    const statusBarHeight = sysInfo.statusBarHeight || 44;
+    // 用胶囊按钮的 bottom 作为导航栏底部精确值，兼容所有机型
+    let navBarBottom = statusBarHeight + 44;
+    try {
+      const menuRect = wx.getMenuButtonBoundingClientRect();
+      if (menuRect && menuRect.bottom) {
+        navBarBottom = Math.ceil(menuRect.bottom);
+      }
+    } catch (e) { /* 降级使用默认值 */ }
+    // nav-header 内容区高度 = navBarBottom - statusBarHeight
+    const navBarContentHeight = navBarBottom - statusBarHeight;
+    this.setData({
+      statusBarHeight,
+      navBarBottom,
+      navBarContentHeight,
+    });
 
     if (options.id) {
       this.setData({ routeId: options.id });
@@ -115,6 +143,9 @@ Page({
       // 检查收藏状态
       this.checkFavorite();
 
+      // 测量各 Day 卡片位置，供滚动联动使用
+      wx.nextTick(() => this._measureDayCardPositions());
+
       // 加载价格日历
       if (selectedPackage) {
         this.loadCalendar(selectedPackage.id);
@@ -127,75 +158,125 @@ Page({
   },
 
   /**
-   * 加载价格日历
+   * 加载价格日历（当月，供横向日期条使用）
    */
-  async loadCalendar(packageId, year, month) {
+  async loadCalendar(packageId) {
     const now = new Date();
-
-    // 如果没有指定年月，使用当前月
-    if (!year || !month) {
-      year = now.getFullYear();
-      month = now.getMonth() + 1;
-    }
-
-    // 计算该月的开始和结束日期
+    const year = now.getFullYear();
+    const month = now.getMonth() + 1;
     const startDate = `${year}-${String(month).padStart(2, '0')}-01`;
     const lastDay = new Date(year, month, 0).getDate();
     const endDate = `${year}-${String(month).padStart(2, '0')}-${lastDay}`;
 
-    // 判断是否可以切换到上个月（不能早于当前月）
-    const canGoPrevMonth = year > now.getFullYear() ||
-      (year === now.getFullYear() && month > now.getMonth() + 1);
-
-    this.setData({
-      calendarYear: year,
-      calendarMonth: month,
-      currentMonth: `${year}年${month}月`,
-      canGoPrevMonth,
-    });
-
     try {
       const rawCalendar = await routeApi.getPriceCalendar(packageId, startDate, endDate);
-
-      // 处理日历数据，确保日期格式正确
       const calendar = this.processCalendar(rawCalendar || []);
-
       this.setData({ calendar });
     } catch (e) {
       console.error('加载价格日历失败', e);
-      // 生成模拟日历数据
       this.generateMockCalendar(year, month);
     }
   },
 
   /**
-   * 上一个月
+   * 加载弹窗日历（多月瀑布流，初始两个月）
    */
-  handlePrevMonth() {
-    if (!this.data.canGoPrevMonth) return;
+  async loadCalendarPopup(packageId) {
+    this.setData({ calendarMonths: [], loadedMonthCount: 0, calendarLoadingMore: false });
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth() + 1;
 
-    let { calendarYear, calendarMonth } = this.data;
-    calendarMonth--;
-    if (calendarMonth < 1) {
-      calendarMonth = 12;
-      calendarYear--;
-    }
-
-    this.loadCalendar(this.data.selectedPackage?.id, calendarYear, calendarMonth);
+    await this._appendMonthToPopup(packageId, year, month);
+    let m2 = month + 1, y2 = year;
+    if (m2 > 12) { m2 = 1; y2++; }
+    await this._appendMonthToPopup(packageId, y2, m2);
+    this.setData({ loadedMonthCount: 2 });
   },
 
   /**
-   * 下一个月
+   * 追加一个月到弹窗日历
    */
-  handleNextMonth() {
-    let { calendarYear, calendarMonth } = this.data;
-    calendarMonth++;
-    if (calendarMonth > 12) {
-      calendarMonth = 1;
-      calendarYear++;
+  async _appendMonthToPopup(packageId, year, month) {
+    const pad = n => String(n).padStart(2, '0');
+    const startDate = `${year}-${pad(month)}-01`;
+    const lastDay = new Date(year, month, 0).getDate();
+    const endDate = `${year}-${pad(month)}-${pad(lastDay)}`;
+
+    let rawItems = [];
+    try {
+      rawItems = await routeApi.getPriceCalendar(packageId, startDate, endDate) || [];
+    } catch (e) {
+      // 接口失败 → 所有日期标记为实时计价
     }
 
-    this.loadCalendar(this.data.selectedPackage?.id, calendarYear, calendarMonth);
+    const monthData = this._buildMonthCells(year, month, rawItems);
+    this.setData({ calendarMonths: [...this.data.calendarMonths, monthData] });
+  },
+
+  /**
+   * 构建单月格子数据（7列，周一为首列，含价格分级）
+   */
+  _buildMonthCells(year, month, rawItems) {
+    const pad = n => String(n).padStart(2, '0');
+    const now = new Date();
+    const todayStr = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+    // 将后端数据转为 dateStr→item 映射
+    const configMap = {};
+    (rawItems || []).forEach(item => {
+      let dateStr = item.date;
+      if (Array.isArray(item.date)) {
+        const [y, m, d] = item.date;
+        dateStr = `${y}-${pad(m)}-${pad(d)}`;
+      } else if (item.date && typeof item.date === 'object') {
+        dateStr = `${item.date.year}-${pad(item.date.month)}-${pad(item.date.day)}`;
+      }
+      configMap[dateStr] = item;
+    });
+
+    const lastDay = new Date(year, month, 0).getDate();
+    const firstWeekday = new Date(year, month - 1, 1).getDay(); // 0=周日
+    const leadingCount = (firstWeekday + 6) % 7; // 转换为周一首列
+
+    const dayCells = [];
+    for (let d = 1; d <= lastDay; d++) {
+      const dateStr = `${year}-${pad(month)}-${pad(d)}`;
+      const dateObj = new Date(year, month - 1, d);
+      const isPast = dateObj < today;
+      const cfg = configMap[dateStr];
+
+      dayCells.push({
+        date: dateStr,
+        day: dateStr.slice(5),
+        dayNum: String(d),
+        isToday: dateStr === todayStr,
+        isPast,
+        isWeekend: dateObj.getDay() === 0 || dateObj.getDay() === 6,
+        price: cfg ? (cfg.price || null) : null,
+        stock: isPast ? 0 : (cfg ? (cfg.stock !== undefined ? cfg.stock : 10) : -1),
+        isRealtime: !cfg && !isPast,
+      });
+    }
+
+    // 价格分级（基于当月均价）
+    const prices = dayCells.filter(c => c.price != null && c.stock > 0).map(c => c.price);
+    if (prices.length > 0) {
+      const avg = prices.reduce((a, b) => a + b, 0) / prices.length;
+      dayCells.forEach(cell => {
+        if (cell.price != null && cell.stock > 0) {
+          cell.priceLevel = cell.price < avg * 0.85 ? 'low' : cell.price > avg * 1.15 ? 'high' : 'normal';
+        }
+      });
+    }
+
+    return {
+      year,
+      month,
+      label: `${year}年${month}月`,
+      cells: [...Array(leadingCount).fill(null), ...dayCells],
+    };
   },
 
   /**
@@ -373,8 +454,95 @@ Page({
    * 切换内容Tab
    */
   handleContentTabChange(e) {
-    const { index } = e.currentTarget.dataset;
+    const index = parseInt(e.currentTarget.dataset.index);
     this.setData({ contentTab: index });
+  },
+
+  /**
+   * 行程介绍 Day 导航点击 → 滚动到对应卡片
+   */
+  handleItineraryNavTap(e) {
+    const { index } = e.currentTarget.dataset;
+    this._setActiveDay(index);
+    this.setData({ itineraryScrollIntoView: `itin-day-${index}` });
+  },
+
+  /**
+   * 主滚动监听 → 联动 Day nav 高亮
+   */
+  handleMainScroll(e) {
+    const scrollTop = e.detail.scrollTop;
+    const { contentTab, dayCardTops, contentSectionTop, navBarBottom, showStickyHeader } = this.data;
+
+    // banner 高度约 288px（576rpx），滑过后 nav 变不透明
+    const navOpaque = scrollTop >= 200;
+    if (navOpaque !== this.data.navOpaque) {
+      this.setData({ navOpaque });
+    }
+
+    // 滚动到 content-section 才显示 fixed header
+    const shouldShow = scrollTop + navBarBottom >= contentSectionTop;
+    if (shouldShow !== showStickyHeader) {
+      this.setData({ showStickyHeader: shouldShow });
+    }
+
+    // 滚动联动 Day nav 高亮（仅行程 tab）
+    if (contentTab !== 0 || !dayCardTops.length) return;
+    const threshold = navBarBottom + 94; // fixed header 总高度
+    let activeIndex = 0;
+    for (let i = 0; i < dayCardTops.length; i++) {
+      if (scrollTop + threshold >= dayCardTops[i]) {
+        activeIndex = i;
+      }
+    }
+    if (activeIndex !== this.data.itineraryNavIndex) {
+      this._setActiveDay(activeIndex);
+    }
+  },
+
+  /**
+   * 设置当前激活的 Day，并让 Day nav 对应项居中
+   */
+  _setActiveDay(index) {
+    this.setData({ itineraryNavIndex: index });
+    // 让激活的 tab 居中（粗略估算：每个 tab 约 120rpx）
+    const TAB_WIDTH_PX = 60; // rpx/2 ≈ px（750rpx = 屏幕宽）
+    const screenWidth = wx.getSystemInfoSync().windowWidth;
+    const tabWidth = screenWidth * (120 / 750);
+    const scrollLeft = Math.max(0, index * tabWidth - screenWidth / 2 + tabWidth / 2);
+    this.setData({ dayNavScrollLeft: scrollLeft });
+  },
+
+  /**
+   * 测量各 Day 卡片距 scroll-view 顶部的距离
+   */
+  _measureDayCardPositions() {
+    const query = wx.createSelectorQuery().in(this);
+    // scroll-view 基准
+    query.select('.main-scroll').boundingClientRect();
+    // content-section 位置
+    query.select('#content-section').boundingClientRect();
+    // 各 Day 卡片位置
+    const itinerary = (this.data.route && this.data.route.itinerary) || [];
+    itinerary.forEach((_, i) => {
+      query.select(`#itin-day-${i}`).boundingClientRect();
+    });
+    query.exec(rects => {
+      const scrollRect = rects[0];
+      const sectionRect = rects[1];
+      if (!scrollRect) return;
+      const contentSectionTop = sectionRect ? sectionRect.top - scrollRect.top : 9999;
+      const dayCardTops = rects.slice(2).map(r => r ? r.top - scrollRect.top : 0);
+      this.setData({ contentSectionTop, dayCardTops });
+    });
+  },
+
+  /**
+   * 预览活动图片
+   */
+  handlePreviewActImage(e) {
+    const { urls, current } = e.currentTarget.dataset;
+    wx.previewImage({ urls, current });
   },
 
   /**
@@ -406,7 +574,7 @@ Page({
   },
 
   /**
-   * 显示日期选择
+   * 显示日期选择弹窗，并初始化瀑布流日历
    */
   handleShowCalendar() {
     if (!this.data.selectedPackage) {
@@ -414,6 +582,24 @@ Page({
       return;
     }
     this.setData({ showCalendarPopup: true });
+    this.loadCalendarPopup(this.data.selectedPackage?.id);
+  },
+
+  /**
+   * 上滑到底部：追加下一个月
+   */
+  async handleLoadMoreMonth() {
+    const { calendarMonths, loadedMonthCount, calendarLoadingMore } = this.data;
+    if (calendarLoadingMore || loadedMonthCount >= 12) return;
+
+    this.setData({ calendarLoadingMore: true });
+    const last = calendarMonths[calendarMonths.length - 1];
+    let nextYear = last.year;
+    let nextMonth = last.month + 1;
+    if (nextMonth > 12) { nextMonth = 1; nextYear++; }
+
+    await this._appendMonthToPopup(this.data.selectedPackage?.id, nextYear, nextMonth);
+    this.setData({ loadedMonthCount: loadedMonthCount + 1, calendarLoadingMore: false });
   },
 
   /**
@@ -428,27 +614,50 @@ Page({
    */
   handleDateSelect(e) {
     const { item } = e.currentTarget.dataset;
-    if (item.stock <= 0) {
+    if (!item || item.isPast) return;
+    if (item.stock === 0) {
       wx.showToast({ title: '该日期已售罄', icon: 'none' });
       return;
     }
 
-    // 重置人数
-    const adultCount = 1;
-    const childCount = 0;
-
     this.setData({
       selectedDate: item.date,
-      selectedPrice: item.price,
-      selectedChildPrice: item.childPrice || Math.floor(item.price * 0.7), // 儿童价，默认成人价的70%
+      selectedPrice: item.price || 0,
+      selectedChildPrice: item.childPrice || (item.price ? Math.floor(item.price * 0.7) : 0),
       selectedStock: item.stock,
-      adultCount,
-      childCount,
+      adultCount: 1,
+      childCount: 0,
       showCalendarPopup: false,
     });
 
     // 计算合计金额
     this.calcTotalAmount();
+
+    // 日期条滚动居中
+    this._scrollDateStripToCenter(item.date);
+  },
+
+  /**
+   * 滚动日期条，使指定日期居中
+   */
+  _scrollDateStripToCenter(date) {
+    const index = this.data.calendar.findIndex(item => item.date === date);
+    if (index < 0) return;
+
+    wx.createSelectorQuery()
+      .select('.date-strip-scroll')
+      .boundingClientRect(rect => {
+        if (!rect) return;
+        const { windowWidth } = wx.getSystemInfoSync();
+        const rpxRatio = windowWidth / 750;
+        const itemWidth = 144 * rpxRatio;
+        const gap = 16 * rpxRatio;
+        const paddingLeft = 32 * rpxRatio;
+        // 让选中卡片的中心对齐容器中心
+        const scrollLeft = paddingLeft + index * (itemWidth + gap) - (rect.width - itemWidth) / 2;
+        this.setData({ dateStripScrollLeft: Math.max(0, scrollLeft) });
+      })
+      .exec();
   },
 
   /**

@@ -1,4 +1,71 @@
-<view class="page-message-list">
-  <nav-bar title="消息列表" background="rgba(255,255,255,0.9)" border showBack fixed />
-  <xj-empty type="message" description="页面开发中..." />
+<!--
+  消息中心
+-->
+<view class="page-msg">
+  <nav-bar title="消息中心" background="rgba(248,246,246,0.9)" border showBack fixed>
+    <view slot="right" class="msg-all-read" bindtap="handleMarkAllRead">全部已读</view>
+  </nav-bar>
+
+  <!-- Tabs -->
+  <view class="msg-tabs" style="top: {{navBarHeight}}px;">
+    <view
+      class="msg-tab {{activeTab === 0 ? 'msg-tab--active' : ''}}"
+      data-tab="0"
+      bindtap="handleTabChange"
+    >全部</view>
+    <view
+      class="msg-tab {{activeTab === 1 ? 'msg-tab--active' : ''}}"
+      data-tab="1"
+      bindtap="handleTabChange"
+    >订单通知</view>
+    <view
+      class="msg-tab {{activeTab === 2 ? 'msg-tab--active' : ''}}"
+      data-tab="2"
+      bindtap="handleTabChange"
+    >系统消息</view>
+  </view>
+
+  <!-- 加载中 -->
+  <view class="msg-center" wx:if="{{loading && !list.length}}">
+    <xj-loading text="加载中..." vertical />
+  </view>
+
+  <!-- 空状态 -->
+  <xj-empty
+    wx:elif="{{!loading && !list.length}}"
+    description="暂无消息"
+  />
+
+  <!-- 消息列表 -->
+  <scroll-view wx:else class="msg-scroll" scroll-y>
+    <view class="msg-list">
+      <view
+        class="msg-card"
+        wx:for="{{list}}"
+        wx:key="id"
+        data-id="{{item.id}}"
+        data-link="{{item.link}}"
+        bindtap="handleMsgTap"
+      >
+        <!-- 图标 -->
+        <view class="msg-icon msg-icon--{{item.iconType}}"></view>
+
+        <!-- 内容 -->
+        <view class="msg-body">
+          <view class="msg-header-row">
+            <view class="msg-title-wrap">
+              <text class="msg-title {{!item.read ? 'msg-title--unread' : ''}}">{{item.title}}</text>
+              <view class="msg-dot" wx:if="{{!item.read}}"></view>
+            </view>
+            <text class="msg-time">{{item.timeText}}</text>
+          </view>
+          <text class="msg-preview">{{item.content}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="msg-no-more" wx:if="{{finished && list.length > 0}}">- 没有更多了 -</view>
+    <view style="height: calc(32rpx + env(safe-area-inset-bottom));"></view>
+  </scroll-view>
 </view>
+<xj-toast id="xj-toast"/>

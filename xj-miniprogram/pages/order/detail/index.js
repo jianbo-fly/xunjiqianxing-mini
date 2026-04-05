@@ -6,6 +6,9 @@ const payApi = require('../../../services/pay');
 const { go, redirectTo, routes } = require('../../../utils/router');
 
 Page({
+  // 倒计时定时器（实例变量，不放 data 避免触发 setData 重渲染）
+  _countdownTimer: null,
+
   data: {
     // 页面状态
     loading: true,
@@ -17,7 +20,6 @@ Page({
     order: null,
     // 倒计时
     countdown: '',
-    countdownTimer: null,
   },
 
   onLoad(options) {
@@ -44,10 +46,7 @@ Page({
   },
 
   onUnload() {
-    // 清除倒计时
-    if (this.data.countdownTimer) {
-      clearInterval(this.data.countdownTimer);
-    }
+    this._clearCountdown();
   },
 
   /**
@@ -107,17 +106,17 @@ Page({
       // 按钮状态
       showPayBtn: order.status === 0,
       showCancelBtn: order.status === 0,
-      showRefundBtn: [1, 2, 3].includes(order.status),
-      showContactBtn: [1, 2, 3].includes(order.status),
-      showBuyAgainBtn: [4, 5, 7, 8].includes(order.status),
+      showRefundBtn: [1, 2].includes(order.status),
+      showContactBtn: [1, 2].includes(order.status),
+      showBuyAgainBtn: [3, 4, 6, 7].includes(order.status),
       // 状态提示
       statusTip: this.getStatusTip(order.status),
       // 状态文本（API 未返回时兜底）
-      statusText: order.statusText || { 0: '待支付', 1: '待确认', 2: '已确认', 3: '行程中', 4: '已完成', 5: '已取消', 6: '退款中', 7: '已退款', 8: '已关闭' }[order.status] || '',
+      statusText: order.statusText || '',
       // 状态横幅颜色类
-      statusBannerClass: [0, 1].includes(order.status) ? 'orange' : [5, 8].includes(order.status) ? 'gray' : order.status === 4 ? 'green' : [6, 7].includes(order.status) ? 'blue' : 'primary',
+      statusBannerClass: order.status === 0 ? 'orange' : [4, 7].includes(order.status) ? 'gray' : order.status === 3 ? 'green' : [5, 6].includes(order.status) ? 'blue' : 'primary',
       // 状态图标名
-      statusIcon: order.status === 0 || order.status === 1 ? 'pending' : order.status === 2 || order.status === 3 ? 'confirmed' : order.status === 4 ? 'completed' : order.status === 5 || order.status === 8 ? 'cancelled' : 'refunding',
+      statusIcon: order.status === 0 ? 'pending' : order.status === 1 || order.status === 2 ? 'confirmed' : order.status === 3 ? 'completed' : order.status === 4 || order.status === 7 ? 'cancelled' : 'refunding',
     };
   },
 
@@ -158,22 +157,34 @@ Page({
   getStatusTip(status) {
     const tips = {
       0: '请在30分钟内完成支付，超时订单将自动取消',
-      1: '订单已支付，等待商家确认',
-      2: '订单已确认，请准时出行',
-      3: '旅途愉快！',
-      4: '感谢您的出行，期待下次相遇',
-      5: '订单已取消',
-      6: '退款申请中，请耐心等待',
-      7: '退款已完成',
-      8: '订单已关闭',
+      1: '预订成功，请准时出行',
+      2: '旅途愉快！',
+      3: '感谢您的出行，期待下次相遇',
+      4: '订单已取消',
+      5: '退款申请中，请耐心等待',
+      6: '退款已完成',
+      7: '订单已关闭',
     };
     return tips[status] || '';
+  },
+
+  /**
+   * 清除倒计时（内部方法）
+   */
+  _clearCountdown() {
+    if (this._countdownTimer) {
+      clearInterval(this._countdownTimer);
+      this._countdownTimer = null;
+    }
   },
 
   /**
    * 启动支付倒计时
    */
   startCountdown(expireAt) {
+    // 先清除可能存在的旧计时器
+    this._clearCountdown();
+
     const expireTime = new Date(expireAt).getTime();
 
     const updateCountdown = () => {
@@ -181,9 +192,9 @@ Page({
       const diff = expireTime - now;
 
       if (diff <= 0) {
+        this._clearCountdown();
         this.setData({ countdown: '已超时' });
-        clearInterval(this.data.countdownTimer);
-        // 刷新订单状态
+        // 刷新订单状态（超时后后端会关闭订单）
         this.loadDetail();
         return;
       }
@@ -196,8 +207,7 @@ Page({
     };
 
     updateCountdown();
-    const timer = setInterval(updateCountdown, 1000);
-    this.setData({ countdownTimer: timer });
+    this._countdownTimer = setInterval(updateCountdown, 1000);
   },
 
   /**

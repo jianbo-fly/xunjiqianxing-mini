@@ -21,6 +21,7 @@ const routes = {
   orderList: '/pages/order/list/index',
   orderDetail: '/pages/order/detail/index',
   orderRefund: '/pages/order/refund/index',
+  orderResult: '/pages/order/result/index',
 
   // 搭子相关
   companionDetail: '/pages/companion/detail/index',
@@ -147,6 +148,7 @@ const go = {
   orderList: (status) => navigateTo(routes.orderList, { status }),
   orderDetail: (id) => navigateTo(routes.orderDetail, { id }),
   orderRefund: (id) => navigateTo(routes.orderRefund, { orderId: id }),
+  orderResult: (params) => redirectTo(routes.orderResult, params),
 
   companionDetail: (id) => navigateTo(routes.companionDetail, { id }),
 

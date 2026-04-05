@@ -1,4 +1,83 @@
+<!--
+  我的优惠券
+-->
 <view class="page-coupon">
-  <nav-bar title="优惠券" background="rgba(255,255,255,0.9)" border showBack fixed />
-  <xj-empty type="coupon" description="页面开发中..." />
+  <nav-bar title="我的优惠券" background="rgba(248,246,246,0.9)" border showBack fixed />
+
+  <!-- Tabs -->
+  <view class="coupon-tabs" style="top: {{navBarHeight}}px;">
+    <view
+      class="coupon-tab {{activeTab === 0 ? 'coupon-tab--active' : ''}}"
+      data-tab="0"
+      bindtap="handleTabChange"
+    >可用</view>
+    <view
+      class="coupon-tab {{activeTab === 1 ? 'coupon-tab--active' : ''}}"
+      data-tab="1"
+      bindtap="handleTabChange"
+    >已使用</view>
+    <view
+      class="coupon-tab {{activeTab === 2 ? 'coupon-tab--active' : ''}}"
+      data-tab="2"
+      bindtap="handleTabChange"
+    >已过期</view>
+  </view>
+
+  <!-- 加载中 -->
+  <view class="coupon-center" wx:if="{{loading && !list.length}}">
+    <xj-loading text="加载中..." vertical />
+  </view>
+
+  <!-- 空状态 -->
+  <xj-empty
+    wx:elif="{{!loading && !list.length}}"
+    description="暂无优惠券"
+  />
+
+  <!-- 列表 -->
+  <scroll-view wx:else class="coupon-scroll" scroll-y>
+    <view class="coupon-list">
+      <view
+        class="coupon-card {{activeTab > 0 ? 'coupon-card--inactive' : ''}}"
+        wx:for="{{list}}"
+        wx:key="id"
+      >
+        <!-- 左侧：金额 / 折扣 -->
+        <view class="coupon-card__left">
+          <view class="coupon-card__amount-wrap" wx:if="{{item.type === 1}}">
+            <text class="coupon-card__symbol">¥</text>
+            <text class="coupon-card__amount">{{item.discount}}</text>
+          </view>
+          <view class="coupon-card__amount-wrap" wx:else>
+            <text class="coupon-card__amount">{{item.discount}}</text>
+            <text class="coupon-card__symbol">折</text>
+          </view>
+          <text class="coupon-card__condition">满{{item.minAmount}}元可用</text>
+        </view>
+
+        <!-- 虚线分割（票据样式） -->
+        <view class="coupon-card__sep">
+          <view class="coupon-card__notch coupon-card__notch--top"></view>
+          <view class="coupon-card__dashes"></view>
+          <view class="coupon-card__notch coupon-card__notch--bottom"></view>
+        </view>
+
+        <!-- 右侧：信息 -->
+        <view class="coupon-card__right">
+          <text class="coupon-card__name">{{item.name}}</text>
+          <text class="coupon-card__scope">{{item.scope === 'all' ? '全场通用' : '指定线路可用'}}</text>
+          <text class="coupon-card__expiry">有效期至 {{item.expireDate}}</text>
+        </view>
+
+        <!-- 已使用/已过期印章 -->
+        <view class="coupon-card__stamp" wx:if="{{activeTab > 0}}">
+          <text class="coupon-card__stamp-text">{{activeTab === 1 ? '已使用' : '已过期'}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="coupon-no-more" wx:if="{{finished && list.length > 0}}">- 没有更多了 -</view>
+    <view style="height: calc(32rpx + env(safe-area-inset-bottom));"></view>
+  </scroll-view>
 </view>
+<xj-toast id="xj-toast"/>

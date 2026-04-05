@@ -1,0 +1,92 @@
+<!--
+  支付结果页
+-->
+<view class="page-result">
+
+  <!-- 导航栏 -->
+  <nav-bar title="支付结果" background="#f8f6f6" border showBack fixed />
+
+  <!-- 主内容 -->
+  <scroll-view class="main-scroll" scroll-y>
+    <view class="main-content">
+
+      <!-- 成功状态头部 -->
+      <view class="success-header">
+        <view class="success-icon-wrap">
+          <view class="success-icon">
+            <text class="success-icon__check">✓</text>
+          </view>
+        </view>
+        <view class="success-title">支付成功</view>
+        <view class="success-subtitle">订单提交成功，等待商家确认</view>
+        <view class="success-amount">
+          <text class="success-amount__unit">¥</text>
+          <text class="success-amount__num">{{amount}}</text>
+        </view>
+      </view>
+
+      <!-- 订单信息卡片 -->
+      <view class="order-card">
+        <!-- 卡片头部 -->
+        <view class="order-card__header">
+          <text class="order-card__label">订单详情</text>
+          <view class="order-card__status">
+            <view class="order-card__status-dot"></view>
+            <text class="order-card__status-text">已支付</text>
+          </view>
+        </view>
+
+        <!-- 订单信息行 -->
+        <view class="order-card__body">
+          <view class="order-row">
+            <text class="order-row__key">预订路线</text>
+            <text class="order-row__value order-row__value--name">{{routeName}}</text>
+          </view>
+          <view class="order-row" wx:if="{{packageName}}">
+            <text class="order-row__key">套餐类型</text>
+            <text class="order-row__value">{{packageName}}</text>
+          </view>
+          <view class="order-row" wx:if="{{departureDate}}">
+            <text class="order-row__key">出行日期</text>
+            <text class="order-row__value">{{departureDate}}</text>
+          </view>
+          <view class="order-row" wx:if="{{travelerCount}}">
+            <text class="order-row__key">出行人数</text>
+            <text class="order-row__value">{{travelerCount}}人</text>
+          </view>
+        </view>
+
+        <!-- 票样式分隔线 -->
+        <view class="order-card__divider">
+          <view class="order-card__notch order-card__notch--left"></view>
+          <view class="order-card__divider-line"></view>
+          <view class="order-card__notch order-card__notch--right"></view>
+        </view>
+
+        <!-- 支付方式 -->
+        <view class="order-card__footer">
+          <text class="order-card__footer-key">支付方式</text>
+          <text class="order-card__footer-value">微信支付</text>
+        </view>
+      </view>
+
+      <!-- 装饰横幅 -->
+      <view class="promo-banner" bindtap="handleBannerTap">
+        <view class="promo-banner__content">
+          <text class="promo-banner__tag">出行准备</text>
+          <text class="promo-banner__title">查看徒步装备清单指南</text>
+        </view>
+        <text class="promo-banner__arrow">→</text>
+      </view>
+
+    </view>
+  </scroll-view>
+
+  <!-- 底部操作区 -->
+  <view class="bottom-bar">
+    <view class="btn-primary" bindtap="handleViewOrder">查看订单</view>
+    <view class="btn-secondary" bindtap="handleGoHome">返回首页</view>
+  </view>
+
+</view>
+<xj-toast id="xj-toast"/>

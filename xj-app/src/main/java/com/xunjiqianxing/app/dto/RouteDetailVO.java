@@ -110,5 +110,8 @@ public class RouteDetailVO {
 
         @Schema(description = "内容")
         private String content;
+
+        @Schema(description = "活动配图URL列表")
+        private List<String> images;
     }
 }

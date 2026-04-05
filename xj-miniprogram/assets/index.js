@@ -88,17 +88,9 @@ const assets = {
     image: `${BASE_PATH}/images/placeholder/image.png`,
   },
 
-  // ==================== 背景图 ====================
-  bg: {
-    memberHeader: `${BASE_PATH}/images/bg/member-header.png`,
-    promoterHeader: `${BASE_PATH}/images/bg/promoter-header.png`,
-  },
-
   // ==================== 其他图片 ====================
   images: {
     logo: `${BASE_PATH}/images/logo.png`,
-    shareDefault: `${BASE_PATH}/images/share-default.png`,
-    loginBg: `${BASE_PATH}/images/login-bg.png`,
   },
 };
 

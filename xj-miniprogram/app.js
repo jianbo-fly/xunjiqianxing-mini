@@ -1,6 +1,7 @@
 // app.js
 const ThemeManager = require('./config/theme');
 const { STORAGE_KEYS } = require('./config/constants');
+const promoterApi = require('./services/promoter');
 
 App({
   globalData: {
@@ -19,6 +20,24 @@ App({
     this.checkLoginStatus();
     // 更新检查
     this.checkUpdate();
+  },
+
+  onShow(options) {
+    // 捕获扫码 scene（从后台唤起）
+    this.handleScene(options);
+  },
+
+  handleScene(options) {
+    if (!options) return;
+    // options.scene 是微信场景值（数字）：1047=扫小程序码
+    // 只有扫小程序码时才处理推广绑定
+    if (options.scene !== 1047) return;
+    // wxacode.getUnlimited 的自定义 scene 字符串在 options.query.scene 里
+    const query = options.query || {};
+    if (!query.scene) return;
+    const promoCode = decodeURIComponent(query.scene);
+    wx.setStorageSync('pendingPromoCode', promoCode);
+    promoterApi.recordScan(promoCode).catch(() => {});
   },
 
   /**

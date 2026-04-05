@@ -72,10 +72,18 @@ public class UserController {
             StpUtil.login(user.getId());
             String token = StpUtil.getTokenValue();
 
+            // 头像为空或是本地临时路径则需要完善资料
+            String avatar = user.getAvatar();
+            boolean needsProfile = avatar == null || avatar.isEmpty()
+                    || avatar.startsWith("http://tmp")
+                    || avatar.startsWith("http://127.")
+                    || "微信用户".equals(user.getNickname());
+
             return Result.success(LoginResponse.builder()
                     .userId(user.getId())
                     .token(token)
                     .isNewUser(isNewUser)
+                    .needsProfile(needsProfile)
                     .build());
 
         } catch (WxErrorException e) {

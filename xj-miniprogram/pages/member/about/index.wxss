@@ -1,0 +1,230 @@
+/**
+ * 关于我们页样式
+ * 对齐 Figma Node: 74-8423
+ */
+
+.page-about {
+  min-height: 100vh;
+  background: #f8f6f6;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== 主体内容 ===== */
+.about-content {
+  padding: 32rpx 48rpx 0;
+  display: flex;
+  flex-direction: column;
+  gap: 48rpx;
+  flex: 1;
+}
+
+/* ===== 品牌区域 ===== */
+.brand-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32rpx 0 80rpx;
+  gap: 0;
+}
+
+/* Logo 外层（带发光效果） */
+.logo-wrap {
+  position: relative;
+  width: 192rpx;
+  height: 192rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 32rpx;
+}
+
+.logo-glow {
+  position: absolute;
+  inset: -8rpx;
+  border-radius: 32rpx;
+  background: linear-gradient(45deg, #EC3713 0%, #FB923C 100%);
+  opacity: 0.25;
+  filter: blur(8rpx);
+}
+
+.logo-card {
+  position: relative;
+  width: 192rpx;
+  height: 192rpx;
+  background: #fff;
+  border-radius: 32rpx;
+  border: 1rpx solid #f3f4f6;
+  box-shadow: 0px 8rpx 40rpx -4rpx rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.logo-img {
+  width: 188rpx;
+  height: 188rpx;
+  opacity: 0.9;
+}
+
+/* 应用名称 */
+.app-name {
+  font-size: 48rpx;
+  font-weight: var(--font-weight-medium);
+  color: #111827;
+  letter-spacing: -1.2rpx;
+  margin-bottom: 16rpx;
+}
+
+/* 版本徽章 */
+.version-badge {
+  background: rgba(236, 55, 19, 0.1);
+  border: 1rpx solid rgba(236, 55, 19, 0.2);
+  border-radius: 9999rpx;
+  padding: 10rpx 26rpx;
+  margin-bottom: 46rpx;
+}
+
+.version-text {
+  font-size: 24rpx;
+  font-weight: var(--font-weight-medium);
+  color: #ec3713;
+  letter-spacing: 0.6rpx;
+}
+
+/* 简介 */
+.app-desc {
+  font-size: 28rpx;
+  color: #6b7280;
+  text-align: center;
+  line-height: 1.625;
+  width: 616rpx;
+}
+
+/* ===== 卡片分组 ===== */
+.card-group {
+  background: #fff;
+  border-radius: 24rpx;
+  border: 1rpx solid #f3f4f6;
+  box-shadow: 0px 2rpx 4rpx 0px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+/* ===== 列表项 ===== */
+.list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 32rpx;
+}
+
+.item-divider {
+  height: 1rpx;
+  background: #f3f4f6;
+  margin: 0 32rpx;
+}
+
+/* 左侧：图标 + 标签 */
+.item-left {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+}
+
+/* 右侧：值 + 操作 */
+.item-right {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+/* 彩色图标圆角背景 */
+.icon-wrap {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.icon-wrap--blue {
+  background: #eff6ff;
+}
+
+.icon-wrap--green {
+  background: #f0fdf4;
+}
+
+.icon-wrap--red {
+  background: rgba(236, 55, 19, 0.1);
+}
+
+.item-icon {
+  width: 36rpx;
+  height: 36rpx;
+}
+
+.item-label {
+  font-size: 28rpx;
+  font-weight: var(--font-weight-medium);
+  color: #374151;
+}
+
+.item-value {
+  font-size: 28rpx;
+  font-weight: var(--font-weight-medium);
+  color: #9ca3af;
+}
+
+.item-arrow {
+  font-size: 32rpx;
+  color: #9ca3af;
+  line-height: 1;
+}
+
+/* 复制按钮 */
+.copy-btn {
+  width: 48rpx;
+  height: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12rpx;
+}
+
+.copy-icon {
+  width: 36rpx;
+  height: 36rpx;
+  opacity: 0.5;
+}
+
+/* 箭头图标（法律条款） */
+.arrow-icon {
+  width: 22rpx;
+  height: 28rpx;
+  opacity: 0.4;
+}
+
+/* ===== 底部版权 ===== */
+.footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 48rpx 0 calc(48rpx + env(safe-area-inset-bottom));
+  gap: 8rpx;
+}
+
+.footer-copyright {
+  font-size: 20rpx;
+  color: #9ca3af;
+  letter-spacing: 2rpx;
+  text-transform: uppercase;
+}
+
+.footer-rights {
+  font-size: 20rpx;
+  color: #d1d5db;
+}

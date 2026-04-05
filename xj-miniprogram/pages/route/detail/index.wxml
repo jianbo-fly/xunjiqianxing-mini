@@ -1,10 +1,11 @@
 <view class="page-route-detail">
-  <!-- 顶部导航（透明悬浮） -->
-  <view class="nav-header" style="padding-top: {{statusBarHeight}}px;">
-    <view class="nav-btn nav-btn--back" bindtap="handleBack">
+  <!-- 顶部导航（透明 → 不透明渐变） -->
+  <view class="nav-header {{navOpaque ? 'nav-header--opaque' : ''}}" style="padding-top: {{statusBarHeight}}px; height: {{navBarBottom}}px;">
+    <view class="nav-btn {{navOpaque ? 'nav-btn--opaque' : ''}} nav-btn--back" bindtap="handleBack">
       <image class="nav-back-icon" src="/assets/icons/common/arrow-left.png" mode="aspectFit" />
     </view>
-    <view class="nav-btn nav-btn--share" bindtap="onShareAppMessage">
+    <text class="nav-title" wx:if="{{navOpaque && route}}">{{route.name}}</text>
+    <view class="nav-btn {{navOpaque ? 'nav-btn--opaque' : ''}} nav-btn--share" bindtap="onShareAppMessage">
       <image src="/assets/icons/common/share.png" mode="aspectFit" />
     </view>
   </view>
@@ -14,8 +15,44 @@
     <xj-loading text="加载中..." vertical />
   </view>
 
+  <!-- 吸顶 tabs + Day nav（滚动到 content-section 后才显示） -->
+  <view class="sticky-tabs-header" wx:if="{{showStickyHeader}}" style="top: {{navBarBottom}}px;">
+    <!-- 内容 Tab -->
+    <view class="sth-tabs">
+      <view
+        wx:for="{{contentTabs}}"
+        wx:key="index"
+        class="sth-tab {{contentTab === index ? 'sth-tab--active' : ''}}"
+        data-index="{{index}}"
+        bindtap="handleContentTabChange"
+      >
+        <text>{{item}}</text>
+        <view class="sth-tab__line" wx:if="{{contentTab === index}}"></view>
+      </view>
+    </view>
+    <!-- Day nav（仅行程介绍 tab） -->
+    <scroll-view
+      wx:if="{{contentTab === 0 && route.itinerary && route.itinerary.length}}"
+      class="day-nav-scroll"
+      scroll-x
+      enable-flex
+      scroll-left="{{dayNavScrollLeft}}"
+      scroll-with-animation
+    >
+      <view class="day-nav-list">
+        <view
+          wx:for="{{route.itinerary}}"
+          wx:key="index"
+          class="day-nav-item {{itineraryNavIndex === index ? 'day-nav-item--active' : ''}}"
+          data-index="{{index}}"
+          bindtap="handleItineraryNavTap"
+        >D{{item.day || index + 1}}</view>
+      </view>
+    </scroll-view>
+  </view>
+
   <!-- 主内容 -->
-  <scroll-view class="main-scroll" scroll-y wx:if="{{!loading && route}}">
+  <scroll-view class="main-scroll" scroll-y scroll-into-view="{{itineraryScrollIntoView}}" bindscroll="handleMainScroll" wx:if="{{!loading && route}}">
     <!-- 图片轮播 -->
     <view class="banner-section">
       <swiper
@@ -146,7 +183,7 @@
           <text class="section-title">出行日期</text>
           <text class="section-more" bindtap="handleShowCalendar">更多日期 ›</text>
         </view>
-        <scroll-view class="date-strip-scroll" scroll-x enable-flex>
+        <scroll-view class="date-strip-scroll" scroll-x enable-flex scroll-left="{{dateStripScrollLeft}}" scroll-with-animation>
           <view class="date-strip-list">
             <view
               wx:for="{{calendar}}"
@@ -216,57 +253,75 @@
       </view>
     </view>
 
-    <!-- 内容Tab -->
-    <view class="content-section">
-      <view class="content-tabs">
-        <view
-          class="content-tab {{contentTab === index ? 'content-tab--active' : ''}}"
-          wx:for="{{contentTabs}}"
-          wx:key="index"
-          data-index="{{index}}"
-          bindtap="handleContentTabChange"
-        >
-          <text>{{item}}</text>
-          <view class="content-tab__line" wx:if="{{contentTab === index}}"></view>
-        </view>
-      </view>
+    <!-- 内容区（tabs 已移到页面顶层 fixed，这里只放内容） -->
+    <view class="content-section" id="content-section">
 
       <!-- 行程安排 -->
-      <view class="content-panel" wx:if="{{contentTab === 0}}">
-        <view class="itinerary-list" wx:if="{{route.itinerary && route.itinerary.length}}">
-          <view class="itinerary-day-card" wx:for="{{route.itinerary}}" wx:key="index">
-            <!-- 日期标题 -->
-            <view class="day-header">
-              <view class="day-badge">D{{item.day || index + 1}}</view>
-              <view class="day-title">{{item.title}}</view>
+      <view class="content-panel content-panel--itin" wx:if="{{contentTab === 0}}">
+        <block wx:if="{{route.itinerary && route.itinerary.length}}">
+          <!-- 每天卡片 -->
+          <view
+            wx:for="{{route.itinerary}}"
+            wx:key="index"
+            class="itin-day-card"
+            id="itin-day-{{index}}"
+          >
+            <!-- 卡片头 -->
+            <view class="itin-day-header">
+              <view class="itin-day-accent"></view>
+              <view class="itin-day-num">Day {{item.day || index + 1}}</view>
+              <view class="itin-day-title">{{item.title}}</view>
             </view>
 
-            <!-- 时间轴活动列表 -->
-            <view class="timeline" wx:if="{{item.activities && item.activities.length}}">
-              <view class="timeline-item" wx:for="{{item.activities}}" wx:for-item="act" wx:key="idx">
-                <view class="timeline-dot">
-                  <image class="timeline-icon" src="/assets/icons/itinerary/{{act.icon || 'default'}}.png" mode="aspectFit" />
+            <!-- 活动时间轴 -->
+            <view class="itin-timeline" wx:if="{{item.activities && item.activities.length}}">
+              <view
+                wx:for="{{item.activities}}"
+                wx:for-item="act"
+                wx:for-index="actIdx"
+                wx:key="actIdx"
+                class="itin-act"
+              >
+                <!-- 左侧时间轴 -->
+                <view class="itin-act__left">
+                  <view class="itin-act__dot"></view>
+                  <view class="itin-act__line" wx:if="{{actIdx < item.activities.length - 1}}"></view>
                 </view>
-                <view class="timeline-content">
-                  <text class="timeline-time" wx:if="{{act.time}}">{{act.time}}</text>
-                  <text class="timeline-text">{{act.content}}</text>
+                <!-- 右侧内容 -->
+                <view class="itin-act__body">
+                  <view class="itin-act__meta">
+                    <text class="itin-act__time" wx:if="{{act.time}}">{{act.time}}</text>
+                    <text class="itin-act__text">{{act.content}}</text>
+                  </view>
+                  <!-- 图片区域：根据张数自动切换布局 -->
+                  <view
+                    wx:if="{{act.images && act.images.length}}"
+                    class="itin-imgs itin-imgs--{{act.images.length === 1 ? 'single' : act.images.length === 2 ? 'double' : act.images.length === 3 ? 'triple' : 'grid'}}"
+                  >
+                    <image
+                      wx:for="{{act.images}}"
+                      wx:for-item="img"
+                      wx:for-index="imgIdx"
+                      wx:key="imgIdx"
+                      class="itin-img"
+                      src="{{img}}"
+                      mode="aspectFill"
+                      bindtap="handlePreviewActImage"
+                      data-urls="{{act.images}}"
+                      data-current="{{img}}"
+                    />
+                  </view>
                 </view>
               </view>
             </view>
 
-            <!-- 餐食和住宿 -->
-            <view class="day-footer">
-              <view class="day-info" wx:if="{{item.meals}}">
-                <image class="info-icon" src="/assets/icons/entry/food.png" mode="aspectFit" />
-                <text class="info-text">{{item.meals}}</text>
-              </view>
-              <view class="day-info" wx:if="{{item.hotel}}">
-                <image class="info-icon" src="/assets/icons/itinerary/hotel.png" mode="aspectFit" />
-                <text class="info-text">{{item.hotel}}</text>
-              </view>
+            <!-- 住宿信息 -->
+            <view class="itin-hotel" wx:if="{{item.hotel}}">
+              <text class="itin-hotel__icon">🏨</text>
+              <text class="itin-hotel__text">{{item.hotel}}</text>
             </view>
           </view>
-        </view>
+        </block>
         <view class="empty-content" wx:else>
           <text>暂无行程安排</text>
         </view>
@@ -380,30 +435,42 @@
     bind:close="handleCloseCalendar"
     customClass="popup--scroll-footer"
   >
-    <view class="calendar-month-switcher">
-      <view class="month-btn {{!canGoPrevMonth ? 'month-btn--disabled' : ''}}" bindtap="handlePrevMonth">
-        <text>‹</text>
-      </view>
-      <text class="calendar-month-text">{{currentMonth}}</text>
-      <view class="month-btn" bindtap="handleNextMonth">
-        <text>›</text>
-      </view>
+    <!-- 固定星期表头 -->
+    <view class="cal-weekday-header">
+      <text class="cal-weekday-item" wx:for="{{['一','二','三','四','五','六','日']}}" wx:key="*this">{{item}}</text>
     </view>
-    <scroll-view class="popup-scroll calendar-scroll" scroll-y>
-      <view class="calendar-grid">
-        <view
-          class="calendar-item {{item.stock <= 0 ? 'calendar-item--disabled' : ''}} {{selectedDate === item.date ? 'calendar-item--active' : ''}} {{item.isWeekend ? 'calendar-item--weekend' : ''}}"
-          wx:for="{{calendar}}"
-          wx:key="date"
-          data-item="{{item}}"
-          bindtap="handleDateSelect"
-        >
-          <text class="calendar-week">{{item.week}}</text>
-          <text class="calendar-date">{{item.dayNum}}</text>
-          <text class="calendar-price" wx:if="{{item.stock > 0}}">¥{{item.price}}</text>
-          <text class="calendar-sold" wx:else>售罄</text>
+    <!-- 月份瀑布流 -->
+    <scroll-view
+      class="cal-scroll"
+      scroll-y
+      bindscrolltolower="handleLoadMoreMonth"
+      lower-threshold="120"
+    >
+      <block wx:for="{{calendarMonths}}" wx:key="label" wx:for-item="monthData">
+        <view class="cal-month-label">{{monthData.label}}</view>
+        <view class="cal-grid">
+          <block wx:for="{{monthData.cells}}" wx:key="index" wx:for-item="cell" wx:for-index="ci">
+            <!-- 空白占位格 -->
+            <view wx:if="{{!cell}}" class="cal-cell cal-cell--empty"></view>
+            <!-- 日期格子 -->
+            <view
+              wx:else
+              class="cal-cell {{cell.isPast ? 'cal-cell--past' : ''}} {{cell.stock === 0 ? 'cal-cell--sold' : ''}} {{selectedDate === cell.date ? 'cal-cell--active' : ''}} {{cell.isWeekend && !cell.isPast ? 'cal-cell--weekend' : ''}}"
+              data-item="{{cell}}"
+              bindtap="handleDateSelect"
+            >
+              <text class="cal-cell__day">{{cell.dayNum}}</text>
+              <view wx:if="{{cell.isToday}}" class="cal-cell__dot"></view>
+              <text wx:if="{{cell.isRealtime}}" class="cal-cell__realtime">实时计价</text>
+              <text wx:elif="{{cell.stock === 0}}" class="cal-cell__label cal-cell__label--sold">售罄</text>
+              <text wx:elif="{{cell.price != null}}" class="cal-cell__price cal-cell__price--{{cell.priceLevel}}">¥{{cell.price}}</text>
+            </view>
+          </block>
         </view>
-      </view>
+      </block>
+      <view class="cal-footer-tip" wx:if="{{calendarLoadingMore}}">加载中...</view>
+      <view class="cal-footer-tip" wx:elif="{{loadedMonthCount >= 12}}">已显示未来 12 个月</view>
     </scroll-view>
   </xj-popup>
 </view>
+<xj-toast id="xj-toast"/>

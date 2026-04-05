@@ -1,0 +1,79 @@
+<!--
+  线路列表顶部导航组件
+  对齐 Figma Node: 74-6610（Sticky Header Section）
+  包含：主 Tab（跟团游/定制游） + 分类标签行 + 筛选栏
+-->
+<view class="route-list-header" style="{{navTop ? 'top: ' + navTop + 'px;' : ''}}"  >
+
+  <!-- 主 Tab 行（跟团游 / 定制游），无 tabs 时隐藏 -->
+  <view class="rth-nav" wx:if="{{tabs.length}}">
+    <!-- 居中 Tab 区域（flex-1 + justify-center + 左偏移补偿搜索按钮） -->
+    <view class="rth-nav__tabs">
+      <view
+        class="rth-tab-item {{activeTab === item.key ? 'rth-tab-item--active' : ''}}"
+        wx:for="{{tabs}}"
+        wx:key="key"
+        data-key="{{item.key}}"
+        bindtap="_handleTabTap"
+      >
+        <text class="rth-tab-item__text">{{item.label}}</text>
+        <view class="rth-tab-item__bar" wx:if="{{activeTab === item.key}}"></view>
+      </view>
+    </view>
+    <!-- 搜索图标按钮（灰色圆形胶囊） -->
+    <view class="rth-nav__search" bindtap="_handleSearchTap">
+      <image class="rth-nav__search-icon" src="/assets/icons/common/search.png" mode="aspectFit" />
+    </view>
+  </view>
+
+  <!-- 分类标签行 -->
+  <scroll-view class="rth-cat-scroll" scroll-x enable-flex>
+    <view class="rth-cat-list">
+      <view
+        class="rth-cat-item {{activeCategory === item.id ? 'rth-cat-item--active' : ''}}"
+        wx:for="{{categories}}"
+        wx:key="id"
+        data-id="{{item.id}}"
+        bindtap="_handleCategoryTap"
+      >
+        <text class="rth-cat-item__text">{{item.name}}</text>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 筛选栏 -->
+  <view class="rth-filter-bar">
+    <view
+      class="rth-filter-btn {{filters.departure ? 'rth-filter-btn--active' : ''}}"
+      bindtap="_handleFilterTap"
+      data-type="departure"
+    >
+      <text class="rth-filter-btn__text">{{filters.departure || '出发地'}}</text>
+      <text class="rth-filter-btn__arrow">▾</text>
+    </view>
+    <view
+      class="rth-filter-btn {{filters.days ? 'rth-filter-btn--active' : ''}}"
+      bindtap="_handleFilterTap"
+      data-type="days"
+    >
+      <text class="rth-filter-btn__text">{{filters.days || '行程天数'}}</text>
+      <text class="rth-filter-btn__arrow">▾</text>
+    </view>
+    <view
+      class="rth-filter-btn {{filters.budget ? 'rth-filter-btn--active' : ''}}"
+      bindtap="_handleFilterTap"
+      data-type="budget"
+    >
+      <text class="rth-filter-btn__text">{{filters.budget || '价格预算'}}</text>
+      <text class="rth-filter-btn__arrow">▾</text>
+    </view>
+    <view
+      class="rth-filter-btn {{filters.hasFilter ? 'rth-filter-btn--active' : ''}}"
+      bindtap="_handleMoreFilter"
+    >
+      <image class="rth-filter-btn__icon" src="/assets/icons/common/filter.png" mode="aspectFit" />
+      <text class="rth-filter-btn__text">筛选</text>
+    </view>
+  </view>
+
+</view>
