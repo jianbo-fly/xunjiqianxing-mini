@@ -79,7 +79,7 @@
 
 .status-banner__icon {
   width: 56rpx;
-  height: 72rpx;
+  height: 56rpx;
   flex-shrink: 0;
 }
 

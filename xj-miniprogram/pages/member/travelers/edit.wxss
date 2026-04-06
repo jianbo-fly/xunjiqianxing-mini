@@ -96,8 +96,10 @@
 }
 
 .picker-arrow {
-  font-size: 32rpx;
-  color: #d1d5db;
+  width: 28rpx;
+  height: 28rpx;
+  flex-shrink: 0;
+  opacity: 0.35;
 }
 
 /* ===== 开关 ===== */

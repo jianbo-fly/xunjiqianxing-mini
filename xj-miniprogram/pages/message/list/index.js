@@ -18,6 +18,16 @@ const TYPE_ICON_MAP = {
   system: 'system',
 };
 
+// 图标类型 → 图片路径
+const MSG_ICON_PATH = {
+  order:   '/assets/icons/message/msg-order.png',
+  travel:  '/assets/icons/message/msg-travel.png',
+  refund:  '/assets/icons/message/msg-refund.png',
+  payment: '/assets/icons/message/msg-payment.png',
+  promo:   '/assets/icons/message/msg-payment.png',
+  system:  '/assets/icons/message/msg-order.png',
+};
+
 Page({
   data: {
     navBarHeight: 88,
@@ -66,11 +76,15 @@ Page({
 
       const res = await messageApi.getList(params);
       const rawList = res.list || res.records || [];
-      const list = rawList.map(item => ({
-        ...item,
-        iconType: TYPE_ICON_MAP[item.type] || (item.category === 'order' ? 'order' : 'system'),
-        read: !!item.read,
-      }));
+      const list = rawList.map(item => {
+        const iconType = TYPE_ICON_MAP[item.type] || (item.category === 'order' ? 'order' : 'system');
+        return {
+          ...item,
+          iconType,
+          iconPath: MSG_ICON_PATH[iconType] || MSG_ICON_PATH.system,
+          read: !!item.read,
+        };
+      });
       this.setData({
         list: refresh ? list : [...this.data.list, ...list],
         page: page + 1,

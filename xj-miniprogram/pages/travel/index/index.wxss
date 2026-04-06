@@ -778,8 +778,10 @@
 }
 
 .picker-arrow {
-  color: #9CA3AF;
-  font-size: 28rpx;
+  width: 28rpx;
+  height: 28rpx;
+  flex-shrink: 0;
+  opacity: 0.35;
 }
 
 .filter-price-range {

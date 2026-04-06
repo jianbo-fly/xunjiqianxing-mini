@@ -198,7 +198,7 @@
         <picker mode="selector" range="{{daysOptions}}" bindchange="handleDaysChange">
           <view class="filter-picker">
             <text>{{filters.days || '不限'}}</text>
-            <text class="picker-arrow">›</text>
+            <image class="picker-arrow" src="/assets/icons/common/arrow-right.png" mode="aspectFit" />
           </view>
         </picker>
       </view>

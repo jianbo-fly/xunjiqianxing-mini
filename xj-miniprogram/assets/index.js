@@ -62,12 +62,12 @@ const assets = {
 
   // ==================== 订单图标 ====================
   order: {
-    pending: `${BASE_PATH}/icons/order/status-pending.png`,
-    confirmed: `${BASE_PATH}/icons/order/status-confirmed.png`,
+    pendingPay: `${BASE_PATH}/icons/order/status-pending-pay.png`,
+    confirming: `${BASE_PATH}/icons/order/status-confirming.png`,
     travelling: `${BASE_PATH}/icons/order/status-travelling.png`,
     completed: `${BASE_PATH}/icons/order/status-completed.png`,
-    cancelled: `${BASE_PATH}/icons/order/status-cancelled.png`,
-    refunding: `${BASE_PATH}/icons/order/status-refunding.png`,
+    cancelledBadge: `${BASE_PATH}/icons/order/status-cancelled-badge.png`,
+    refundingBadge: `${BASE_PATH}/icons/order/status-refunding-badge.png`,
   },
 
   // ==================== 空状态图 ====================

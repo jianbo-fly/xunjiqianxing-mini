@@ -68,7 +68,9 @@
 }
 
 .profile-arrow {
-  font-size: 32rpx;
-  color: var(--color-text-placeholder);
-  margin-left: var(--spacing-sm);
+  width: 18rpx;
+  height: 18rpx;
+  flex-shrink: 0;
+  margin-left: 18rpx;
+  opacity: 0.35;
 }

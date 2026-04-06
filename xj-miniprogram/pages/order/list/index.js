@@ -144,12 +144,20 @@ Page({
       showBuyAgainBtn: [3, 4, 6, 7].includes(order.status),
       // 状态文本
       statusText: order.statusText || '',
-      // 状态徽章颜色类
-      statusBadgeClass: order.status === 0 ? 'orange'
-        : [1, 2].includes(order.status) ? 'primary'
-        : order.status === 3 ? 'green'
+      // 状态徽章颜色类（与图标颜色一致）
+      statusBadgeClass: order.status === 0 ? 'primary'
+        : order.status === 1 ? 'blue'
+        : order.status === 2 ? 'orange'
+        : order.status === 3 ? 'primary'
         : [4, 7].includes(order.status) ? 'gray'
         : 'blue',
+      // 状态图标
+      statusIcon: order.status === 0 ? '/assets/icons/order/status-pending-pay.png'
+        : order.status === 1 ? '/assets/icons/order/status-confirming.png'
+        : order.status === 2 ? '/assets/icons/order/status-travelling.png'
+        : order.status === 3 ? '/assets/icons/order/status-completed.png'
+        : [4, 7].includes(order.status) ? '/assets/icons/order/status-cancelled-badge.png'
+        : '/assets/icons/order/status-refunding-badge.png',
     };
   },
 

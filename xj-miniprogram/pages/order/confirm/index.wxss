@@ -367,8 +367,10 @@
 }
 
 .row-arrow {
-  font-size: var(--font-size-lg);
-  color: var(--color-text-tertiary);
+  width: 28rpx;
+  height: 28rpx;
+  flex-shrink: 0;
+  opacity: 0.35;
 }
 
 .discount-divider {

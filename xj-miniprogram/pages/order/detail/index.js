@@ -115,8 +115,13 @@ Page({
       statusText: order.statusText || '',
       // 状态横幅颜色类
       statusBannerClass: order.status === 0 ? 'orange' : [4, 7].includes(order.status) ? 'gray' : order.status === 3 ? 'green' : [5, 6].includes(order.status) ? 'blue' : 'primary',
-      // 状态图标名
-      statusIcon: order.status === 0 ? 'pending' : order.status === 1 || order.status === 2 ? 'confirmed' : order.status === 3 ? 'completed' : order.status === 4 || order.status === 7 ? 'cancelled' : 'refunding',
+      // 状态图标名（对应 /assets/icons/order/status-{name}.png）
+      statusIcon: order.status === 0 ? 'pending-pay'
+        : order.status === 1 ? 'confirming'
+        : order.status === 2 ? 'travelling'
+        : order.status === 3 ? 'completed'
+        : [4, 7].includes(order.status) ? 'cancelled-badge'
+        : 'refunding-badge',
     };
   },
 

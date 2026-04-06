@@ -222,21 +222,24 @@
   justify-content: center;
 }
 
-/* 有背景色的订单 tab（待付款/待出行） */
-.order-tab-bg {
-  background: rgba(236, 55, 19, 0.05);
+.order-tab-bg--red {
+  background: rgba(236, 55, 19, 0.08);
+  border-radius: 16rpx;
+}
+
+.order-tab-bg--blue {
+  background: rgba(59, 130, 246, 0.08);
+  border-radius: 16rpx;
+}
+
+.order-tab-bg--orange {
+  background: rgba(249, 115, 22, 0.08);
   border-radius: 16rpx;
 }
 
 .order-tab-icon {
-  width: 38rpx;
-  height: 36rpx;
-}
-
-/* 待确认、已完成 使用整体 overlay 图片 */
-.order-tab-icon-full {
-  width: 68rpx;
-  height: 68rpx;
+  width: 44rpx;
+  height: 44rpx;
 }
 
 .order-badge {

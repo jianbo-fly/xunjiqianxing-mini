@@ -41,7 +41,7 @@
         >
           <view class="picker-value">
             <text>{{idTypeOptions[idTypeIndex].label}}</text>
-            <text class="picker-arrow">›</text>
+            <image class="picker-arrow" src="/assets/icons/common/arrow-right.png" mode="aspectFit" />
           </view>
         </picker>
       </view>

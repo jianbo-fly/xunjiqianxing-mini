@@ -22,7 +22,23 @@
   background: #ec3713;
   color: #ffffff;
   font-size: 28rpx;
-  border-radius: 16rpx;
+  border-radius: 40rpx;
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  box-shadow: 0 8rpx 20rpx rgba(236, 55, 19, 0.3);
+}
+
+.empty-action__text {
+  font-size: 28rpx;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.empty-action__arrow {
+  font-size: 36rpx;
+  color: #ffffff;
+  line-height: 1;
 }
 
 /* ===== Tab 吸顶栏 ===== */
@@ -101,8 +117,17 @@
 
 /* 状态徽章 */
 .status-badge {
-  padding: 6rpx 16rpx;
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+  padding: 6rpx 14rpx;
   border-radius: 8rpx;
+  flex-shrink: 0;
+}
+
+.status-badge__icon {
+  width: 28rpx;
+  height: 28rpx;
   flex-shrink: 0;
 }
 
@@ -230,23 +255,42 @@
   align-items: center;
 }
 
-/* 默认操作按钮 */
+/* 基础操作按钮 */
 .action-btn {
-  padding: 14rpx 24rpx;
+  padding: 14rpx 28rpx;
   font-size: 26rpx;
-  color: #4b5563;
-  border: 1rpx solid #e5e7eb;
-  border-radius: 16rpx;
-  background: #ffffff;
+  border-radius: 40rpx;
   white-space: nowrap;
+  font-weight: 500;
 }
 
-/* 主操作按钮（去支付） */
+/* 普通/再次购买：灰色边框 */
+.action-btn--ghost {
+  color: #6b7280;
+  border: 1rpx solid #e5e7eb;
+  background: #ffffff;
+}
+
+/* 取消：浅灰底，文字暗 */
+.action-btn--cancel {
+  color: #9ca3af;
+  border: 1rpx solid #f3f4f6;
+  background: #f9fafb;
+}
+
+/* 退款：橙色边框，橙色文字 */
+.action-btn--danger {
+  color: #f97316;
+  border: 1rpx solid rgba(249, 115, 22, 0.35);
+  background: #fff7ed;
+}
+
+/* 去支付：红色渐变主按钮 */
 .action-btn--primary {
   background: linear-gradient(to right, #ec3713, #ea580c);
   color: #ffffff;
-  border-color: transparent;
-  box-shadow: 0 8rpx 16rpx -4rpx rgba(236, 55, 19, 0.3);
+  border: none;
+  box-shadow: 0 6rpx 16rpx rgba(236, 55, 19, 0.35);
 }
 
 /* ===== 加载更多 ===== */

@@ -26,7 +26,10 @@
 
   <!-- 空状态 -->
   <xj-empty wx:elif="{{isEmpty}}" type="order">
-    <view class="empty-action" bindtap="goExplore">去逛逛</view>
+    <view class="empty-action" bindtap="goExplore">
+      <text class="empty-action__text">去逛逛</text>
+      <text class="empty-action__arrow">›</text>
+    </view>
   </xj-empty>
 
   <!-- 订单列表 -->
@@ -37,6 +40,7 @@
       <view class="card-hd" data-id="{{item.id}}" bindtap="handleOrderTap">
         <text class="order-no">订单号：{{item.orderNo}}</text>
         <view class="status-badge status-badge--{{item.statusBadgeClass}}">
+          <image class="status-badge__icon" src="{{item.statusIcon}}" mode="aspectFit" />
           <text class="status-badge__text">{{item.statusText}}</text>
         </view>
       </view>
@@ -62,19 +66,19 @@
         </view>
         <view class="action-row">
           <view
-            class="action-btn"
+            class="action-btn action-btn--ghost"
             wx:if="{{item.showBuyAgainBtn}}"
             data-product-id="{{item.productId}}"
             catchtap="handleBuyAgain"
           >再次购买</view>
           <view
-            class="action-btn"
+            class="action-btn action-btn--danger"
             wx:if="{{item.showRefundBtn}}"
             data-id="{{item.id}}"
             catchtap="handleRefund"
           >申请退款</view>
           <view
-            class="action-btn"
+            class="action-btn action-btn--cancel"
             wx:if="{{item.showCancelBtn}}"
             data-id="{{item.id}}"
             catchtap="handleCancel"

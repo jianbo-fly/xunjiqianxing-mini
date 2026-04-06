@@ -132,6 +132,11 @@ Page({
       // 处理轮播图
       const bannerImages = route.images && route.images.length > 0 ? route.images : [route.coverImage];
 
+      // 预处理行程图标
+      if (route.itinerary) {
+        route.itinerary = this._processItinerary(route.itinerary);
+      }
+
       this.setData({
         route,
         packages,
@@ -335,6 +340,30 @@ Page({
   /**
    * 处理套餐数据，将attrs转换为可显示格式
    */
+  /**
+   * 预处理行程图标：给每个 activity 添加 actIconPath / actDotClass
+   */
+  _processItinerary(itinerary) {
+    const iconMap = [
+      { keys: ['plane', 'flight', 'bus', 'transport', '交通', 'car', 'train'], type: 'transport', cls: 'transport' },
+      { keys: ['food', 'meal', 'fork', 'restaurant', 'lunch', 'dinner', 'breakfast', '餐', '早', '午', '晚'], type: 'meal', cls: 'meal' },
+      { keys: ['camera', 'scenic', 'attraction', 'mountain', '景', 'sight', 'photo'], type: 'scenic', cls: 'scenic' },
+      { keys: ['hotel', 'bed', 'accommodation', '住', 'sleep', 'lodge'], type: 'hotel', cls: 'hotel' },
+    ];
+    return itinerary.map(day => ({
+      ...day,
+      activities: (day.activities || []).map(act => {
+        const iconStr = (act.icon || act.type || act.content || '').toLowerCase();
+        const matched = iconMap.find(m => m.keys.some(k => iconStr.includes(k)));
+        return {
+          ...act,
+          actIconPath: `/assets/icons/itinerary/act-${matched ? matched.type : 'transport'}.png`,
+          actDotClass: matched ? matched.cls : 'transport',
+        };
+      }),
+    }));
+  },
+
   processPackages(packages) {
     // 属性名称映射
     const attrLabels = {

@@ -180,9 +180,10 @@
 }
 
 .item-arrow {
-  font-size: 32rpx;
-  color: #9ca3af;
-  line-height: 1;
+  width: 32rpx;
+  height: 32rpx;
+  flex-shrink: 0;
+  opacity: 0.35;
 }
 
 /* 复制按钮 */

@@ -8,7 +8,7 @@
     <text class="profile-label">头像</text>
     <view class="profile-right">
       <image class="profile-avatar" src="{{userInfo.avatar || '/assets/images/placeholder/avatar.png'}}" mode="aspectFill" />
-      <text class="profile-arrow">›</text>
+      <image class="profile-arrow" src="/assets/icons/member/chevron.png" mode="aspectFit" />
     </view>
   </button>
 
@@ -24,7 +24,7 @@
         bindinput="handleNicknameInput"
         bindblur="handleNicknameSave"
       />
-      <text class="profile-arrow">›</text>
+      <image class="profile-arrow" src="/assets/icons/member/chevron.png" mode="aspectFit" />
     </view>
   </view>
 
@@ -41,7 +41,7 @@
     <text class="profile-label">性别</text>
     <view class="profile-right">
       <text class="profile-value">{{genderText}}</text>
-      <text class="profile-arrow">›</text>
+      <image class="profile-arrow" src="/assets/icons/member/chevron.png" mode="aspectFit" />
     </view>
   </view>
 </view>

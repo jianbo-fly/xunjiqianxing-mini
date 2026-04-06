@@ -323,8 +323,10 @@
 }
 
 .section-more-arrow {
-  font-size: 28rpx;
-  color: #6b7280;
+  width: 28rpx;
+  height: 28rpx;
+  flex-shrink: 0;
+  opacity: 0.5;
   margin-left: 4rpx;
 }
 

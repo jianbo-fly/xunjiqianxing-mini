@@ -49,7 +49,9 @@
         bindtap="handleMsgTap"
       >
         <!-- 图标 -->
-        <view class="msg-icon msg-icon--{{item.iconType}}"></view>
+        <view class="msg-icon msg-icon--{{item.iconType}}">
+          <image class="msg-icon__img" src="{{item.iconPath}}" mode="aspectFit" />
+        </view>
 
         <!-- 内容 -->
         <view class="msg-body">

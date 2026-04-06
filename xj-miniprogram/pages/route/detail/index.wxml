@@ -46,7 +46,10 @@
           class="day-nav-item {{itineraryNavIndex === index ? 'day-nav-item--active' : ''}}"
           data-index="{{index}}"
           bindtap="handleItineraryNavTap"
-        >D{{item.day || index + 1}}</view>
+        >
+          <text class="day-nav-item__label">Day {{item.day || index + 1}}</text>
+          <text class="day-nav-item__title">{{item.title}}</text>
+        </view>
       </view>
     </scroll-view>
   </view>
@@ -284,13 +287,18 @@
               >
                 <!-- 左侧时间轴 -->
                 <view class="itin-act__left">
-                  <view class="itin-act__dot"></view>
+                  <view class="itin-act__dot itin-act__dot--{{act.actDotClass || 'transport'}}">
+                    <image class="itin-act__dot-icon" src="{{act.actIconPath || '/assets/icons/itinerary/act-transport.png'}}" mode="aspectFit" />
+                  </view>
                   <view class="itin-act__line" wx:if="{{actIdx < item.activities.length - 1}}"></view>
                 </view>
                 <!-- 右侧内容 -->
                 <view class="itin-act__body">
+                  <view class="itin-act__time-row" wx:if="{{act.time}}">
+                    <image class="itin-act__clock" src="/assets/icons/itinerary/act-clock.png" mode="aspectFit" />
+                    <text class="itin-act__time">{{act.time}}</text>
+                  </view>
                   <view class="itin-act__meta">
-                    <text class="itin-act__time" wx:if="{{act.time}}">{{act.time}}</text>
                     <text class="itin-act__text">{{act.content}}</text>
                   </view>
                   <!-- 图片区域：根据张数自动切换布局 -->
@@ -317,8 +325,10 @@
 
             <!-- 住宿信息 -->
             <view class="itin-hotel" wx:if="{{item.hotel}}">
-              <text class="itin-hotel__icon">🏨</text>
-              <text class="itin-hotel__text">{{item.hotel}}</text>
+              <view class="itin-hotel__icon-wrap">
+                <image class="itin-hotel__icon-img" src="/assets/icons/itinerary/act-hotel-sm.png" mode="aspectFit" />
+              </view>
+              <text class="itin-hotel__text">入住：{{item.hotel}}</text>
             </view>
           </view>
         </block>

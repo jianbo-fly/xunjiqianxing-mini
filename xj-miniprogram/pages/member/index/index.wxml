@@ -65,29 +65,29 @@
     </view>
     <view class="order-tabs">
       <view class="order-tab" data-status="0" bindtap="handleOrderTap">
-        <view class="order-tab-icon-wrap order-tab-bg">
+        <view class="order-tab-icon-wrap order-tab-bg--red">
           <image class="order-tab-icon" src="/assets/icons/order/status-pending-pay.png" mode="aspectFit" />
           <view wx:if="{{orderCounts.pending > 0}}" class="order-badge">{{orderCounts.pending}}</view>
         </view>
         <text class="order-tab-text">待付款</text>
       </view>
       <view class="order-tab" data-status="1" bindtap="handleOrderTap">
-        <view class="order-tab-icon-wrap">
-          <image class="order-tab-icon-full" src="/assets/icons/order/status-confirming.png" mode="aspectFit" />
+        <view class="order-tab-icon-wrap order-tab-bg--blue">
+          <image class="order-tab-icon" src="/assets/icons/order/status-confirming.png" mode="aspectFit" />
           <view wx:if="{{orderCounts.confirming > 0}}" class="order-badge">{{orderCounts.confirming}}</view>
         </view>
         <text class="order-tab-text">已预定</text>
       </view>
       <view class="order-tab" data-status="2" bindtap="handleOrderTap">
-        <view class="order-tab-icon-wrap order-tab-bg">
+        <view class="order-tab-icon-wrap order-tab-bg--orange">
           <image class="order-tab-icon" src="/assets/icons/order/status-travelling.png" mode="aspectFit" />
           <view wx:if="{{orderCounts.travelling > 0}}" class="order-badge">{{orderCounts.travelling}}</view>
         </view>
         <text class="order-tab-text">出行中</text>
       </view>
       <view class="order-tab" data-status="4" bindtap="handleOrderTap">
-        <view class="order-tab-icon-wrap">
-          <image class="order-tab-icon-full" src="/assets/icons/order/status-completed.png" mode="aspectFit" />
+        <view class="order-tab-icon-wrap order-tab-bg--red">
+          <image class="order-tab-icon" src="/assets/icons/order/status-completed.png" mode="aspectFit" />
         </view>
         <text class="order-tab-text">已完成</text>
       </view>
