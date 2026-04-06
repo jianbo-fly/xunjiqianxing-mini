@@ -256,6 +256,7 @@ public class AdminRouteService {
         routeExt.setCostInclude(request.getCostInclude());
         routeExt.setCityName(request.getCityName());
         routeExt.setCityCode(request.getCityCode());
+        routeExt.setDays(request.getDays());
 
         // 转换行程数据 (转换为 Map 结构以便 JSON 序列化)
         if (request.getItinerary() != null && !request.getItinerary().isEmpty()) {
@@ -382,6 +383,10 @@ public class AdminRouteService {
 
         if (request.getCityName() != null) {
             routeExt.setCityName(request.getCityName());
+        }
+
+        if (request.getDays() != null) {
+            routeExt.setDays(request.getDays());
         }
 
         // 转换行程数据 (转换为 Map 结构以便 JSON 序列化)

@@ -33,6 +33,7 @@
   <!-- 空状态 -->
   <xj-empty
     wx:elif="{{!loading && !list.length}}"
+    type="message"
     description="暂无消息"
   />
 

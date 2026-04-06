@@ -52,8 +52,12 @@
   <!-- 空状态 -->
   <xj-empty
     wx:elif="{{!loading && list.length === 0}}"
-    type="search"
+    card-mode="{{true}}"
+    type="route"
     description="暂无相关线路"
+    subtitle="换个关键词或调整筛选条件试试"
+    button-text="重置筛选条件"
+    bind:action="handleResetFilter"
   />
 
   <!-- 线路列表 -->
@@ -98,13 +102,17 @@
             >{{tag}}</text>
           </view>
 
-          <!-- 标题 -->
-          <text class="list-route-card__title">{{item.name}}</text>
+          <!-- 标题行（标题 + 评分） -->
+          <view class="list-route-card__title-row">
+            <text class="list-route-card__title">{{item.name}}</text>
+            <view class="list-route-card__rating" wx:if="{{item.score}}">
+              <text class="list-route-card__star">★</text>
+              <text class="list-route-card__rating-text">{{item.score}}</text>
+            </view>
+          </view>
 
-          <!-- 评分和已售 -->
+          <!-- 已售 -->
           <view class="list-route-card__meta">
-            <text class="list-route-card__rating" wx:if="{{item.rating}}">⭐ {{item.rating}}</text>
-            <view class="list-route-card__divider" wx:if="{{item.rating && item.salesCount}}"></view>
             <text class="list-route-card__sales" wx:if="{{item.salesCount}}">已售 {{item.salesCount}} 人</text>
           </view>
 

@@ -4,12 +4,15 @@ import com.xunjiqianxing.app.dto.*;
 import com.xunjiqianxing.common.exception.BizException;
 import com.xunjiqianxing.common.result.PageResult;
 import com.xunjiqianxing.common.result.Result;
+import com.xunjiqianxing.service.content.entity.Category;
+import com.xunjiqianxing.service.content.mapper.CategoryMapper;
 import com.xunjiqianxing.service.product.entity.ProductMain;
 import com.xunjiqianxing.service.product.entity.ProductPriceStock;
 import com.xunjiqianxing.service.product.entity.ProductRoute;
 import com.xunjiqianxing.service.product.entity.ProductSku;
 import com.xunjiqianxing.service.product.service.ProductService;
 import com.xunjiqianxing.service.product.service.RouteService;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -33,6 +36,31 @@ public class RouteController {
 
     private final RouteService routeService;
     private final ProductService productService;
+    private final CategoryMapper categoryMapper;
+
+    /**
+     * 线路分类列表（与管理端同源，从 content_category 取）
+     */
+    @GetMapping("/categories")
+    @Operation(summary = "线路分类列表", description = "获取启用中的线路分类，用于前端 Tab 展示")
+    public Result<List<RouteCategoryVO>> categories() {
+        List<Category> list = categoryMapper.selectList(
+                new LambdaQueryWrapper<Category>()
+                        .eq(Category::getBizType, "route")
+                        .eq(Category::getStatus, 1)
+                        .orderByDesc(Category::getSortOrder)
+        );
+        List<RouteCategoryVO> voList = list.stream()
+                .map(c -> {
+                    RouteCategoryVO vo = new RouteCategoryVO();
+                    vo.setId(c.getId());
+                    vo.setName(c.getName());
+                    vo.setIcon(c.getIcon());
+                    return vo;
+                })
+                .collect(Collectors.toList());
+        return Result.success(voList);
+    }
 
     /**
      * 线路列表
@@ -41,7 +69,9 @@ public class RouteController {
     @Operation(summary = "线路列表", description = "分页查询线路列表")
     public Result<PageResult<RouteListVO>> list(RouteListQuery query) {
         PageResult<ProductMain> pageResult = routeService.pageRoutes(
-                query, query.getCategory(), query.getDepartureCity(), query.getKeyword()
+                query, query.getCategory(), query.getDepartureCity(), query.getKeyword(),
+                query.getMinDays(), query.getMaxDays(),
+                query.getFilterMinPrice(), query.getFilterMaxPrice()
         );
 
         List<RouteListVO> voList = pageResult.getList().stream()

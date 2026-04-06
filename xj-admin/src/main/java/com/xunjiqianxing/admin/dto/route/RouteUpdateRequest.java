@@ -85,6 +85,9 @@ public class RouteUpdateRequest {
     @Schema(description = "是否推荐: 0否 1是")
     private Integer isRecommend;
 
+    @Schema(description = "行程天数")
+    private Integer days;
+
     /**
      * 行程天
      */

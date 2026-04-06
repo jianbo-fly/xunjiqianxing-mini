@@ -43,12 +43,15 @@
       </view>
 
       <!-- 空状态 -->
-      <view class="empty-state" wx:if="{{tripEmpty}}">
-        <xj-empty type="order" description="暂无待出行的行程" />
-        <view class="empty-btn" bindtap="handleExplore">去逛逛</view>
-      </view>
-
-      <!-- 行程卡片列表 -->
+      <xj-empty
+        wx:if="{{tripEmpty}}"
+        card-mode="{{true}}"
+        type="route"
+        description="暂无待出行的行程"
+        subtitle="快去选一条心仪的线路吧"
+        button-text="去逛逛"
+        bind:action="handleExplore"
+      />
       <view class="trip-list" wx:else>
         <view
           class="active-trip-card"
@@ -150,9 +153,22 @@
           </view>
           <view class="recommend-card__content">
             <text class="recommend-card__title">{{item.name}}</text>
+            <view class="recommend-card__tags" wx:if="{{item.tags && item.tags.length}}">
+              <text
+                wx:for="{{item.tags}}"
+                wx:for-item="tag"
+                wx:for-index="tagIdx"
+                wx:key="tagIdx"
+                wx:if="{{tagIdx < 2}}"
+                class="recommend-card__tag-chip {{tagIdx === 0 ? 'recommend-card__tag-chip--primary' : 'recommend-card__tag-chip--gray'}}"
+              >{{tag}}</text>
+            </view>
             <view class="recommend-card__bottom">
-              <text class="recommend-card__duration">{{item.daysText || (item.days + '天')}}</text>
-              <text class="recommend-card__price">¥{{item.priceText || item.minPrice || 0}}</text>
+              <text class="recommend-card__sales">已售 {{item.salesCount || 0}}</text>
+              <view class="recommend-card__price-wrap">
+                <text class="recommend-card__price-symbol">¥</text>
+                <text class="recommend-card__price">{{item.priceText || item.minPrice || 0}}</text>
+              </view>
             </view>
           </view>
         </view>

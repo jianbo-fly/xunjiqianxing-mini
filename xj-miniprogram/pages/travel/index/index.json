@@ -1,6 +1,7 @@
 {
   "navigationStyle": "custom",
   "usingComponents": {
-    "nav-bar": "/components/layout/nav-bar/index"
+    "nav-bar": "/components/layout/nav-bar/index",
+    "xj-empty": "/components/base/xj-empty/index"
   }
 }

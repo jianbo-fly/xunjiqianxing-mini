@@ -253,17 +253,32 @@
 }
 
 .tag-item {
+  display: flex;
+  align-items: center;
   height: 64rpx;
-  line-height: 64rpx;
-  padding: 0 28rpx;
+  padding: 0 12rpx 0 28rpx;
   border-radius: 8rpx;
-  font-size: 28rpx;
   background: #f2ebea;
-  color: #4a3b39;
   max-width: 240rpx;
+}
+
+.tag-item__text {
+  font-size: 28rpx;
+  color: #4a3b39;
+  line-height: 64rpx;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  flex: 1;
+  min-width: 0;
+}
+
+.tag-item__del {
+  flex-shrink: 0;
+  padding: 0 8rpx 0 12rpx;
+  font-size: 28rpx;
+  color: #9c8e8b;
+  line-height: 64rpx;
 }
 
 /* ===== 搜索结果 ===== */

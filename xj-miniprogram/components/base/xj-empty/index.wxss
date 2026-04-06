@@ -1,23 +1,74 @@
+/* ===== 基础空状态 ===== */
 .xj-empty {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: var(--spacing-xxl) var(--spacing-lg);
+  position: relative;
 }
 
+/* ===== 卡片模式 ===== */
+.xj-empty--card {
+  background: #ffffff;
+  border-radius: 24rpx;
+  padding: 56rpx 48rpx 48rpx;
+  box-shadow: 0 4rpx 24rpx rgba(0, 0, 0, 0.06);
+  margin: 0 4rpx;
+}
+
+/* 插图 */
 .xj-empty__image {
-  width: 240rpx;
-  height: 240rpx;
-  margin-bottom: var(--spacing-md);
+  width: 200rpx;
+  height: 200rpx;
+  margin-bottom: 32rpx;
+  opacity: 0.6;
 }
 
-.xj-empty__description {
-  font-size: var(--font-size-md);
-  color: var(--color-text-tertiary);
+/* 标题 */
+.xj-empty__title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #111827;
   text-align: center;
+  margin-bottom: 12rpx;
 }
 
+/* 副标题 */
+.xj-empty__subtitle {
+  font-size: 26rpx;
+  color: #9ca3af;
+  text-align: center;
+  line-height: 1.5;
+  margin-bottom: 4rpx;
+}
+
+/* 操作按钮区 */
 .xj-empty__action {
-  margin-top: var(--spacing-lg);
+  margin-top: 40rpx;
+  width: 100%;
+}
+
+.xj-empty__btn {
+  width: 100%;
+  height: 80rpx;
+  background: var(--color-primary);
+  border-radius: 40rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #ffffff;
+  box-shadow: 0 8rpx 20rpx rgba(236, 55, 19, 0.3);
+}
+
+.xj-empty__btn:active {
+  opacity: 0.85;
+  transform: scale(0.98);
+}
+
+/* 自定义插槽区 */
+.xj-empty__slot:empty {
+  display: none;
 }

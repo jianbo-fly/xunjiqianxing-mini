@@ -4,6 +4,8 @@
   "usingComponents": {
     "nav-bar": "/components/layout/nav-bar/index",
     "route-card": "/components/business/route-card/index",
-    "route-list-header": "/components/business/route-list-header/index"
+    "route-list-header": "/components/business/route-list-header/index",
+    "xj-empty": "/components/base/xj-empty/index",
+    "xj-loading": "/components/base/xj-loading/index"
   }
 }

@@ -74,6 +74,9 @@ public class RouteCreateRequest {
     @Schema(description = "费用包含(富文本)")
     private String costInclude;
 
+    @Schema(description = "行程天数")
+    private Integer days;
+
     @Schema(description = "行程安排")
     private List<ItineraryDay> itinerary;
 

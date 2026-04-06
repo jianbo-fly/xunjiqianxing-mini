@@ -126,6 +126,9 @@
         <!-- 行程编辑 -->
         <el-form-item label="行程安排">
           <div class="itinerary-editor">
+            <div v-if="form.itinerary.length > 0" class="days-badge">
+              共 <strong>{{ form.itinerary.length }}</strong> 天（提交时自动同步到行程天数字段）
+            </div>
             <div
               v-for="(day, dayIndex) in form.itinerary"
               :key="dayIndex"
@@ -446,53 +449,43 @@ async function handleSubmit() {
   const valid = await formRef.value?.validate()
   if (!valid) return
 
+  // 校验行程不能为空
+  if (form.itinerary.length === 0) {
+    ElMessage.error('请至少添加一天行程安排')
+    return
+  }
+
+  // 提交前将天数与行程数组长度同步，保证数据库字段一致
+  const days = form.itinerary.length
+
   loading.value = true
   try {
+    const payload = {
+      name: form.name,
+      subtitle: form.subtitle,
+      coverImage: form.coverImage,
+      images: form.images,
+      tags: form.tags,
+      category: form.category,
+      cityCode: form.cityCode,
+      cityName: form.cityName,
+      departureCity: form.departureCity,
+      destination: form.destination,
+      originalPrice: form.originalPrice,
+      minPrice: form.minPrice,
+      costExclude: form.costExclude,
+      bookingNotice: form.bookingNotice,
+      tips: form.tips,
+      costInclude: form.costInclude,
+      itinerary: form.itinerary,
+      days,
+      sortOrder: form.sortOrder,
+      isRecommend: form.isRecommend,
+    }
     if (isEdit.value) {
-      await updateRoute({
-        id: route.params.id as string,
-        name: form.name,
-        subtitle: form.subtitle,
-        coverImage: form.coverImage,
-        images: form.images,
-        tags: form.tags,
-        category: form.category,
-        cityCode: form.cityCode,
-        cityName: form.cityName,
-        departureCity: form.departureCity,
-        destination: form.destination,
-        originalPrice: form.originalPrice,
-        minPrice: form.minPrice,
-        costExclude: form.costExclude,
-        bookingNotice: form.bookingNotice,
-        tips: form.tips,
-        costInclude: form.costInclude,
-        itinerary: form.itinerary,
-        sortOrder: form.sortOrder,
-        isRecommend: form.isRecommend,
-      })
+      await updateRoute({ id: route.params.id as string, ...payload })
     } else {
-      await createRoute({
-        name: form.name,
-        subtitle: form.subtitle,
-        coverImage: form.coverImage,
-        images: form.images,
-        tags: form.tags,
-        category: form.category,
-        cityCode: form.cityCode,
-        cityName: form.cityName,
-        departureCity: form.departureCity,
-        destination: form.destination,
-        originalPrice: form.originalPrice,
-        minPrice: form.minPrice,
-        costExclude: form.costExclude,
-        bookingNotice: form.bookingNotice,
-        tips: form.tips,
-        costInclude: form.costInclude,
-        itinerary: form.itinerary,
-        sortOrder: form.sortOrder,
-        isRecommend: form.isRecommend,
-      })
+      await createRoute(payload)
     }
     ElMessage.success(isEdit.value ? '保存成功' : '创建成功')
     router.push('/route/list')
@@ -541,6 +534,17 @@ async function handleSubmit() {
 /* 行程编辑器样式 */
 .itinerary-editor {
   width: 100%;
+}
+
+.days-badge {
+  display: inline-block;
+  margin-bottom: 12px;
+  padding: 4px 12px;
+  background: #ecf5ff;
+  border: 1px solid #b3d8ff;
+  border-radius: 4px;
+  font-size: 13px;
+  color: #409eff;
 }
 
 .itinerary-day {

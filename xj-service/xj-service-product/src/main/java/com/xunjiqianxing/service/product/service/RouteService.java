@@ -7,6 +7,7 @@ import com.xunjiqianxing.service.product.entity.ProductPriceStock;
 import com.xunjiqianxing.service.product.entity.ProductRoute;
 import com.xunjiqianxing.service.product.entity.ProductSku;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -18,7 +19,9 @@ public interface RouteService {
     /**
      * 分页查询线路列表
      */
-    PageResult<ProductMain> pageRoutes(PageQuery pageQuery, String category, String departureCity, String keyword);
+    PageResult<ProductMain> pageRoutes(PageQuery pageQuery, String category, String departureCity, String keyword,
+                                       Integer minDays, Integer maxDays,
+                                       BigDecimal filterMinPrice, BigDecimal filterMaxPrice);
 
     /**
      * 获取线路详情

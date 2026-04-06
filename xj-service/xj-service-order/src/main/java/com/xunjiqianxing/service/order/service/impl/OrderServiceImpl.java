@@ -22,9 +22,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 订单服务实现
@@ -273,6 +275,58 @@ public class OrderServiceImpl implements OrderService {
             // 日志写入失败不影响主流程
             log.warn("订单日志写入失败: orderId={}, error={}", orderId, e.getMessage());
         }
+    }
+
+    @Override
+    public List<OrderMain> getBookedOrdersToTravel(LocalDate today) {
+        return orderMainMapper.selectList(
+                new LambdaQueryWrapper<OrderMain>()
+                        .eq(OrderMain::getStatus, OrderStatus.BOOKED.getCode())
+                        .eq(OrderMain::getIsDeleted, 0)
+                        .le(OrderMain::getStartDate, today)
+        );
+    }
+
+    @Override
+    public List<OrderMain> getTravelingOrdersToComplete(LocalDate today) {
+        return orderMainMapper.selectList(
+                new LambdaQueryWrapper<OrderMain>()
+                        .eq(OrderMain::getStatus, OrderStatus.TRAVELING.getCode())
+                        .eq(OrderMain::getIsDeleted, 0)
+                        .lt(OrderMain::getEndDate, today)
+        );
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int batchMarkTraveling(List<Long> orderIds) {
+        if (orderIds == null || orderIds.isEmpty()) return 0;
+        int rows = orderMainMapper.update(null,
+                new LambdaUpdateWrapper<OrderMain>()
+                        .in(OrderMain::getId, orderIds)
+                        .eq(OrderMain::getStatus, OrderStatus.BOOKED.getCode())
+                        .set(OrderMain::getStatus, OrderStatus.TRAVELING.getCode())
+        );
+        // 批量写日志
+        orderIds.forEach(id -> addLog(id, null, OrderStatus.BOOKED.getCode(),
+                OrderStatus.TRAVELING.getCode(), "system", null, "出行日已到，自动更新为出行中"));
+        return rows;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int batchMarkCompleted(List<Long> orderIds) {
+        if (orderIds == null || orderIds.isEmpty()) return 0;
+        int rows = orderMainMapper.update(null,
+                new LambdaUpdateWrapper<OrderMain>()
+                        .in(OrderMain::getId, orderIds)
+                        .eq(OrderMain::getStatus, OrderStatus.TRAVELING.getCode())
+                        .set(OrderMain::getStatus, OrderStatus.COMPLETED.getCode())
+                        .set(OrderMain::getCompleteTime, LocalDateTime.now())
+        );
+        orderIds.forEach(id -> addLog(id, null, OrderStatus.TRAVELING.getCode(),
+                OrderStatus.COMPLETED.getCode(), "system", null, "行程结束，自动更新为已完成"));
+        return rows;
     }
 
     /**

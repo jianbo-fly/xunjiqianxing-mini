@@ -79,6 +79,7 @@ const assets = {
     search: `${BASE_PATH}/images/empty/empty-search.png`,
     message: `${BASE_PATH}/images/empty/empty-message.png`,
     coupon: `${BASE_PATH}/images/empty/empty-coupon.png`,
+    route: `${BASE_PATH}/images/empty/empty-route.png`,
   },
 
   // ==================== 占位图 ====================

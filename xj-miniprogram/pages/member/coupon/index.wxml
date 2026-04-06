@@ -31,6 +31,7 @@
   <!-- 空状态 -->
   <xj-empty
     wx:elif="{{!loading && !list.length}}"
+    type="coupon"
     description="暂无优惠券"
   />
 

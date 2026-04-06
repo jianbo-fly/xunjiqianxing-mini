@@ -21,4 +21,16 @@ public class RouteListQuery extends PageQuery {
 
     @Schema(description = "关键词搜索")
     private String keyword;
+
+    @Schema(description = "最少天数")
+    private Integer minDays;
+
+    @Schema(description = "最多天数（0 表示不限上限）")
+    private Integer maxDays;
+
+    @Schema(description = "价格下限（对应 product_main.min_price）")
+    private java.math.BigDecimal filterMinPrice;
+
+    @Schema(description = "价格上限（0 表示不限上限）")
+    private java.math.BigDecimal filterMaxPrice;
 }

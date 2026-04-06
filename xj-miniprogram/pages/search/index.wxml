@@ -178,13 +178,10 @@
         </view>
       </view>
       <view class="tag-list">
-        <view
-          class="tag-item"
-          wx:for="{{historyList}}"
-          wx:key="*this"
-          data-keyword="{{item}}"
-          bindtap="handleTagTap"
-        >{{item}}</view>
+        <view class="tag-item" wx:for="{{historyList}}" wx:key="*this">
+          <text class="tag-item__text" data-keyword="{{item}}" bindtap="handleTagTap">{{item}}</text>
+          <text class="tag-item__del" data-keyword="{{item}}" catchtap="handleDeleteHistory">×</text>
+        </view>
       </view>
     </view>
 

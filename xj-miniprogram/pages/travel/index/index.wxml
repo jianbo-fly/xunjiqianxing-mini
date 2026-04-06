@@ -60,10 +60,6 @@
 
       <!-- 4 按钮筛选栏（按钮自适应宽度，左对齐） -->
       <view class="filter-bar">
-        <view class="filter-bar__btn {{filters.departure ? 'filter-bar__btn--active' : ''}}" bindtap="handleGroupFilterTap" data-type="departure">
-          <text class="filter-bar__label">{{filters.departure || '出发地'}}</text>
-          <text class="filter-bar__arrow">▾</text>
-        </view>
         <view class="filter-bar__btn {{filters.days ? 'filter-bar__btn--active' : ''}}" bindtap="handleGroupFilterTap" data-type="days">
           <text class="filter-bar__label">{{filters.days || '行程天数'}}</text>
           <text class="filter-bar__arrow">▾</text>
@@ -130,7 +126,7 @@
           <!-- 评分 + 已售 -->
           <view class="rc-meta-row">
             <text class="rc-star">★</text>
-            <text class="rc-rating-num">{{item.rating || '4.9'}}</text>
+            <text class="rc-rating-num">{{item.score || '4.9'}}</text>
             <text class="rc-rating-label">超赞</text>
             <view class="rc-meta-divider"></view>
             <text class="rc-sales">已售 {{item.salesCount || '0'}}</text>
@@ -159,7 +155,15 @@
     <!-- 加载 / 空状态 -->
     <view class="loading-tip" wx:if="{{routeLoading}}"><text>加载中...</text></view>
     <view class="loading-tip" wx:elif="{{routeFinished && routeList.length}}"><text>没有更多了</text></view>
-    <view class="empty-tip" wx:elif="{{!routeLoading && !routeList.length}}"><text>暂无线路</text></view>
+    <xj-empty
+      wx:elif="{{!routeLoading && !routeList.length}}"
+      card-mode="{{true}}"
+      type="route"
+      description="暂无相关线路"
+      subtitle="换个关键词或调整筛选条件试试"
+      button-text="重置筛选"
+      bind:action="handleResetFilter"
+    />
 
     <view style="height: calc(32rpx + env(safe-area-inset-bottom));"></view>
 
@@ -188,15 +192,6 @@
       <view class="filter-header">
         <text class="filter-title">筛选</text>
         <text class="filter-reset" bindtap="handleResetFilter">重置</text>
-      </view>
-      <view class="filter-item">
-        <text class="filter-label">出发地</text>
-        <picker mode="selector" range="{{departures}}" bindchange="handleDepartureChange">
-          <view class="filter-picker">
-            <text>{{filters.departure || '不限'}}</text>
-            <text class="picker-arrow">›</text>
-          </view>
-        </picker>
       </view>
       <view class="filter-item">
         <text class="filter-label">行程天数</text>

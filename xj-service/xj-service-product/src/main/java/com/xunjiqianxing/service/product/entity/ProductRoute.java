@@ -47,6 +47,11 @@ public class ProductRoute {
     private String destination;
 
     /**
+     * 行程天数（与 itinerary 数组长度保持一致，用于筛选）
+     */
+    private Integer days;
+
+    /**
      * 费用不含(富文本)
      */
     private String costExclude;

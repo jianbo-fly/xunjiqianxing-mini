@@ -32,14 +32,14 @@ Page({
     currentBanner: 0,
     // 功能入口（8个）
     entries: [
-      { id: 'travel',   name: '旅游定制', icon: '/assets/icons/entry/travel.png',   type: 'travel', bgColor: 'linear-gradient(135deg,#fff5f3,#ffe8e3)', shadowColor: 'rgba(236,55,19,0.12)' },
-      { id: 'car',      name: '租车自驾', icon: '/assets/icons/entry/car.png',      type: 'coming', bgColor: 'linear-gradient(135deg,#eff6ff,#dbeafe)', shadowColor: 'rgba(59,130,246,0.12)' },
-      { id: 'hotel',    name: '酒店民宿', icon: '/assets/icons/entry/hotel.png',    type: 'coming', bgColor: 'linear-gradient(135deg,#f0fdf4,#dcfce7)', shadowColor: 'rgba(34,197,94,0.12)' },
-      { id: 'ticket',   name: '景点门票', icon: '/assets/icons/entry/ticket.png',   type: 'coming', bgColor: 'linear-gradient(135deg,#fff7ed,#ffedd5)', shadowColor: 'rgba(249,115,22,0.12)' },
-      { id: 'transfer', name: '接送包车', icon: '/assets/icons/entry/transfer.png', type: 'coming', bgColor: 'linear-gradient(135deg,#f5f3ff,#ede9fe)', shadowColor: 'rgba(139,92,246,0.12)' },
-      { id: 'food',     name: '美食玩乐', icon: '/assets/icons/entry/food.png',     type: 'coming', bgColor: 'linear-gradient(135deg,#fefce8,#fef9c3)', shadowColor: 'rgba(234,179,8,0.12)' },
-      { id: 'rent',     name: '租赁服务', icon: '/assets/icons/entry/rent.png',     type: 'coming', bgColor: 'linear-gradient(135deg,#f0fdfa,#ccfbf1)', shadowColor: 'rgba(20,184,166,0.12)' },
-      { id: 'insurance',name: '旅游保险', icon: '/assets/icons/entry/insurance.png',type: 'coming', bgColor: 'linear-gradient(135deg,#ecfeff,#cffafe)', shadowColor: 'rgba(6,182,212,0.12)' },
+      { id: 'travel',   name: '旅游定制', icon: '/assets/icons/custom/travel.png',   type: 'travel', bgColor: 'linear-gradient(135deg,#fff5f3,#ffe8e3)', shadowColor: 'rgba(236,55,19,0.12)' },
+      { id: 'car',      name: '租车自驾', icon: '/assets/icons/custom/car.png',      type: 'coming', bgColor: 'linear-gradient(135deg,#eff6ff,#dbeafe)', shadowColor: 'rgba(59,130,246,0.12)' },
+      { id: 'hotel',    name: '酒店民宿', icon: '/assets/icons/custom/homestay.png', type: 'coming', bgColor: 'linear-gradient(135deg,#f0fdf4,#dcfce7)', shadowColor: 'rgba(34,197,94,0.12)' },
+      { id: 'ticket',   name: '景点门票', icon: '/assets/icons/custom/ticket.png',   type: 'coming', bgColor: 'linear-gradient(135deg,#fff7ed,#ffedd5)', shadowColor: 'rgba(249,115,22,0.12)' },
+      { id: 'transfer', name: '接送包车', icon: '/assets/icons/custom/transfer.png', type: 'coming', bgColor: 'linear-gradient(135deg,#f5f3ff,#ede9fe)', shadowColor: 'rgba(139,92,246,0.12)' },
+      { id: 'food',     name: '美食玩乐', icon: '/assets/icons/custom/food.png',     type: 'coming', bgColor: 'linear-gradient(135deg,#fefce8,#fef9c3)', shadowColor: 'rgba(234,179,8,0.12)' },
+      { id: 'rent',     name: '租赁服务', icon: '/assets/icons/custom/rental.png',   type: 'coming', bgColor: 'linear-gradient(135deg,#f0fdfa,#ccfbf1)', shadowColor: 'rgba(20,184,166,0.12)' },
+      { id: 'insurance',name: '旅游保险', icon: '/assets/icons/custom/insurance.png',type: 'coming', bgColor: 'linear-gradient(135deg,#ecfeff,#cffafe)', shadowColor: 'rgba(6,182,212,0.12)' },
     ],
     // 热门线路 - 瀑布流双列
     hotRoutes: [],

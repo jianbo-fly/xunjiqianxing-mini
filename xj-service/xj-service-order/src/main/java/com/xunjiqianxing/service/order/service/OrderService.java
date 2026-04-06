@@ -5,8 +5,9 @@ import com.xunjiqianxing.common.result.PageResult;
 import com.xunjiqianxing.service.order.entity.OrderMain;
 import com.xunjiqianxing.service.order.entity.OrderTraveler;
 
-import java.util.List;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 订单服务
@@ -81,4 +82,24 @@ public interface OrderService {
      * 关闭超时订单（系统自动）
      */
     boolean closeExpiredOrder(Long orderId);
+
+    /**
+     * 查询出行日已到但仍为「已预订」的订单（start_date <= today AND status = 1）
+     */
+    List<OrderMain> getBookedOrdersToTravel(LocalDate today);
+
+    /**
+     * 查询出行结束但仍为「出行中」的订单（end_date < today AND status = 2）
+     */
+    List<OrderMain> getTravelingOrdersToComplete(LocalDate today);
+
+    /**
+     * 批量将「已预订」改为「出行中」
+     */
+    int batchMarkTraveling(List<Long> orderIds);
+
+    /**
+     * 批量将「出行中」改为「已完成」
+     */
+    int batchMarkCompleted(List<Long> orderIds);
 }

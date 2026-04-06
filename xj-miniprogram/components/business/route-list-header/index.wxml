@@ -30,10 +30,10 @@
   <scroll-view class="rth-cat-scroll" scroll-x enable-flex>
     <view class="rth-cat-list">
       <view
-        class="rth-cat-item {{activeCategory === item.id ? 'rth-cat-item--active' : ''}}"
+        class="rth-cat-item {{activeCategory === item.value ? 'rth-cat-item--active' : ''}}"
         wx:for="{{categories}}"
-        wx:key="id"
-        data-id="{{item.id}}"
+        wx:key="value"
+        data-id="{{item.value}}"
         bindtap="_handleCategoryTap"
       >
         <text class="rth-cat-item__text">{{item.name}}</text>

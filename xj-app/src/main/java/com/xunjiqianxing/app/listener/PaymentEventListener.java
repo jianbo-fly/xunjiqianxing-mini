@@ -6,6 +6,7 @@ import com.xunjiqianxing.service.order.entity.OrderMain;
 import com.xunjiqianxing.service.order.service.OrderService;
 import com.xunjiqianxing.service.payment.entity.PaymentRecord;
 import com.xunjiqianxing.service.payment.service.impl.PaymentServiceImpl;
+import com.xunjiqianxing.service.product.service.ProductService;
 import com.xunjiqianxing.service.product.service.RouteService;
 import com.xunjiqianxing.service.promotion.service.PromoterService;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ public class PaymentEventListener {
 
     private final OrderService orderService;
     private final RouteService routeService;
+    private final ProductService productService;
     private final MemberService memberService;
     private final PromoterService promoterService;
     private final MessageService messageService;
@@ -56,13 +58,14 @@ public class PaymentEventListener {
         if (success) {
             log.info("订单支付状态更新成功: orderNo={}", record.getBizNo());
 
-            // 确认库存（sold += quantity, locked -= quantity）
+            // 确认库存（sold += quantity, locked -= quantity）并更新销量
             try {
                 OrderMain orderForStock = orderService.getByOrderNo(record.getBizNo());
                 if (orderForStock != null) {
                     int quantity = (orderForStock.getAdultCount() != null ? orderForStock.getAdultCount() : 0)
                             + (orderForStock.getChildCount() != null ? orderForStock.getChildCount() : 0);
                     routeService.confirmStock(orderForStock.getSkuId(), orderForStock.getStartDate(), quantity);
+                    productService.increaseSalesCount(orderForStock.getProductId(), quantity);
                 }
             } catch (Exception e) {
                 log.warn("确认库存失败: orderNo={}, error={}", record.getBizNo(), e.getMessage());

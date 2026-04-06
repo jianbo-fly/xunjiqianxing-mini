@@ -248,6 +248,14 @@
   gap: 10rpx;
 }
 
+.entry-item--hover .entry-icon-bg {
+  transform: scale(0.88);
+  opacity: 0.75;
+}
+
+.entry-item--hover .entry-name {
+  opacity: 0.6;
+}
 
 .entry-icon-bg {
   width: 88rpx;
@@ -255,6 +263,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: transform 0.15s ease, opacity 0.15s ease;
 }
 
 .entry-icon {
@@ -352,15 +361,15 @@
 
 .route-card__location {
   position: absolute;
-  top: 16rpx;
+  bottom: 16rpx;
   left: 16rpx;
   display: flex;
   align-items: center;
-  gap: 8rpx;
-  padding: 4rpx 16rpx;
-  background: rgba(0, 0, 0, 0.5);
+  gap: 6rpx;
+  padding: 4rpx 14rpx;
+  background: rgba(0, 0, 0, 0.45);
   backdrop-filter: blur(12rpx);
-  border-radius: 8rpx;
+  border-radius: 20rpx;
 }
 
 .route-card__location-icon {
@@ -442,13 +451,7 @@
   font-weight: var(--font-weight-medium);
 }
 
-/* ===== 空状态 ===== */
-.empty-tip {
-  padding: var(--spacing-xl) 0;
-  text-align: center;
-  color: var(--color-text-tertiary);
-  font-size: var(--font-size-sm);
-}
+/* ===== 空状态（由 xj-empty 组件处理，此处留余量） ===== */
 
 /* ===== 底部占位 ===== */
 .bottom-placeholder {

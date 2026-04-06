@@ -2,5 +2,8 @@
   "navigationBarTitleText": "寻迹千行",
   "enablePullDownRefresh": true,
   "navigationStyle": "custom",
-  "usingComponents": {}
+  "usingComponents": {
+    "xj-empty": "../../components/base/xj-empty/index",
+    "xj-toast": "../../components/base/xj-toast/index"
+  }
 }

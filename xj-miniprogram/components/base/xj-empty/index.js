@@ -19,10 +19,25 @@ Component({
       type: String,
       value: ''
     },
-    // 描述文字
+    // 主描述文字（标题）
     description: {
       type: String,
       value: ''
+    },
+    // 副标题
+    subtitle: {
+      type: String,
+      value: ''
+    },
+    // 操作按钮文字（有值才显示按钮）
+    buttonText: {
+      type: String,
+      value: ''
+    },
+    // 卡片模式（白色圆角卡片 + 右上角×徽章）
+    cardMode: {
+      type: Boolean,
+      value: false
     },
     // 自定义类名
     customClass: {
@@ -46,6 +61,7 @@ Component({
         search: assets.empty.search,
         message: assets.empty.message,
         coupon: assets.empty.coupon,
+        route: assets.empty.route,
       };
 
       const textMap = {
@@ -56,6 +72,7 @@ Component({
         search: '未找到相关内容',
         message: '暂无消息',
         coupon: '暂无优惠券',
+        route: '暂无相关路线',
       };
 
       this.setData({

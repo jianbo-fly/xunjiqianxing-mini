@@ -1297,9 +1297,9 @@
   text-align: center;
   font-size: 26rpx;
   color: #374151;
-  background: #f9fafb;
+  background: #f3f4f6;
   border-radius: 12rpx;
-  border: 2rpx solid transparent;
+  border: 2rpx solid #e5e7eb;
 }
 
 .gfp-chip--active {
@@ -1307,6 +1307,7 @@
   border-color: #ec3713;
   color: #ec3713;
   font-weight: 600;
+  box-shadow: 0 2rpx 10rpx rgba(236, 55, 19, 0.2);
 }
 
 .gfp-footer {

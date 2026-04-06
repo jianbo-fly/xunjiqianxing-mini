@@ -8,25 +8,12 @@ const { HOT_CITIES, CITY_GROUPS } = require('../../../config/cities');
 const CITY_HISTORY_KEY = 'departureCityHistory';
 
 const FILTER_OPTIONS = {
-  departure: [
-    { label: '不限', value: '' },
-    { label: '北京', value: '北京' },
-    { label: '上海', value: '上海' },
-    { label: '广州', value: '广州' },
-    { label: '深圳', value: '深圳' },
-    { label: '成都', value: '成都' },
-    { label: '杭州', value: '杭州' },
-    { label: '武汉', value: '武汉' },
-    { label: '西安', value: '西安' },
-    { label: '重庆', value: '重庆' },
-    { label: '昆明', value: '昆明' },
-  ],
   days: [
     { label: '不限', value: '' },
     { label: '1-3天', value: '1-3', min: 1, max: 3 },
     { label: '4-6天', value: '4-6', min: 4, max: 6 },
     { label: '7-10天', value: '7-10', min: 7, max: 10 },
-    { label: '10天以上', value: '10+', min: 11, max: 999 },
+    { label: '10天以上', value: '10+', min: 11, max: 0 },
   ],
   budget: [
     { label: '不限', value: '' },
@@ -55,15 +42,8 @@ Page({
     // 主 Tab 列表（首页入口不展示分类 tab）
     tabs: [],
     activeTab: '',
-    // 分类
-    categories: [
-      { id: '', name: '全部' },
-      { id: 'domestic', name: '国内游' },
-      { id: 'overseas', name: '出境游' },
-      { id: 'nearby', name: '周边游' },
-      { id: 'island', name: '海岛游' },
-      { id: 'resort', name: '度假游' },
-    ],
+    // 分类（动态从接口加载，name 与 product_route.category 一致）
+    categories: [{ name: '全部', value: '' }],
     activeCategory: '',
     // 筛选条件展示值（传给 header 组件显示）
     filterValues: {
@@ -121,9 +101,10 @@ Page({
 
     this.setData({ statusBarHeight, navBarTotalHeight, departureCity, keyword });
 
-    if (options.categoryId) this.setData({ activeCategory: options.categoryId });
-
-    this.loadList();
+    // 加载分类后再加载列表，确保 activeCategory 已设置
+    this.loadCategories(options.category || '').then(() => {
+      this.loadList();
+    });
 
     // 渲染完成后测量搜索栏高度 → 更新 searchBarHeight 和 contentTop
     wx.nextTick(() => {
@@ -162,16 +143,35 @@ Page({
     if (keyword) params.keyword = keyword;
     if (activeCategory) params.category = activeCategory;
     if (departureCity) params.departureCity = departureCity;
-    if (filterParams.minDays) params.minDays = filterParams.minDays;
-    if (filterParams.maxDays) params.maxDays = filterParams.maxDays;
-    if (filterParams.minPrice !== '') params.minPrice = filterParams.minPrice;
-    if (filterParams.maxPrice) params.maxPrice = filterParams.maxPrice;
+    if (filterParams.minDays !== '') params.minDays = filterParams.minDays;
+    if (filterParams.maxDays !== '') params.maxDays = filterParams.maxDays;
+    if (filterParams.minPrice !== '') params.filterMinPrice = filterParams.minPrice;
+    if (filterParams.maxPrice !== '') params.filterMaxPrice = filterParams.maxPrice;
     return params;
   },
 
   /**
    * 加载线路列表
    */
+  /**
+   * 加载分类列表（从接口动态获取，与管理端同源）
+   * @param {string} initCategory - 页面入口时预选的分类名称
+   */
+  async loadCategories(initCategory) {
+    try {
+      const list = await routeApi.getCategories();
+      // 第一项固定为"全部"，其余从接口返回
+      const categories = [{ name: '全部', value: '' }].concat(
+        (list || []).map(c => ({ name: c.name, value: c.name }))
+      );
+      const activeCategory = initCategory || '';
+      this.setData({ categories, activeCategory });
+    } catch (err) {
+      console.error('加载分类失败', err);
+      // 加载失败不影响主流程，保持默认"全部"
+    }
+  },
+
   async loadList() {
     this.setData({ loading: true });
     try {
@@ -227,7 +227,7 @@ Page({
       return;
     }
 
-    const TITLES = { departure: '热门出发城市', days: '行程天数', budget: '价格预算' };
+    const TITLES = { days: '行程天数', budget: '价格预算' };
     const currentLabel = filterValues[type] || '';
     const options = FILTER_OPTIONS[type] || [];
     const selected = (options.find(o => o.label === currentLabel) || {}).value || '';
@@ -281,7 +281,7 @@ Page({
       newFilterParams.minDays = pendingValue ? option.min : '';
       newFilterParams.maxDays = pendingValue ? option.max : '';
     } else if (type === 'budget') {
-      newFilterParams.minPrice = pendingValue ? option.min : '';
+      newFilterParams.minPrice = pendingValue ? (option.min ?? '') : '';
       newFilterParams.maxPrice = pendingValue ? option.max : '';
     }
 
@@ -325,6 +325,20 @@ Page({
     const { id } = e.detail;
     if (id === this.data.activeCategory) return;
     this.setData({ activeCategory: id, page: 1, list: [], hasMore: true });
+    this.loadList();
+  },
+
+  handleResetFilter() {
+    this.setData({
+      activeCategory: '',
+      departureCity: '',
+      keyword: '',
+      filterParams: { minDays: '', maxDays: '', minPrice: '', maxPrice: '' },
+      filterValues: { days: '', budget: '', hasFilter: false },
+      page: 1,
+      list: [],
+      hasMore: true,
+    });
     this.loadList();
   },
 

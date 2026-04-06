@@ -62,4 +62,13 @@ public class ProductServiceImpl implements ProductService {
                         .setSql("view_count = view_count + 1")
         );
     }
+
+    @Override
+    public void increaseSalesCount(Long id, int quantity) {
+        productMainMapper.update(null,
+                new LambdaUpdateWrapper<ProductMain>()
+                        .eq(ProductMain::getId, id)
+                        .setSql("sales_count = sales_count + " + quantity)
+        );
+    }
 }

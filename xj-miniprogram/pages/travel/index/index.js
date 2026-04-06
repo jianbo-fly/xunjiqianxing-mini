@@ -19,16 +19,16 @@ const GROUP_FILTER_OPTIONS = {
     { label: '武汉', value: '武汉' },
   ],
   days: [
-    { label: '1-3天', value: '1-3天' },
-    { label: '4-6天', value: '4-6天' },
-    { label: '7-9天', value: '7-9天' },
-    { label: '10天+', value: '10天+' },
+    { label: '1-3天', value: '1-3天', min: 1, max: 3 },
+    { label: '4-6天', value: '4-6天', min: 4, max: 6 },
+    { label: '7-9天', value: '7-9天', min: 7, max: 9 },
+    { label: '10天+', value: '10天+', min: 10, max: 0 },
   ],
   budget: [
-    { label: '3000以下', value: '3000以下' },
-    { label: '3000-5000', value: '3000-5000' },
-    { label: '5000-8000', value: '5000-8000' },
-    { label: '8000以上', value: '8000以上' },
+    { label: '3000以下', value: '3000以下', min: 0, max: 3000 },
+    { label: '3000-5000', value: '3000-5000', min: 3000, max: 5000 },
+    { label: '5000-8000', value: '5000-8000', min: 5000, max: 8000 },
+    { label: '8000以上', value: '8000以上', min: 8000, max: 0 },
   ],
 };
 const customApi = require('../../../services/custom');
@@ -72,9 +72,11 @@ Page({
     filters: {
       departure: '',
       days: '',
-      priceMin: '',
-      priceMax: '',
       budgetLabel: '',
+      minDays: '',
+      maxDays: '',
+      minPrice: '',
+      maxPrice: '',
     },
     departures: ['不限', '北京', '上海', '广州', '深圳', '成都', '杭州', '南京', '武汉'],
     daysOptions: ['不限', '1-3天', '4-6天', '7-9天', '10天+'],
@@ -363,23 +365,22 @@ Page({
   handleGroupFilterConfirm() {
     const { groupFilterPanel, filters } = this.data;
     const { type, pendingValue } = groupFilterPanel;
+    const options = GROUP_FILTER_OPTIONS[type] || [];
+    const option = options.find(o => o.value === pendingValue) || {};
     const newFilters = { ...filters };
+
     if (type === 'departure') {
       newFilters.departure = pendingValue;
     } else if (type === 'days') {
       newFilters.days = pendingValue;
+      newFilters.minDays = pendingValue ? option.min : '';
+      newFilters.maxDays = pendingValue ? option.max : '';
     } else if (type === 'budget') {
       newFilters.budgetLabel = pendingValue;
-      const budgetRanges = {
-        '3000以下': { priceMin: '', priceMax: '3000' },
-        '3000-5000': { priceMin: '3000', priceMax: '5000' },
-        '5000-8000': { priceMin: '5000', priceMax: '8000' },
-        '8000以上': { priceMin: '8000', priceMax: '' },
-      };
-      const range = budgetRanges[pendingValue] || { priceMin: '', priceMax: '' };
-      newFilters.priceMin = range.priceMin;
-      newFilters.priceMax = range.priceMax;
+      newFilters.minPrice = pendingValue ? option.min : '';
+      newFilters.maxPrice = pendingValue ? option.max : '';
     }
+
     this.setData({
       filters: newFilters,
       'groupFilterPanel.show': false,
@@ -412,18 +413,21 @@ Page({
 
     try {
       const categoryMap = ['domestic', 'overseas', 'nearby'];
-      const { departureCity, keyword } = this.data;
+      const { departureCity, keyword, filters } = this.data;
       const params = {
         page: this.data.routePage,
         pageSize: this.data.routePageSize,
         category: categoryMap[this.data.categoryIndex] || 'domestic',
       };
-      if (departureCity) params.departureCity = departureCity;
+      // 出发城市：筛选面板选择的优先，否则用搜索栏城市
+      params.departureCity = filters.departure || departureCity || '';
       if (keyword) params.keyword = keyword;
-      // 只追加有实际值的筛选条件，避免发送空字符串
-      Object.entries(this.data.filters).forEach(([k, v]) => {
-        if (v !== '' && v != null) params[k] = v;
-      });
+      // 天数筛选 → 后端参数 minDays / maxDays
+      if (filters.minDays !== '') params.minDays = filters.minDays;
+      if (filters.maxDays !== '') params.maxDays = filters.maxDays;
+      // 价格筛选 → 后端参数 filterMinPrice / filterMaxPrice
+      if (filters.minPrice !== '') params.filterMinPrice = filters.minPrice;
+      if (filters.maxPrice !== '') params.filterMaxPrice = filters.maxPrice;
 
       const res = await routeApi.getList(params);
       const list = res.list || res.records || [];

@@ -117,6 +117,16 @@ Page({
   },
 
   /**
+   * 删除单条历史记录
+   */
+  handleDeleteHistory(e) {
+    const keyword = e.currentTarget.dataset.keyword;
+    const list = this.data.historyList.filter(k => k !== keyword);
+    wx.setStorageSync(HISTORY_KEY, JSON.stringify(list));
+    this.setData({ historyList: list });
+  },
+
+  /**
    * 清空历史记录
    */
   handleClearHistory() {

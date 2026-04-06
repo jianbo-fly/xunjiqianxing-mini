@@ -14,6 +14,7 @@ import com.xunjiqianxing.service.order.enums.OrderStatus;
 import com.xunjiqianxing.service.order.service.OrderService;
 import com.xunjiqianxing.service.product.entity.ProductMain;
 import com.xunjiqianxing.service.product.entity.ProductPriceStock;
+import com.xunjiqianxing.service.product.entity.ProductRoute;
 import com.xunjiqianxing.service.product.entity.ProductSku;
 import com.xunjiqianxing.service.product.service.ProductService;
 import com.xunjiqianxing.service.product.service.RouteService;
@@ -110,6 +111,12 @@ public class OrderController {
         order.setProductImage(product.getCoverImage());
         order.setSkuName(sku.getName());
         order.setStartDate(request.getStartDate());
+        // 从线路扩展表取行程天数，推算结束日期
+        ProductRoute routeExt = routeService.getRouteExtById(product.getId());
+        int days = (routeExt != null && routeExt.getDays() != null && routeExt.getDays() > 0)
+                ? routeExt.getDays() : 1;
+        order.setDays(days);
+        order.setEndDate(request.getStartDate().plusDays(days - 1));
         order.setAdultCount(request.getAdultCount());
         order.setChildCount(request.getChildCount() != null ? request.getChildCount() : 0);
         order.setAdultPrice(priceStock.getPrice());

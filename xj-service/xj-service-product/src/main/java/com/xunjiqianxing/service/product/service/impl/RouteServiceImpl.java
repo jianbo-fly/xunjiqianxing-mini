@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
@@ -37,28 +38,44 @@ public class RouteServiceImpl implements RouteService {
     private final ProductPriceStockMapper productPriceStockMapper;
 
     @Override
-    public PageResult<ProductMain> pageRoutes(PageQuery pageQuery, String category, String departureCity, String keyword) {
+    public PageResult<ProductMain> pageRoutes(PageQuery pageQuery, String category, String departureCity, String keyword,
+                                              Integer minDays, Integer maxDays,
+                                              BigDecimal filterMinPrice, BigDecimal filterMaxPrice) {
         Page<ProductMain> page = new Page<>(pageQuery.getPage(), pageQuery.getPageSize());
 
-        // ── Step 1：从 product_route 按出发城市拿到候选 product_id ──────────────
-        // product_route.city_name = 出发城市标准名（精确匹配）
-        List<Long> departureCityIds = null;
-        if (StringUtils.hasText(departureCity)) {
-            departureCityIds = productRouteMapper.selectList(
-                    new LambdaQueryWrapper<ProductRoute>()
-                            .eq(ProductRoute::getCityName, departureCity)
-                            .select(ProductRoute::getProductId)
-            ).stream().map(ProductRoute::getProductId).collect(Collectors.toList());
+        // ── Step 1：从 product_route 合并查询 category / departureCity / days ────
+        // 这三个条件都是 AND 语义，合并为一次查询
+        boolean hasDaysFilter = minDays != null && minDays > 0;
+        boolean hasRouteAndFilter = StringUtils.hasText(category)
+                || StringUtils.hasText(departureCity)
+                || hasDaysFilter;
 
-            // 出发城市无匹配，直接返回空
-            if (departureCityIds.isEmpty()) {
+        List<Long> routeFilterIds = null;
+        if (hasRouteAndFilter) {
+            LambdaQueryWrapper<ProductRoute> routeWrapper = new LambdaQueryWrapper<ProductRoute>()
+                    .select(ProductRoute::getProductId);
+            if (StringUtils.hasText(category)) {
+                routeWrapper.eq(ProductRoute::getCategory, category);
+            }
+            if (StringUtils.hasText(departureCity)) {
+                routeWrapper.eq(ProductRoute::getCityName, departureCity);
+            }
+            if (hasDaysFilter) {
+                routeWrapper.ge(ProductRoute::getDays, minDays);
+                if (maxDays != null && maxDays > 0) {
+                    routeWrapper.le(ProductRoute::getDays, maxDays);
+                }
+            }
+            routeFilterIds = productRouteMapper.selectList(routeWrapper)
+                    .stream().map(ProductRoute::getProductId).collect(Collectors.toList());
+
+            if (routeFilterIds.isEmpty()) {
                 return PageResult.of(Collections.emptyList(), 0L,
                         pageQuery.getPage(), pageQuery.getPageSize());
             }
         }
 
-        // ── Step 2：从 product_route 按目的地关键词拿到候选 product_id ──────────
-        // product_route.destination = 目的地，模糊匹配
+        // ── Step 2：从 product_route 按目的地关键词拿候选 ID（OR 语义，单独查询）──
         List<Long> destinationKeywordIds = null;
         if (StringUtils.hasText(keyword)) {
             destinationKeywordIds = productRouteMapper.selectList(
@@ -75,6 +92,11 @@ public class RouteServiceImpl implements RouteService {
                 .eq(ProductMain::getIsDeleted, 0)
                 .eq(ProductMain::getAuditStatus, 1);
 
+        // 分类 + 出发城市 + 天数（合并后的 AND 过滤）
+        if (routeFilterIds != null) {
+            wrapper.in(ProductMain::getId, routeFilterIds);
+        }
+
         // 关键词：name/subtitle LIKE  OR  id IN (destination 命中的 IDs)
         if (StringUtils.hasText(keyword)) {
             final List<Long> destIds = destinationKeywordIds;
@@ -88,9 +110,12 @@ public class RouteServiceImpl implements RouteService {
             });
         }
 
-        // 出发城市：限制在第一步拿到的 product_id 范围内
-        if (departureCityIds != null) {
-            wrapper.in(ProductMain::getId, departureCityIds);
+        // 价格：product_main.min_price 即最低售价
+        if (filterMinPrice != null && filterMinPrice.compareTo(BigDecimal.ZERO) > 0) {
+            wrapper.ge(ProductMain::getMinPrice, filterMinPrice);
+        }
+        if (filterMaxPrice != null && filterMaxPrice.compareTo(BigDecimal.ZERO) > 0) {
+            wrapper.le(ProductMain::getMinPrice, filterMaxPrice);
         }
 
         wrapper.orderByDesc(ProductMain::getSortOrder)

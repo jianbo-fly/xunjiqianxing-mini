@@ -7,6 +7,13 @@ const { paths } = require('../config/api');
 
 const routeApi = {
   /**
+   * 获取线路分类列表（与管理端同源）
+   */
+  getCategories() {
+    return get(paths.route.categories);
+  },
+
+  /**
    * 获取线路列表
    * @param {Object} params
    * @param {number} params.page - 页码

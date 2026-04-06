@@ -87,6 +87,8 @@
           wx:key="id"
           data-item="{{item}}"
           bindtap="handleEntryTap"
+          hover-class="entry-item--hover"
+          hover-stay-time="100"
         >
           <view class="entry-icon-bg">
             <image class="entry-icon" src="{{item.icon}}" mode="aspectFit" />
@@ -127,10 +129,10 @@
                 mode="aspectFill"
                 lazy-load
               />
-              <!-- <view class="route-card__location">
+              <view class="route-card__location" wx:if="{{item.cityName}}">
                 <image class="route-card__location-icon" src="/assets/icons/common/location.png" mode="aspectFit" />
-                <text class="route-card__location-text">{{item.location || ''}}</text>
-              </view> -->
+                <text class="route-card__location-text">{{item.cityName}}</text>
+              </view>
             </view>
             <view class="route-card__info">
               <text class="route-card__title">{{item.name}}</text>
@@ -145,7 +147,9 @@
                 >{{tag}}</text>
               </view>
               <view class="route-card__bottom">
-                <text class="route-card__sales">已售 {{item.salesText || item.salesCount || 0}}</text>
+                <view class="route-card__sales-wrap">
+                  <text class="route-card__sales">已售 {{item.salesText || item.salesCount || 0}}</text>
+                </view>
                 <view class="route-card__price">
                   <text class="route-card__price-symbol">¥</text>
                   <text class="route-card__price-value">{{item.priceText || item.minPrice || 0}}</text>
@@ -171,10 +175,10 @@
                 mode="aspectFill"
                 lazy-load
               />
-              <!-- <view class="route-card__location">
+              <view class="route-card__location" wx:if="{{item.cityName}}">
                 <image class="route-card__location-icon" src="/assets/icons/common/location.png" mode="aspectFit" />
-                <text class="route-card__location-text">{{item.location || ''}}</text>
-              </view> -->
+                <text class="route-card__location-text">{{item.cityName}}</text>
+              </view>
             </view>
             <view class="route-card__info">
               <text class="route-card__title">{{item.name}}</text>
@@ -189,7 +193,9 @@
                 >{{tag}}</text>
               </view>
               <view class="route-card__bottom">
-                <text class="route-card__sales">已售 {{item.salesText || item.salesCount || 0}}</text>
+                <view class="route-card__sales-wrap">
+                  <text class="route-card__sales">已售 {{item.salesText || item.salesCount || 0}}</text>
+                </view>
                 <view class="route-card__price">
                   <text class="route-card__price-symbol">¥</text>
                   <text class="route-card__price-value">{{item.priceText || item.minPrice || 0}}</text>
@@ -200,9 +206,15 @@
         </view>
       </view>
 
-      <view wx:else class="empty-tip">
-        <text>暂无热门路线</text>
-      </view>
+      <xj-empty
+        wx:else
+        card-mode="{{true}}"
+        type="route"
+        description="暂无热门路线"
+        subtitle="换个关键词或去看看热门线路吧"
+        button-text="查看全部路线"
+        bind:action="handleMoreTap"
+      />
     </view>
   </view>
 

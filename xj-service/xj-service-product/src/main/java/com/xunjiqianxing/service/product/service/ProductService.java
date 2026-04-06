@@ -28,4 +28,9 @@ public interface ProductService {
      * 增加浏览量
      */
     void increaseViewCount(Long id);
+
+    /**
+     * 增加销量
+     */
+    void increaseSalesCount(Long id, int quantity);
 }

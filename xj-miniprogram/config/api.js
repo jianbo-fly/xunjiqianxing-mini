@@ -47,6 +47,7 @@ module.exports = {
 
     // 线路模块 /api/route
     route: {
+      categories: '/api/route/categories',
       list: '/api/route/list',
       detail: '/api/route',  // /api/route/{id}
       packages: '/api/route',  // /api/route/{id}/packages
