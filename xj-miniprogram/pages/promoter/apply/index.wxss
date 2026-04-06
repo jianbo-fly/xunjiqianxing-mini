@@ -142,12 +142,32 @@
 .benefit-icon-bg {
   width: 96rpx;
   height: 96rpx;
-  background: rgba(236, 55, 19, 0.1);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 16rpx;
+}
+
+/* 专属海报 — 红色渐变 */
+.benefit-icon-bg--red {
+  background: linear-gradient(135deg, #fff0ed 0%, #ffd6cc 100%);
+  border: 2rpx solid rgba(236, 55, 19, 0.18);
+  box-shadow: 0 4rpx 12rpx rgba(236, 55, 19, 0.15);
+}
+
+/* 积分奖励 — 橙黄渐变 */
+.benefit-icon-bg--orange {
+  background: linear-gradient(135deg, #fff7ed 0%, #fed7aa 100%);
+  border: 2rpx solid rgba(249, 115, 22, 0.18);
+  box-shadow: 0 4rpx 12rpx rgba(249, 115, 22, 0.15);
+}
+
+/* 数据看板 — 蓝色渐变 */
+.benefit-icon-bg--blue {
+  background: linear-gradient(135deg, #eff6ff 0%, #bfdbfe 100%);
+  border: 2rpx solid rgba(59, 130, 246, 0.18);
+  box-shadow: 0 4rpx 12rpx rgba(59, 130, 246, 0.12);
 }
 
 .benefit-icon {
@@ -246,7 +266,7 @@
 
 .input-bg {
   position: relative;
-  background: #f8f6f6;
+  background: var(--color-bg-page);
   border-radius: 16rpx;
   padding: 24rpx 80rpx 24rpx 32rpx;
 }
@@ -353,6 +373,16 @@
 .agree-box--checked {
   background: #ec3713;
   border-color: #ec3713;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.agree-check {
+  font-size: 26rpx;
+  color: #fff;
+  font-weight: 700;
+  line-height: 1;
 }
 
 .agree-text {

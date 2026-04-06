@@ -81,15 +81,22 @@
       <!-- Poster visual -->
       <view class="poster-visual">
         <view class="poster-gradient"></view>
-        <!-- Brand text top -->
+        <text class="poster-deco-text">TRAVEL · SHARE · EARN</text>
+
+        <!-- 品牌区（顶部横排） -->
         <view class="poster-brand">
-          <text class="poster-brand-en">XUNJI QIANHANG</text>
-          <text class="poster-brand-cn">寻迹千行</text>
-          <text class="poster-brand-sub">探索未知，从这里开始</text>
+          <view class="poster-brand-logo-wrap">
+            <text class="poster-brand-logo-text">寻</text>
+          </view>
+          <view class="poster-brand-text-col">
+            <text class="poster-brand-cn">寻迹千行</text>
+            <text class="poster-brand-sub">探索未知，从这里开始</text>
+          </view>
         </view>
-        <!-- QR frosted card bottom -->
-        <view class="poster-qr-card">
-          <view class="poster-qr-box">
+
+        <!-- 二维码居中区 -->
+        <view class="poster-qr-center">
+          <view class="poster-qr-wrap">
             <image
               wx:if="{{promoter.qrCodeUrl}}"
               class="poster-qr-img"
@@ -101,10 +108,10 @@
               <image class="poster-qr-placeholder-icon" src="/assets/icons/promoter/benefit-points.png" mode="aspectFit" />
             </view>
           </view>
-          <view class="poster-qr-info">
-            <text class="poster-qr-from">来自推广员</text>
-            <text class="poster-qr-name">{{promoter.nickname || promoter.name || '推广员'}}</text>
-            <text class="poster-qr-hint">长按识别二维码加入</text>
+          <text class="poster-qr-name">{{promoter.nickname || promoter.name || '推广员'}}</text>
+          <text class="poster-qr-hint">长按识别小程序码</text>
+          <view class="poster-qr-code-chip" wx:if="{{promoter.promoCode}}">
+            <text class="poster-qr-code-label">推广码 · {{promoter.promoCode}}</text>
           </view>
         </view>
       </view>

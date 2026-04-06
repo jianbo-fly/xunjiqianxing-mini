@@ -99,8 +99,8 @@ const promoterApi = {
   },
 
   /**
-   * 下载推广员专属小程序码（返回本地临时路径）
-   * 使用 wx.request + arraybuffer 写入本地文件，绕过 wx.downloadFile 在模拟器丢失端口的问题
+   * 下载推广员专属小程序码（返回 base64 data URI，可直接用于 <image> src）
+   * 同时将原始 ArrayBuffer 写入本地，供 handleSaveImage 保存相册使用。
    */
   downloadQrCode() {
     return new Promise((resolve, reject) => {
@@ -111,21 +111,22 @@ const promoterApi = {
         responseType: 'arraybuffer',
         success(res) {
           if (res.statusCode === 200) {
+            // 转 base64 data URI，直接给 <image> 渲染，不依赖文件系统路径
+            const base64 = wx.arrayBufferToBase64(res.data);
+            const dataUri = `data:image/png;base64,${base64}`;
+            // 后台异步写文件，供保存到相册时使用（失败不影响显示）
             const filePath = `${wx.env.USER_DATA_PATH}/promoter_qr.png`;
             wx.getFileSystemManager().writeFile({
               filePath,
               data: res.data,
-              encoding: 'binary',
-              success() { resolve(filePath); },
-              fail(err) { reject(err); },
+              fail() {},
             });
+            resolve({ dataUri, filePath });
           } else {
             reject(new Error('二维码获取失败: ' + res.statusCode));
           }
         },
-        fail(err) {
-          reject(err);
-        },
+        fail(err) { reject(err); },
       });
     });
   },

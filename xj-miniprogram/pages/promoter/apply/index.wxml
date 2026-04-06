@@ -28,21 +28,21 @@
     <text class="benefits-label">专属权益</text>
     <view class="benefits-grid">
       <view class="benefit-item">
-        <view class="benefit-icon-bg">
+        <view class="benefit-icon-bg benefit-icon-bg--red">
           <image class="benefit-icon" src="/assets/icons/promoter/benefit-poster.png" mode="aspectFit" />
         </view>
         <text class="benefit-name">专属海报</text>
         <text class="benefit-sub">一键生成</text>
       </view>
       <view class="benefit-item">
-        <view class="benefit-icon-bg">
+        <view class="benefit-icon-bg benefit-icon-bg--orange">
           <image class="benefit-icon" src="/assets/icons/promoter/benefit-points.png" mode="aspectFit" />
         </view>
         <text class="benefit-name">积分奖励</text>
         <text class="benefit-sub">即时到账</text>
       </view>
       <view class="benefit-item">
-        <view class="benefit-icon-bg">
+        <view class="benefit-icon-bg benefit-icon-bg--blue">
           <image class="benefit-icon" src="/assets/icons/promoter/benefit-dashboard.png" mode="aspectFit" />
         </view>
         <text class="benefit-name">数据看板</text>
@@ -103,7 +103,9 @@
   <!-- Fixed footer -->
   <view class="apply-footer">
     <view class="agreement-row" bindtap="handleToggleAgree">
-      <view class="agree-box {{agreed ? 'agree-box--checked' : ''}}"></view>
+      <view class="agree-box {{agreed ? 'agree-box--checked' : ''}}">
+        <text wx:if="{{agreed}}" class="agree-check">✓</text>
+      </view>
       <text class="agree-text">我已阅读并同意 <text class="agree-link">《推广员协议》</text></text>
     </view>
     <view

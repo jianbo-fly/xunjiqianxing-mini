@@ -201,36 +201,44 @@
   background: rgba(242, 235, 234, 0.5);
 }
 
-.hot-item__rank {
+/* 排名区域容器 */
+.hot-item__rank-wrap {
+  position: relative;
   width: 40rpx;
   height: 40rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 8rpx;
-  font-size: 24rpx;
-  font-weight: 500;
-  color: #9c8e8b;
   flex-shrink: 0;
 }
 
-.hot-item__rank--1 {
-  background: #ec3713;
-  color: #fff;
-  border-radius: 8rpx;
+/* 火焰图标（绝对定位在数字后方） */
+.hot-item__fire {
+  position: absolute;
+  width: 36rpx;
+  height: 36rpx;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -55%);
+  opacity: 0;
 }
 
-.hot-item__rank--2 {
-  background: rgba(236, 55, 19, 0.8);
-  color: #fff;
-  border-radius: 8rpx;
+.hot-item__rank-wrap--1 .hot-item__fire { opacity: 1; }
+.hot-item__rank-wrap--2 .hot-item__fire { opacity: 0.7; }
+.hot-item__rank-wrap--3 .hot-item__fire { opacity: 0.45; }
+
+/* 排名数字 */
+.hot-item__rank-num {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #c0b0ae;
+  position: relative;
+  z-index: 1;
 }
 
-.hot-item__rank--3 {
-  background: rgba(236, 55, 19, 0.6);
-  color: #fff;
-  border-radius: 8rpx;
-}
+.hot-item__rank-wrap--1 .hot-item__rank-num { color: #ec3713; font-size: 26rpx; }
+.hot-item__rank-wrap--2 .hot-item__rank-num { color: #f97316; }
+.hot-item__rank-wrap--3 .hot-item__rank-num { color: #f59e0b; }
 
 .hot-item__name {
   font-size: 28rpx;
@@ -354,8 +362,9 @@
 }
 
 .result-card__score-icon {
-  font-size: 22rpx;
-  color: #facc15;
+  width: 24rpx;
+  height: 24rpx;
+  flex-shrink: 0;
 }
 
 .result-card__score-num {
@@ -386,10 +395,11 @@
 
 .result-card__tag {
   font-size: 20rpx;
-  color: #4b5563;
-  background: #f3f4f6;
+  color: #ec3713;
+  background: rgba(236, 55, 19, 0.07);
   padding: 6rpx 16rpx;
   border-radius: 8rpx;
+  border: 1rpx solid rgba(236, 55, 19, 0.15);
 }
 
 .result-card__footer {

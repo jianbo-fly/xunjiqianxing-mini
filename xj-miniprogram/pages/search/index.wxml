@@ -104,7 +104,7 @@
         <view class="result-card__cover">
           <image class="result-card__image" src="{{item.coverImage}}" mode="aspectFill" lazy-load />
           <view class="result-card__score" wx:if="{{item.score}}">
-            <text class="result-card__score-icon">★</text>
+            <image class="result-card__score-icon" src="/assets/icons/common/star-gold.png" mode="aspectFit" />
             <text class="result-card__score-num">{{item.score}}</text>
           </view>
         </view>
@@ -160,7 +160,10 @@
           bindtap="handleTagTap"
           class="hot-item {{index === 0 ? 'hot-item--rank1' : index === 1 ? 'hot-item--rank2' : index === 2 ? 'hot-item--rank3' : 'hot-item--other'}}"
         >
-          <view class="hot-item__rank {{index === 0 ? 'hot-item__rank--1' : index === 1 ? 'hot-item__rank--2' : index === 2 ? 'hot-item__rank--3' : ''}}">{{index + 1}}</view>
+          <view class="hot-item__rank-wrap hot-item__rank-wrap--{{index < 3 ? (index + 1) : 'other'}}">
+            <image wx:if="{{index < 3}}" class="hot-item__fire" src="/assets/icons/common/fire.png" mode="aspectFit" />
+            <text class="hot-item__rank-num {{index < 3 ? 'hot-item__rank-num--top' : ''}}">{{index + 1}}</text>
+          </view>
           <text class="hot-item__name">{{item}}</text>
         </view>
       </view>

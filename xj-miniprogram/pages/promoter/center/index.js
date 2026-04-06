@@ -62,8 +62,11 @@ Page({
 
   async loadQrCode() {
     try {
-      const tempPath = await promoterApi.downloadQrCode();
-      this.setData({ 'promoter.qrCodeUrl': tempPath });
+      const { dataUri, filePath } = await promoterApi.downloadQrCode();
+      this.setData({
+        'promoter.qrCodeUrl': dataUri,
+        'promoter.qrFilePath': filePath,
+      });
     } catch (err) {
       console.error('加载推广码失败', err);
     }
@@ -78,13 +81,13 @@ Page({
   },
 
   handleSaveImage() {
-    const qrCodeUrl = this.data.promoter?.qrCodeUrl;
+    const { qrFilePath, qrCodeUrl } = this.data.promoter || {};
     if (!qrCodeUrl) {
       wx.showToast({ title: '推广码未生成', icon: 'none' });
       return;
     }
     wx.saveImageToPhotosAlbum({
-      filePath: qrCodeUrl,
+      filePath: qrFilePath || qrCodeUrl,
       success: () => {
         wx.showToast({ title: '已保存到相册', icon: 'success' });
       },
