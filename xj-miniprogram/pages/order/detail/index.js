@@ -106,7 +106,7 @@ Page({
       // 按钮状态
       showPayBtn: order.status === 0,
       showCancelBtn: order.status === 0,
-      showRefundBtn: [1, 2].includes(order.status),
+      showRefundBtn: order.status === 1,
       showContactBtn: [1, 2].includes(order.status),
       showBuyAgainBtn: [3, 4, 6, 7].includes(order.status),
       // 状态提示

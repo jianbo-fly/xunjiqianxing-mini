@@ -51,8 +51,7 @@ public enum OrderStatus {
      */
     public static List<Integer> refundableStatuses() {
         return Arrays.asList(
-                BOOKED.code,
-                TRAVELING.code
+                BOOKED.code
         );
     }
 }
