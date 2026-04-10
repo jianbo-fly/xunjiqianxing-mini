@@ -3,8 +3,8 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background: #fff;
-  border-top: 1rpx solid #f0f0f0;
+  background: #ffffff;
+  border-top: 1rpx solid #ebebeb;
   box-shadow: 0 -2rpx 12rpx rgba(0, 0, 0, 0.05);
 }
 
@@ -36,11 +36,11 @@
 .tab-item__label {
   font-size: 20rpx;
   line-height: 1;
-  color: #9ca3af;
+  color: var(--color-text-tertiary);
 }
 
 .tab-item--active .tab-item__label {
-  color: #EC3713;
+  color: var(--color-primary);
   font-weight: 600;
 }
 
@@ -50,6 +50,6 @@
   bottom: 0;
   width: 48rpx;
   height: 6rpx;
-  background: #EC3713;
+  background: var(--color-primary);
   border-radius: 3rpx 3rpx 0 0;
 }

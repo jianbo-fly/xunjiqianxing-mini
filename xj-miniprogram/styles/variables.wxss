@@ -15,42 +15,60 @@ page {
   --color-primary-tint: rgba(236, 55, 19, 0.1);   /* 浅主色背景：徽章/加号按钮 */
   --color-primary-border: rgba(236, 55, 19, 0.3); /* 半透明主色：投影/边框 */
   --color-primary-gradient: linear-gradient(to right, #EC3713, #EA580C);
+  --color-primary-ultralight: #FEECE9; /* 极浅主色背景：选中 chip、优惠券背景 */
 
   /* ===== 颜色 - 功能色 ===== */
   --color-success: #16A34A;
   --color-success-light: #F0FDF4;
-  --color-warning: #FAA014;
-  --color-warning-light: #FFFBE6;
+  --color-success-gradient: linear-gradient(to right, #10B981, #059669);
+  --color-warning: #F97316;          /* 橙色：待出发等中间状态 */
+  --color-warning-light: #FFF7ED;
   --color-error: #E74C3C;
   --color-error-light: #FFF2F0;
   --color-danger: #E74C3C;
   --color-info: #2563EB;
+  --color-info-light: #EFF6FF;
+  --color-info-gradient: linear-gradient(to right, #3B82F6, #2563EB);
+  --color-cancelled-gradient: linear-gradient(to right, #9CA3AF, #6B7280);
+  --color-star: #F59E0B;             /* 星级评分 */
   --color-price: #EC3713;
+  --color-wechat: #07C160;           /* 微信绿 */
 
   /* ===== 颜色 - 状态文字 ===== */
   --color-text-disabled: #C0C4CC;
 
   /* ===== 颜色 - 文字 ===== */
-  --color-text-primary: #111827;
-  --color-text-strong: #1F2937;      /* 强调文字：套餐标题、计数器数字 */
-  --color-text-body: #374151;        /* 正文文字：标签、列表项 */
-  --color-text-secondary: #6B7280;
+  --color-text-primary: #222222;     /* Airbnb 主文字色 */
+  --color-text-strong: #1a1a1a;      /* 强调文字：套餐标题、计数器数字 */
+  --color-text-body: #3d3d3d;        /* 正文文字：标签、列表项 */
+  --color-text-secondary: #717171;   /* Airbnb 次要文字色 */
   --color-text-tertiary: #9CA3AF;
-  --color-text-placeholder: #C0C4CC;
+  --color-text-placeholder: #BBBBBB;
   --color-text-inverse: #FFFFFF;
 
   /* ===== 颜色 - 背景 ===== */
-  --color-bg-page: #F8F6F6;
+  --color-bg-page: #F7F7F7;          /* Airbnb 页面背景 */
   --color-bg-card: #FFFFFF;
-  --color-bg-gray: #F9FAFB;
+  --color-bg-gray: #F7F7F7;
   --color-bg-mask: rgba(0,0,0,0.5);
-  --color-bg-warm: linear-gradient(180deg, #FFF7ED 0%, #F8F6F6 100%);
+  --color-bg-mask-light: rgba(0,0,0,0.3);
+  --color-overlay-dark: rgba(0,0,0,0.45);  /* 图片深色遮罩 */
+  --color-overlay-mid: rgba(0,0,0,0.6);    /* 图片评分底色 */
+  --color-overlay-light: rgba(255,255,255,0.85); /* 图片浅色遮罩 */
+  --color-bg-warm: linear-gradient(180deg, #FFF7ED 0%, #F7F7F7 100%);
 
   /* ===== 颜色 - 边框 ===== */
-  --color-border: #E5E7EB;
-  --color-border-medium: #D1D5DB;  /* 中灰边框：减号按钮、分隔 */
-  --color-border-light: #F3F4F6;
-  --color-divider: #F3F4F6;
+  --color-border: #DDDDDD;           /* Airbnb 边框色 */
+  --color-border-medium: #C8C8C8;    /* 中灰边框：减号按钮、分隔 */
+  --color-border-light: #EBEBEB;     /* Airbnb 分隔线色 */
+  --color-divider: #EBEBEB;
+
+  /* ===== 颜色 - 消息模块暖棕色系 ===== */
+  --color-warm-text: #5C4D4A;        /* 消息主文字 */
+  --color-warm-text-deep: #1F1412;   /* 消息加粗文字 */
+  --color-warm-text-muted: #A89C9A;  /* 消息次要文字 */
+  --color-warm-border: #E6E0DF;      /* 消息分隔线 */
+  --color-warm-bg: rgba(248,246,246,0.95); /* 消息顶栏背景 */
 
   /* ===== 颜色 - 标签系统 ===== */
   --tag-orange-bg: #FFF7ED;
@@ -93,27 +111,27 @@ page {
   --spacing-xxl: 64rpx;
 
   /* ===== 间距 - 页面 ===== */
-  --page-padding: 32rpx;
-  --card-padding: 24rpx;
-  --section-gap: 24rpx;
+  --page-padding: 40rpx;             /* Airbnb 页面左右边距更宽 */
+  --card-padding: 32rpx;             /* Airbnb 卡片内边距 */
+  --section-gap: 32rpx;
 
   /* ===== 圆角 ===== */
   --radius-none: 0;
-  --radius-xs: 4rpx;
-  --radius-sm: 8rpx;
-  --radius-md: 16rpx;
-  --radius-lg: 24rpx;
-  --radius-xl: 32rpx;
+  --radius-xs: 6rpx;
+  --radius-sm: 10rpx;
+  --radius-md: 24rpx;                /* Airbnb 卡片圆角 */
+  --radius-lg: 32rpx;                /* Airbnb 大卡片/弹窗圆角 */
+  --radius-xl: 48rpx;
   --radius-full: 9999rpx;
 
-  /* ===== 阴影（柔和风格） ===== */
+  /* ===== 阴影（Airbnb 三层柔和阴影） ===== */
   --shadow-none: none;
-  --shadow-sm: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
-  --shadow-md: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 8rpx 30rpx rgba(0, 0, 0, 0.08);
-  --shadow-xl: 0 16rpx 48rpx rgba(0, 0, 0, 0.12);
-  --shadow-card: 0px 1px 2px rgba(0, 0, 0, 0.05);
-  --shadow-card-hover: 0px 2px 10px rgba(0, 0, 0, 0.08);
+  --shadow-sm: 0 0 0 1rpx rgba(0,0,0,0.04), 0 2rpx 6rpx rgba(0,0,0,0.04);
+  --shadow-md: 0 0 0 1rpx rgba(0,0,0,0.04), 0 4rpx 12rpx rgba(0,0,0,0.06), 0 8rpx 16rpx rgba(0,0,0,0.06);
+  --shadow-lg: 0 0 0 1rpx rgba(0,0,0,0.04), 0 8rpx 24rpx rgba(0,0,0,0.08), 0 16rpx 32rpx rgba(0,0,0,0.08);
+  --shadow-xl: 0 0 0 1rpx rgba(0,0,0,0.04), 0 16rpx 40rpx rgba(0,0,0,0.12), 0 24rpx 48rpx rgba(0,0,0,0.10);
+  --shadow-card: 0 0 0 1rpx rgba(0,0,0,0.04), 0 4rpx 12rpx rgba(0,0,0,0.05), 0 8rpx 16rpx rgba(0,0,0,0.04);
+  --shadow-card-hover: 0 0 0 1rpx rgba(0,0,0,0.06), 0 8rpx 24rpx rgba(0,0,0,0.10), 0 16rpx 32rpx rgba(0,0,0,0.08);
 
   /* ===== 动画 ===== */
   --duration-fast: 150ms;

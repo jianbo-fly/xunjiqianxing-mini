@@ -3,7 +3,7 @@
  */
 
 .page-order-detail {
-  background: #f8f6f6;
+  background: var(--color-bg-page);
   min-height: 100vh;
 }
 
@@ -27,7 +27,7 @@
 
 /* ===== 状态横幅 ===== */
 .status-banner {
-  border-radius: 24rpx;
+  border-radius: var(--radius-md);
   padding: 40rpx;
   position: relative;
   overflow: hidden;
@@ -47,26 +47,26 @@
 }
 
 .status-banner--orange {
-  background: #ec3713;
+  background: var(--color-primary);
   box-shadow: 0 20rpx 30rpx -6rpx rgba(236, 55, 19, 0.2), 0 8rpx 12rpx -8rpx rgba(236, 55, 19, 0.2);
 }
 
 .status-banner--primary {
-  background: linear-gradient(to right, #ec3713, #ea580c);
+  background: var(--color-primary-gradient);
   box-shadow: 0 20rpx 30rpx -6rpx rgba(236, 55, 19, 0.2), 0 8rpx 12rpx -8rpx rgba(236, 55, 19, 0.2);
 }
 
 .status-banner--green {
-  background: linear-gradient(to right, #10b981, #059669);
+  background: var(--color-success-gradient);
   box-shadow: 0 20rpx 30rpx -6rpx rgba(16, 185, 129, 0.2);
 }
 
 .status-banner--gray {
-  background: linear-gradient(to right, #9ca3af, #6b7280);
+  background: var(--color-cancelled-gradient);
 }
 
 .status-banner--blue {
-  background: linear-gradient(to right, #3b82f6, #2563eb);
+  background: var(--color-info-gradient);
   box-shadow: 0 20rpx 30rpx -6rpx rgba(59, 130, 246, 0.2);
 }
 
@@ -90,7 +90,7 @@
 .status-banner__title {
   font-size: 40rpx;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--color-text-inverse);
   line-height: 56rpx;
 }
 
@@ -110,15 +110,15 @@
 
 .status-countdown__time {
   font-weight: 600;
-  color: #ffffff;
+  color: var(--color-text-inverse);
 }
 
 /* ===== 通用卡片 ===== */
 .card {
-  background: #ffffff;
-  border-radius: 24rpx;
-  border: 1rpx solid #f3f4f6;
-  box-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.05);
+  background: var(--color-bg-card);
+  border-radius: var(--radius-md);
+  border: 1rpx solid var(--color-border-light);
+  box-shadow: var(--shadow-sm);
   padding: 34rpx;
 }
 
@@ -133,15 +133,15 @@
 .section-hd__bar {
   width: 8rpx;
   height: 32rpx;
-  border-radius: 9999rpx;
-  background: #ec3713;
+  border-radius: var(--radius-full);
+  background: var(--color-primary);
   flex-shrink: 0;
 }
 
 .section-hd__title {
   font-size: 32rpx;
   font-weight: 600;
-  color: #111827;
+  color: var(--color-text-primary);
 }
 
 /* ===== 路线卡片 ===== */
@@ -154,9 +154,9 @@
 .route-img {
   width: 192rpx;
   height: 192rpx;
-  border-radius: 16rpx;
+  border-radius: var(--radius-sm);
   flex-shrink: 0;
-  background: #e5e7eb;
+  background: var(--color-border);
 }
 
 .route-info {
@@ -171,7 +171,7 @@
 .route-name {
   font-size: 32rpx;
   font-weight: 500;
-  color: #111827;
+  color: var(--color-text-primary);
   line-height: 40rpx;
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -199,7 +199,7 @@
 
 .route-meta-text {
   font-size: 24rpx;
-  color: #6b7280;
+  color: var(--color-text-secondary);
 }
 
 /* ===== 出行人 ===== */
@@ -212,7 +212,7 @@
 }
 
 .traveler-item--border {
-  border-bottom: 1rpx solid #f9fafb;
+  border-bottom: 1rpx solid var(--color-bg-gray);
 }
 
 .traveler-item:last-child {
@@ -233,13 +233,13 @@
 }
 
 .traveler-avatar--adult {
-  background: #fff0ed;
-  color: #ec3713;
+  background: var(--color-primary-ultralight);
+  color: var(--color-primary);
 }
 
 .traveler-avatar--child {
-  background: #eff6ff;
-  color: #2563eb;
+  background: var(--color-info-light);
+  color: var(--color-info);
 }
 
 .traveler-detail {
@@ -258,7 +258,7 @@
 .traveler-name {
   font-size: 32rpx;
   font-weight: 500;
-  color: #1f2937;
+  color: var(--color-text-strong);
 }
 
 .type-badge {
@@ -268,18 +268,18 @@
 }
 
 .type-badge--adult {
-  background: #f3f4f6;
-  color: #6b7280;
+  background: var(--color-border-light);
+  color: var(--color-text-secondary);
 }
 
 .type-badge--child {
-  background: #eff6ff;
-  color: #2563eb;
+  background: var(--color-info-light);
+  color: var(--color-info);
 }
 
 .traveler-id {
   font-size: 24rpx;
-  color: #9ca3af;
+  color: var(--color-text-tertiary);
 }
 
 /* ===== 键值对行（联系人） ===== */
@@ -305,12 +305,12 @@
 
 .kv-label {
   font-size: 28rpx;
-  color: #6b7280;
+  color: var(--color-text-secondary);
 }
 
 .kv-value {
   font-size: 28rpx;
-  color: #111827;
+  color: var(--color-text-primary);
 }
 
 /* ===== 费用明细 ===== */
@@ -328,16 +328,16 @@
 
 .price-label {
   font-size: 28rpx;
-  color: #6b7280;
+  color: var(--color-text-secondary);
 }
 
 .price-val {
   font-size: 28rpx;
-  color: #111827;
+  color: var(--color-text-primary);
 }
 
 .price-val--discount {
-  color: #ec3713;
+  color: var(--color-primary);
 }
 
 .price-total-row {
@@ -346,19 +346,19 @@
   align-items: center;
   padding-top: 26rpx;
   margin-top: 10rpx;
-  border-top: 1rpx solid #f3f4f6;
+  border-top: 1rpx solid var(--color-border-light);
 }
 
 .price-total-label {
   font-size: 28rpx;
   font-weight: 500;
-  color: #111827;
+  color: var(--color-text-primary);
 }
 
 .price-total-val {
   font-size: 48rpx;
   font-weight: 700;
-  color: #ec3713;
+  color: var(--color-primary);
 }
 
 /* ===== 订单信息 - 复制按钮 ===== */
@@ -381,15 +381,15 @@
 
 .copy-btn {
   padding: 6rpx 16rpx;
-  background: rgba(236, 55, 19, 0.05);
-  border: 1rpx solid rgba(236, 55, 19, 0.2);
+  background: var(--color-primary-bg);
+  border: 1rpx solid var(--color-primary-tint);
   border-radius: 8rpx;
   flex-shrink: 0;
 }
 
 .copy-btn__text {
   font-size: 24rpx;
-  color: #ec3713;
+  color: var(--color-primary);
 }
 
 /* ===== 商家信息 ===== */
@@ -403,7 +403,7 @@
   width: 80rpx;
   height: 80rpx;
   border-radius: 50%;
-  background: #f3f4f6;
+  background: var(--color-border-light);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -412,7 +412,7 @@
 
 .merchant-avatar__text {
   font-size: 28rpx;
-  color: #6b7280;
+  color: var(--color-text-secondary);
   font-weight: 500;
 }
 
@@ -427,19 +427,19 @@
 .merchant-name {
   font-size: 30rpx;
   font-weight: 500;
-  color: #111827;
+  color: var(--color-text-primary);
 }
 
 .merchant-desc {
   font-size: 24rpx;
-  color: #9ca3af;
+  color: var(--color-text-tertiary);
 }
 
 .merchant-call {
   width: 72rpx;
   height: 72rpx;
   border-radius: 50%;
-  background: linear-gradient(to right, #ec3713, #ea580c);
+  background: var(--color-primary-gradient);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -448,7 +448,7 @@
 
 .merchant-call__text {
   font-size: 22rpx;
-  color: #ffffff;
+  color: var(--color-text-inverse);
   font-weight: 500;
 }
 
@@ -463,8 +463,8 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: #ffffff;
-  border-top: 1rpx solid #f3f4f6;
+  background: var(--color-bg-card);
+  border-top: 1rpx solid var(--color-border-light);
   box-shadow: 0 -8rpx 12rpx -2rpx rgba(0, 0, 0, 0.05);
   padding: 26rpx 32rpx;
   padding-bottom: calc(26rpx + env(safe-area-inset-bottom));
@@ -483,21 +483,21 @@
   align-items: center;
   justify-content: center;
   padding: 26rpx 0;
-  border: 1rpx solid #e5e7eb;
-  border-radius: 16rpx;
+  border: 1rpx solid var(--color-border);
+  border-radius: var(--radius-sm);
 }
 
 .bbar-btn__text {
   font-size: 28rpx;
   font-weight: 500;
-  color: #4b5563;
+  color: var(--color-text-body);
 }
 
 .bbar-btn--primary {
-  background: linear-gradient(to right, #ec3713, #ea580c);
+  background: var(--color-primary-gradient);
   border-color: transparent;
 }
 
 .bbar-btn--primary .bbar-btn__text {
-  color: #ffffff;
+  color: var(--color-text-inverse);
 }

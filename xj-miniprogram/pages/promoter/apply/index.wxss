@@ -62,7 +62,7 @@
 .hero-nav-title {
   font-size: 34rpx;
   font-weight: 500;
-  color: #fff;
+  color: var(--color-text-inverse);
 }
 
 .hero-placeholder {
@@ -99,7 +99,7 @@
 .hero-title {
   font-size: 48rpx;
   font-weight: 600;
-  color: #fff;
+  color: var(--color-text-inverse);
   margin-bottom: 16rpx;
 }
 
@@ -111,10 +111,10 @@
 /* ===== Benefits card ===== */
 .benefits-card {
   margin: -48rpx 40rpx 0;
-  background: #fff;
-  border-radius: 24rpx;
+  background: var(--color-bg-card);
+  border-radius: var(--radius-md);
   padding: 40rpx;
-  box-shadow: 0 10rpx 30rpx rgba(0, 0, 0, 0.1), 0 4rpx 12rpx rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-md);
   position: relative;
   z-index: 1;
 }
@@ -123,7 +123,7 @@
   display: block;
   text-align: center;
   font-size: 24rpx;
-  color: #9ca3af;
+  color: var(--color-text-tertiary);
   letter-spacing: 2rpx;
   margin-bottom: 32rpx;
 }
@@ -177,13 +177,13 @@
 
 .benefit-name {
   font-size: 24rpx;
-  color: #374151;
+  color: var(--color-text-body);
   margin-bottom: 4rpx;
 }
 
 .benefit-sub {
   font-size: 20rpx;
-  color: #9ca3af;
+  color: var(--color-text-tertiary);
 }
 
 /* ===== Form ===== */
@@ -195,17 +195,17 @@
   display: block;
   font-size: 36rpx;
   font-weight: 600;
-  color: #111827;
+  color: var(--color-text-primary);
   margin-bottom: 32rpx;
   padding: 0 8rpx;
 }
 
 .form-card {
-  background: #fff;
-  border: 2rpx solid #f3f4f6;
-  border-radius: 24rpx;
+  background: var(--color-bg-card);
+  border: 2rpx solid var(--color-border-light);
+  border-radius: var(--radius-md);
   padding: 34rpx;
-  box-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-sm);
 }
 
 .form-card--row {
@@ -217,8 +217,8 @@
 .avatar-btn {
   width: 100%;
   box-sizing: border-box;
-  background: #fff;
-  border-radius: 24rpx;
+  background: var(--color-bg-card);
+  border-radius: var(--radius-md);
   padding: 34rpx;
   line-height: normal;
   font-size: inherit;
@@ -237,7 +237,7 @@
 
 .form-label {
   font-size: 28rpx;
-  color: #4b5563;
+  color: var(--color-text-body);
 }
 
 .avatar-wrap {
@@ -283,7 +283,7 @@
 .form-input {
   width: 100%;
   font-size: 32rpx;
-  color: #111827;
+  color: var(--color-text-primary);
 }
 
 .form-hint-row {
@@ -300,7 +300,7 @@
 
 .form-hint {
   font-size: 24rpx;
-  color: #9ca3af;
+  color: var(--color-text-tertiary);
 }
 
 /* ===== Cert card ===== */
@@ -309,9 +309,9 @@
   gap: 32rpx;
   align-items: flex-start;
   margin: 24rpx 40rpx 0;
-  background: rgba(236, 55, 19, 0.05);
-  border: 2rpx solid rgba(236, 55, 19, 0.1);
-  border-radius: 24rpx;
+  background: var(--color-primary-bg);
+  border: 2rpx solid var(--color-primary-tint);
+  border-radius: var(--radius-md);
   padding: 34rpx;
 }
 
@@ -329,13 +329,13 @@
   display: block;
   font-size: 28rpx;
   font-weight: 600;
-  color: #111827;
+  color: var(--color-text-primary);
   margin-bottom: 8rpx;
 }
 
 .cert-desc {
   font-size: 24rpx;
-  color: #6b7280;
+  color: var(--color-text-secondary);
   line-height: 1.6;
 }
 
@@ -345,8 +345,8 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: #fff;
-  border-top: 2rpx solid #f3f4f6;
+  background: var(--color-bg-card);
+  border-top: 2rpx solid var(--color-border-light);
   padding: 32rpx 40rpx;
   padding-bottom: calc(32rpx + env(safe-area-inset-bottom));
   box-shadow: 0 -4rpx 12rpx rgba(0, 0, 0, 0.05);
@@ -365,14 +365,14 @@
 .agree-box {
   width: 40rpx;
   height: 40rpx;
-  border: 4rpx solid #d1d5db;
+  border: 4rpx solid var(--color-border-medium);
   border-radius: 8rpx;
   flex-shrink: 0;
 }
 
 .agree-box--checked {
-  background: #ec3713;
-  border-color: #ec3713;
+  background: var(--color-primary);
+  border-color: var(--color-primary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -380,27 +380,27 @@
 
 .agree-check {
   font-size: 26rpx;
-  color: #fff;
+  color: var(--color-text-inverse);
   font-weight: 700;
   line-height: 1;
 }
 
 .agree-text {
   font-size: 24rpx;
-  color: #6b7280;
+  color: var(--color-text-secondary);
 }
 
 .agree-link {
-  color: #ec3713;
+  color: var(--color-primary);
   font-weight: 500;
 }
 
 .submit-btn {
-  background: #ec3713;
-  border-radius: 24rpx;
+  background: var(--color-primary);
+  border-radius: var(--radius-md);
   padding: 32rpx;
   text-align: center;
-  box-shadow: 0 10rpx 30rpx rgba(236, 55, 19, 0.3), 0 4rpx 12rpx rgba(236, 55, 19, 0.3);
+  box-shadow: 0 10rpx 30rpx var(--color-primary-border), 0 4rpx 12rpx var(--color-primary-border);
 }
 
 .submit-btn--disabled {
@@ -409,6 +409,6 @@
 
 .submit-text {
   font-size: 32rpx;
-  color: #fff;
+  color: var(--color-text-inverse);
   font-weight: 500;
 }

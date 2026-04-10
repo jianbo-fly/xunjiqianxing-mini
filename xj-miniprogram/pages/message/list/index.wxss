@@ -4,13 +4,13 @@
 
 .page-msg {
   min-height: 100vh;
-  background: #f8f6f6;
+  background: var(--color-bg-page);
 }
 
 /* 全部已读按钮（nav-bar right slot） */
 .msg-all-read {
   font-size: 28rpx;
-  color: #5c4d4a;
+  color: var(--color-warm-text);
   padding: 8rpx 0 8rpx 16rpx;
 }
 
@@ -18,11 +18,11 @@
 .msg-tabs {
   position: sticky;
   z-index: 10;
-  background: rgba(248, 246, 246, 0.95);
+  background: var(--color-warm-bg);
   display: flex;
   align-items: flex-end;
   padding: 0 32rpx;
-  border-bottom: 2rpx solid #e6e0df;
+  border-bottom: 2rpx solid var(--color-warm-border);
 }
 
 .msg-tab {
@@ -30,12 +30,12 @@
   padding: 24rpx 0 24rpx;
   margin-right: 48rpx;
   font-size: 32rpx;
-  color: #5c4d4a;
+  color: var(--color-warm-text);
   font-weight: 500;
 }
 
 .msg-tab--active {
-  color: #ec3713;
+  color: var(--color-primary);
   font-weight: 600;
 }
 
@@ -47,7 +47,7 @@
   transform: translateX(-50%);
   width: 32rpx;
   height: 8rpx;
-  background: #ec3713;
+  background: var(--color-primary);
   border-radius: 99rpx 99rpx 0 0;
 }
 
@@ -75,11 +75,11 @@
   display: flex;
   gap: 32rpx;
   align-items: flex-start;
-  background: #fff;
+  background: var(--color-bg-card);
   border: 2rpx solid rgba(230, 224, 223, 0.5);
   border-radius: 24rpx;
   padding: 34rpx;
-  box-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-sm);
 }
 
 /* ===== 图标 ===== */
@@ -99,23 +99,23 @@
 }
 
 .msg-icon--order {
-  background: rgba(236, 55, 19, 0.1);
+  background: var(--color-primary-tint);
 }
 
 .msg-icon--travel {
-  background: #ffedd5;
+  background: var(--color-warning-light);
 }
 
 .msg-icon--refund {
-  background: #dcfce7;
+  background: var(--color-success-light);
 }
 
 .msg-icon--payment {
-  background: rgba(236, 55, 19, 0.1);
+  background: var(--color-primary-tint);
 }
 
 .msg-icon--system {
-  background: #eff6ff;
+  background: var(--color-info-light);
 }
 
 .msg-icon--promo {
@@ -146,7 +146,7 @@
 
 .msg-title {
   font-size: 32rpx;
-  color: #1f1412;
+  color: var(--color-warm-text-deep);
   line-height: 1.5;
 }
 
@@ -158,7 +158,7 @@
 .msg-dot {
   width: 20rpx;
   height: 20rpx;
-  background: #eb2525;
+  background: var(--color-error);
   border-radius: 50%;
   margin-left: 8rpx;
   flex-shrink: 0;
@@ -166,14 +166,14 @@
 
 .msg-time {
   font-size: 24rpx;
-  color: #a89c9a;
+  color: var(--color-warm-text-muted);
   flex-shrink: 0;
   line-height: 1.5;
 }
 
 .msg-preview {
   font-size: 28rpx;
-  color: #5c4d4a;
+  color: var(--color-warm-text);
   line-height: 1.625;
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -186,5 +186,5 @@
   text-align: center;
   padding: 32rpx;
   font-size: 24rpx;
-  color: #9ca3af;
+  color: var(--color-text-tertiary);
 }

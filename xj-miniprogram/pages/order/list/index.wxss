@@ -4,7 +4,7 @@
 
 .page-order-list {
   min-height: 100vh;
-  background: #f8f6f6;
+  background: var(--color-bg-page);
 }
 
 /* ===== 加载 ===== */
@@ -19,25 +19,25 @@
 .empty-action {
   margin-top: 24rpx;
   padding: 20rpx 48rpx;
-  background: #ec3713;
-  color: #ffffff;
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
   font-size: 28rpx;
   border-radius: 40rpx;
   display: flex;
   align-items: center;
   gap: 8rpx;
-  box-shadow: 0 8rpx 20rpx rgba(236, 55, 19, 0.3);
+  box-shadow: 0 8rpx 20rpx var(--color-primary-border);
 }
 
 .empty-action__text {
   font-size: 28rpx;
-  color: #ffffff;
+  color: var(--color-text-inverse);
   font-weight: 600;
 }
 
 .empty-action__arrow {
   font-size: 36rpx;
-  color: #ffffff;
+  color: var(--color-text-inverse);
   line-height: 1;
 }
 
@@ -45,9 +45,9 @@
 .order-tabs {
   position: sticky;
   z-index: 99;
-  background: #ffffff;
+  background: var(--color-bg-card);
   display: flex;
-  border-bottom: 1rpx solid #f3f4f6;
+  border-bottom: 1rpx solid var(--color-border-light);
   box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.04);
 }
 
@@ -62,12 +62,12 @@
 
 .tab-item__text {
   font-size: 28rpx;
-  color: #9ca3af;
+  color: var(--color-text-tertiary);
   line-height: 1;
 }
 
 .tab-item--active .tab-item__text {
-  color: #111827;
+  color: var(--color-text-primary);
   font-weight: 600;
 }
 
@@ -80,8 +80,8 @@
   transform: translateX(-50%);
   width: 40rpx;
   height: 6rpx;
-  background: #ec3713;
-  border-radius: 9999rpx;
+  background: var(--color-primary);
+  border-radius: var(--radius-full);
 }
 
 /* ===== 订单列表容器 ===== */
@@ -94,10 +94,10 @@
 
 /* ===== 订单卡片 ===== */
 .order-card {
-  background: #ffffff;
-  border-radius: 24rpx;
-  border: 1rpx solid #f3f4f6;
-  box-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.05);
+  background: var(--color-bg-card);
+  border-radius: var(--radius-md);
+  border: 1rpx solid var(--color-border-light);
+  box-shadow: var(--shadow-sm);
   overflow: hidden;
 }
 
@@ -107,12 +107,12 @@
   align-items: center;
   justify-content: space-between;
   padding: 24rpx 32rpx;
-  border-bottom: 1rpx solid #f9fafb;
+  border-bottom: 1rpx solid var(--color-bg-gray);
 }
 
 .order-no {
   font-size: 24rpx;
-  color: #9ca3af;
+  color: var(--color-text-tertiary);
 }
 
 /* 状态徽章 */
@@ -137,35 +137,35 @@
 }
 
 .status-badge--orange {
-  background: #fff7ed;
+  background: var(--color-warning-light);
 }
 .status-badge--orange .status-badge__text {
-  color: #f97316;
+  color: var(--color-warning);
 }
 
 .status-badge--primary {
-  background: #fff0ed;
+  background: var(--color-primary-ultralight);
 }
 .status-badge--primary .status-badge__text {
-  color: #ec3713;
+  color: var(--color-primary);
 }
 
 .status-badge--green {
-  background: #f0fdf4;
+  background: var(--color-success-light);
 }
 .status-badge--green .status-badge__text {
   color: #10b981;
 }
 
 .status-badge--gray {
-  background: #f9fafb;
+  background: var(--color-bg-gray);
 }
 .status-badge--gray .status-badge__text {
-  color: #9ca3af;
+  color: var(--color-text-tertiary);
 }
 
 .status-badge--blue {
-  background: #eff6ff;
+  background: var(--color-info-light);
 }
 .status-badge--blue .status-badge__text {
   color: #3b82f6;
@@ -181,9 +181,9 @@
 .product-img {
   width: 160rpx;
   height: 128rpx;
-  border-radius: 16rpx;
+  border-radius: var(--radius-sm);
   flex-shrink: 0;
-  background: #f3f4f6;
+  background: var(--color-border-light);
 }
 
 .product-info {
@@ -198,7 +198,7 @@
 .product-name {
   font-size: 28rpx;
   font-weight: 500;
-  color: #111827;
+  color: var(--color-text-primary);
   line-height: 40rpx;
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -208,7 +208,7 @@
 
 .product-sku {
   font-size: 24rpx;
-  color: #6b7280;
+  color: var(--color-text-secondary);
 }
 
 .product-meta {
@@ -220,7 +220,7 @@
 
 .meta-item {
   font-size: 24rpx;
-  color: #9ca3af;
+  color: var(--color-text-tertiary);
 }
 
 /* 卡片底部 */
@@ -229,7 +229,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 20rpx 32rpx 24rpx;
-  border-top: 1rpx solid #f9fafb;
+  border-top: 1rpx solid var(--color-bg-gray);
 }
 
 .amount-wrap {
@@ -240,13 +240,13 @@
 
 .amount-label {
   font-size: 24rpx;
-  color: #9ca3af;
+  color: var(--color-text-tertiary);
 }
 
 .amount-value {
   font-size: 36rpx;
   font-weight: 700;
-  color: #ec3713;
+  color: var(--color-primary);
 }
 
 .action-row {
@@ -266,29 +266,29 @@
 
 /* 普通/再次购买：灰色边框 */
 .action-btn--ghost {
-  color: #6b7280;
-  border: 1rpx solid #e5e7eb;
-  background: #ffffff;
+  color: var(--color-text-secondary);
+  border: 1rpx solid var(--color-border);
+  background: var(--color-bg-card);
 }
 
 /* 取消：浅灰底，文字暗 */
 .action-btn--cancel {
-  color: #9ca3af;
-  border: 1rpx solid #f3f4f6;
-  background: #f9fafb;
+  color: var(--color-text-tertiary);
+  border: 1rpx solid var(--color-border-light);
+  background: var(--color-bg-gray);
 }
 
 /* 退款：橙色边框，橙色文字 */
 .action-btn--danger {
-  color: #f97316;
+  color: var(--color-warning);
   border: 1rpx solid rgba(249, 115, 22, 0.35);
-  background: #fff7ed;
+  background: var(--color-warning-light);
 }
 
 /* 去支付：红色渐变主按钮 */
 .action-btn--primary {
-  background: linear-gradient(to right, #ec3713, #ea580c);
-  color: #ffffff;
+  background: var(--color-primary-gradient);
+  color: var(--color-text-inverse);
   border: none;
   box-shadow: 0 6rpx 16rpx rgba(236, 55, 19, 0.35);
 }
@@ -306,5 +306,5 @@
   text-align: center;
   padding: 32rpx 0 16rpx;
   font-size: 24rpx;
-  color: #d1d5db;
+  color: var(--color-border-medium);
 }
