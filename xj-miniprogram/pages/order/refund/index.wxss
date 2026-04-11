@@ -26,8 +26,8 @@
 /* ===== 通用白色卡片 ===== */
 .card {
   background: #ffffff;
-  border-radius: 24rpx;
-  box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.05), 0 2rpx 4rpx rgba(0, 0, 0, 0.06);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
   overflow: hidden;
 }
 
@@ -42,7 +42,7 @@
 .order-img {
   width: 192rpx;
   height: 192rpx;
-  border-radius: 16rpx;
+  border-radius: var(--radius-btn);
   flex-shrink: 0;
   background: #fce9e6;
 }
@@ -87,7 +87,7 @@
   color: #5c1b0f;
   font-size: 24rpx;
   padding: 4rpx 16rpx;
-  border-radius: 8rpx;
+  border-radius: var(--radius-xs);
 }
 
 .order-price {
@@ -136,7 +136,7 @@
 
 .amount-badge {
   background: rgba(236, 55, 19, 0.05);
-  border-radius: 9999rpx;
+  border-radius: var(--radius-full);
   padding: 8rpx 24rpx;
   margin-top: 8rpx;
 }
@@ -305,7 +305,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 24rpx;
-  border-radius: 16rpx;
+  border-radius: var(--radius-btn);
 }
 
 .reason-left {
@@ -382,7 +382,7 @@
   width: 100%;
   min-height: 200rpx;
   background: #fef4f2;
-  border-radius: 16rpx;
+  border-radius: var(--radius-btn);
   padding: 24rpx;
   padding-bottom: 60rpx;
   font-size: 28rpx;
@@ -413,7 +413,7 @@
   width: 160rpx;
   height: 160rpx;
   border: 2rpx dashed #f9d0ca;
-  border-radius: 16rpx;
+  border-radius: var(--radius-btn);
   margin: 24rpx 40rpx 40rpx;
   gap: 8rpx;
 }
@@ -471,10 +471,9 @@
   align-items: center;
   justify-content: center;
   background: #ec3713;
-  border-radius: 24rpx;
+  border-radius: var(--radius-md);
   padding: 28rpx 48rpx;
-  box-shadow: 0 20rpx 30rpx -6rpx rgba(236, 55, 19, 0.3),
-              0 8rpx 12rpx -8rpx rgba(236, 55, 19, 0.3);
+  box-shadow: var(--shadow-primary-lg);
   flex: 1;
   margin-left: 32rpx;
 }

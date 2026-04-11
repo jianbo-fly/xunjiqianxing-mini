@@ -48,7 +48,7 @@
   width: 32rpx;
   height: 8rpx;
   background: var(--color-primary);
-  border-radius: 99rpx 99rpx 0 0;
+  border-radius: var(--radius-full) var(--radius-full) 0 0;
 }
 
 /* ===== 中心加载 ===== */
@@ -77,7 +77,7 @@
   align-items: flex-start;
   background: var(--color-bg-card);
   border: 2rpx solid rgba(230, 224, 223, 0.5);
-  border-radius: 24rpx;
+  border-radius: var(--radius-md);
   padding: 34rpx;
   box-shadow: var(--shadow-sm);
 }
@@ -86,7 +86,7 @@
 .msg-icon {
   width: 96rpx;
   height: 96rpx;
-  border-radius: 16rpx;
+  border-radius: var(--radius-btn);
   flex-shrink: 0;
   display: flex;
   align-items: center;

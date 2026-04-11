@@ -209,10 +209,10 @@
 .timeline-card {
   flex: 1;
   background: #fff;
-  border-radius: 20rpx;
+  border-radius: var(--radius-btn);
   padding: 28rpx 32rpx;
   margin-bottom: 16rpx;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+  box-shadow: var(--shadow-sm);
 }
 
 .scan-user-row {
@@ -254,10 +254,10 @@
 /* ===== Order cards ===== */
 .order-card {
   background: #fff;
-  border-radius: 20rpx;
+  border-radius: var(--radius-btn);
   margin: 0 40rpx 24rpx;
   padding: 32rpx;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+  box-shadow: var(--shadow-sm);
 }
 
 .order-card-top {
@@ -270,7 +270,7 @@
 .order-product-icon {
   width: 96rpx;
   height: 96rpx;
-  border-radius: 16rpx;
+  border-radius: var(--radius-btn);
   flex-shrink: 0;
 }
 
@@ -331,7 +331,7 @@
 
 .order-points-badge {
   background: rgba(236, 55, 19, 0.08);
-  border-radius: 20rpx;
+  border-radius: var(--radius-btn);
   padding: 4rpx 16rpx;
 }
 

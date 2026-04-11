@@ -17,7 +17,7 @@
   display: flex;
   align-items: flex-end;
   padding: 16rpx 32rpx 0;
-  box-shadow: 0px 2rpx 4rpx 0px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-sm);
 }
 
 .cl-tab {
@@ -45,7 +45,7 @@
   width: 40rpx;
   height: 8rpx;
   background: #EC3713;
-  border-radius: 9999rpx;
+  border-radius: var(--radius-full);
   margin-top: 2rpx;
 }
 
@@ -68,8 +68,8 @@
   position: relative;
   background: #FFFFFF;
   border: 2rpx solid #F3F4F6;
-  border-radius: 32rpx;
-  box-shadow: 0px 8rpx 40rpx -4rpx rgba(0, 0, 0, 0.05);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
   padding: 42rpx;
   overflow: hidden;
   display: flex;
@@ -103,7 +103,7 @@
 .cl-card__icon-wrap {
   width: 96rpx;
   height: 96rpx;
-  border-radius: 24rpx;
+  border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -141,7 +141,7 @@
 .cl-badge {
   flex-shrink: 0;
   padding: 10rpx 22rpx;
-  border-radius: 16rpx;
+  border-radius: var(--radius-btn);
   font-size: 24rpx;
   font-weight: 500;
   border: 2rpx solid transparent;
@@ -221,7 +221,7 @@
 /* Figma: px-16 py-6, rounded-8, 3 variants */
 .cl-cta {
   padding: 12rpx 32rpx;
-  border-radius: 16rpx;
+  border-radius: var(--radius-btn);
   font-size: 28rpx;
   font-weight: 500;
   line-height: 40rpx;
@@ -232,7 +232,7 @@
 .cl-cta--solid {
   background: #EC3713;
   color: #FFFFFF;
-  box-shadow: 0px 8rpx 12rpx -2rpx rgba(236, 55, 19, 0.3), 0px 4rpx 8rpx -4rpx rgba(236, 55, 19, 0.3);
+  box-shadow: var(--shadow-primary-md);
 }
 
 /* 描边主色（待处理） */
@@ -295,7 +295,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0px 20rpx 30rpx -6rpx rgba(236, 55, 19, 0.4), 0px 8rpx 12rpx -8rpx rgba(236, 55, 19, 0.4);
+  box-shadow: var(--shadow-primary-lg);
   z-index: 99;
 }
 

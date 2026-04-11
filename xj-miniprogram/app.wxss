@@ -6,6 +6,7 @@
 @import './styles/variables.wxss';
 @import './styles/reset.wxss';
 @import './styles/mixins.wxss';
+@import './styles/animation.wxss';
 
 /* 页面通用样式 */
 page {

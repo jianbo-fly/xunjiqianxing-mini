@@ -14,7 +14,7 @@
   overflow: hidden;
   border-bottom-left-radius: 48rpx;
   border-bottom-right-radius: 48rpx;
-  box-shadow: 0 20rpx 30rpx -6rpx rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-lg);
   padding-bottom: 160rpx;
 }
 
@@ -105,13 +105,13 @@
 /* ===== Profile card ===== */
 .profile-card {
   background: #fff;
-  border-radius: 32rpx;
+  border-radius: var(--radius-lg);
   padding: 42rpx;
   display: flex;
   align-items: center;
   gap: 32rpx;
   border: 2rpx solid #fdf3f1;
-  box-shadow: 0 8rpx 40rpx -4rpx rgba(236, 55, 19, 0.1);
+  box-shadow: var(--shadow-primary-sm);
 }
 
 .profile-avatar-wrap {
@@ -141,7 +141,7 @@
   right: -8rpx;
   background: #ec3713;
   border: 4rpx solid #fff;
-  border-radius: 40rpx;
+  border-radius: var(--radius-pill);
   padding: 8rpx 20rpx;
 }
 
@@ -170,7 +170,7 @@
 }
 
 .status-badge {
-  border-radius: 16rpx;
+  border-radius: var(--radius-btn);
   padding: 8rpx 16rpx;
 }
 
@@ -206,13 +206,13 @@
 .stat-card {
   flex: 1;
   background: #fff;
-  border-radius: 24rpx;
+  border-radius: var(--radius-md);
   padding: 34rpx 16rpx;
   display: flex;
   flex-direction: column;
   align-items: center;
   border: 2rpx solid #fdf3f1;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.03);
+  box-shadow: var(--shadow-card);
 }
 
 .stat-card--highlight {
@@ -251,10 +251,10 @@
 /* ===== Poster section ===== */
 .poster-section {
   background: #fff;
-  border-radius: 32rpx;
+  border-radius: var(--radius-lg);
   padding: 42rpx;
   border: 2rpx solid #fdf3f1;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.03);
+  box-shadow: var(--shadow-card);
   display: flex;
   flex-direction: column;
   gap: 32rpx;
@@ -306,9 +306,9 @@
 .poster-visual {
   position: relative;
   height: 600rpx;
-  border-radius: 24rpx;
+  border-radius: var(--radius-md);
   overflow: hidden;
-  box-shadow: 0 20rpx 48rpx -8rpx rgba(236, 55, 19, 0.45);
+  box-shadow: var(--shadow-primary-lg);
   /* 品牌渐变背景 */
   background: linear-gradient(160deg, #ff6b3d 0%, #ec3713 40%, #c0291a 75%, #8b1710 100%);
 }
@@ -383,7 +383,7 @@
   width: 72rpx;
   height: 72rpx;
   background: rgba(255, 255, 255, 0.2);
-  border-radius: 16rpx;
+  border-radius: var(--radius-btn);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -438,10 +438,10 @@
   width: 240rpx;
   height: 240rpx;
   background: #fff;
-  border-radius: 20rpx;
+  border-radius: var(--radius-btn);
   padding: 14rpx;
   box-sizing: border-box;
-  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow-hero);
   margin-bottom: 20rpx;
 }
 
@@ -455,7 +455,7 @@
   width: 100%;
   height: 100%;
   background: #fdf3f1;
-  border-radius: 8rpx;
+  border-radius: var(--radius-xs);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -485,7 +485,7 @@
 .poster-qr-code-chip {
   background: rgba(255, 255, 255, 0.15);
   border: 2rpx solid rgba(255, 255, 255, 0.3);
-  border-radius: 32rpx;
+  border-radius: var(--radius-lg);
   padding: 10rpx 28rpx;
   backdrop-filter: blur(4px);
 }
@@ -510,13 +510,13 @@
   gap: 16rpx;
   padding: 26rpx;
   border: 2rpx solid #fcebe8;
-  border-radius: 24rpx;
+  border-radius: var(--radius-md);
 }
 
 .poster-btn--primary {
   background: #ec3713;
   border-color: #ec3713;
-  box-shadow: 0 20rpx 30rpx -6rpx rgba(236, 55, 19, 0.3);
+  box-shadow: var(--shadow-primary-lg);
 }
 
 .poster-btn-icon {
@@ -540,10 +540,10 @@
 /* ===== Utility links ===== */
 .util-section {
   background: #fff;
-  border-radius: 24rpx;
+  border-radius: var(--radius-md);
   overflow: hidden;
   border: 2rpx solid #fdf3f1;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.03);
+  box-shadow: var(--shadow-card);
   padding: 0 32rpx;
 }
 

@@ -59,7 +59,7 @@
   height: 192rpx;
   background: #fff;
   border: 2rpx solid var(--color-border-light);
-  border-radius: 32rpx;
+  border-radius: var(--radius-lg);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -105,7 +105,7 @@
   width: 100%;
   height: 112rpx;
   background: var(--color-primary);
-  border-radius: 24rpx;
+  border-radius: var(--radius-md);
   border: none;
   padding: 0;
   margin: 0;
@@ -162,7 +162,7 @@
   height: 32rpx;
   margin-top: 6rpx;          /* 对齐第一行文字中间 */
   border: 2rpx solid var(--color-border-medium);
-  border-radius: 8rpx;
+  border-radius: var(--radius-xs);
   background: var(--color-bg-card);
   display: flex;
   align-items: center;
@@ -253,7 +253,7 @@
   color: var(--color-text-inverse);
   font-size: 32rpx;
   font-weight: var(--font-weight-medium);
-  border-radius: 24rpx;
+  border-radius: var(--radius-md);
   border: none;
   box-shadow:
     0 20rpx 30rpx -6rpx var(--color-primary-border),
@@ -268,7 +268,7 @@
 .profile-form {
   margin: 0 64rpx;
   background: var(--color-bg-card);
-  border-radius: 24rpx;
+  border-radius: var(--radius-md);
   padding: 0 32rpx;
   box-shadow: var(--shadow-card);
 }
@@ -344,7 +344,7 @@
   color: var(--color-text-inverse);
   font-size: 32rpx;
   font-weight: var(--font-weight-medium);
-  border-radius: 24rpx;
+  border-radius: var(--radius-md);
   border: none;
   margin-bottom: 40rpx;
 }
@@ -373,7 +373,7 @@
 
 .phone-form .form-item {
   background: var(--color-bg-gray);
-  border-radius: 16rpx;
+  border-radius: var(--radius-btn);
   padding: 0 32rpx;
   margin-bottom: 24rpx;
   border-bottom: none;

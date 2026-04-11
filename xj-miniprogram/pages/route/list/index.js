@@ -135,6 +135,16 @@ Page({
   },
 
   /**
+   * 滚动：驱动 nav-bar 悬浮阴影
+   * 节流：仅在跨越阈值 4rpx 时 setData
+   */
+  onPageScroll(e) {
+    const st = e.scrollTop || 0;
+    if (Math.abs(st - (this.data.scrollTop || 0)) < 2) return;
+    this.setData({ scrollTop: st });
+  },
+
+  /**
    * 构建请求参数
    */
   _buildParams(page) {
@@ -209,7 +219,15 @@ Page({
   },
 
   formatRoute(item) {
-    return { ...item, minPriceText: (item.minPrice || 0).toFixed(0) };
+    const minPrice = Number(item.minPrice) || 0;
+    const originalPrice = Number(item.originalPrice) || 0;
+    return {
+      ...item,
+      minPrice,
+      originalPrice,
+      minPriceText: minPrice.toFixed(0),
+      hasOriginal: originalPrice > minPrice,
+    };
   },
 
   // ===== 筛选面板 =====

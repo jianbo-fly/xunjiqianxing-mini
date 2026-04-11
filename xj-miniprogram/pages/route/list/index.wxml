@@ -4,7 +4,7 @@
 <view class="page-route-list">
 
   <!-- 原生导航栏（返回 + 标题） -->
-  <nav-bar title="线路列表" background="#fff" border showBack fixed />
+  <nav-bar title="线路列表" background="#fff" border showBack fixed scrollTop="{{scrollTop}}" />
 
   <!-- 搜索栏（固定在 nav-bar 正下方） -->
   <view class="rl-search-bar" style="top: {{navBarTotalHeight}}px;">
@@ -120,9 +120,14 @@
           <view class="list-route-card__bottom">
             <view class="list-route-card__bottom-left">
               <text class="list-route-card__depart" wx:if="{{item.nearestDate}}">最近出发 {{item.nearestDate}}</text>
+              <!-- 促销标签：立减/限时 -->
+              <view class="list-route-card__promo" wx:if="{{item.discountLabel}}">
+                <text class="list-route-card__promo-text">{{item.discountLabel}}</text>
+              </view>
               <view class="list-route-card__price-row">
                 <text class="list-route-card__price-symbol">¥</text>
                 <text class="list-route-card__price-value">{{item.minPrice || 0}}</text>
+                <text class="list-route-card__price-origin" wx:if="{{item.hasOriginal}}">¥{{item.originalPrice}}</text>
                 <text class="list-route-card__price-unit">/人起</text>
               </view>
             </view>

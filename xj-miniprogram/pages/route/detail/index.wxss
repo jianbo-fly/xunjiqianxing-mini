@@ -42,7 +42,7 @@
 /* 导航栏不透明状态（滑过 banner 后） */
 .nav-header--opaque {
   background: var(--color-bg-card);
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-sm);
 }
 
 .nav-btn--opaque {
@@ -591,7 +591,7 @@
   right: 0;
   z-index: 50;
   background: var(--color-bg-card);
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-sm);
 }
 
 .sth-tabs {
@@ -666,7 +666,7 @@
   justify-content: center;
   width: 112rpx;
   height: 88rpx;
-  border-radius: 16rpx;
+  border-radius: var(--radius-btn);
   background: #f4f4f5;
   position: relative;
   gap: 4rpx;
@@ -693,7 +693,7 @@
 
 .day-nav-item--active {
   background: var(--color-primary);
-  box-shadow: 0 4rpx 12rpx rgba(236, 55, 19, 0.25);
+  box-shadow: var(--shadow-primary-sm);
 }
 
 .day-nav-item--active .day-nav-item__label {
@@ -779,7 +779,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.12);
+  box-shadow: var(--shadow-md);
 }
 
 .itin-act__dot--transport { background: #ec3713; }
@@ -1035,7 +1035,7 @@
   padding: var(--spacing-md) var(--page-padding);
   padding-bottom: calc(var(--spacing-md) + env(safe-area-inset-bottom));
   background: var(--color-bg-card);
-  box-shadow: 0 -2rpx 10rpx rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-inset-top);
   z-index: 100;
 }
 
@@ -1075,7 +1075,7 @@
   align-items: center;
   justify-content: center;
   gap: 0;
-  box-shadow: 0 20rpx 30rpx -6rpx var(--color-primary-border), 0 8rpx 12rpx -8rpx var(--color-primary-border);
+  box-shadow: var(--shadow-primary-lg);
 }
 
 /* 价格在按钮内（有选中金额时） */
@@ -1264,7 +1264,7 @@
   flex-direction: column;
   align-items: center;
   padding: 14rpx 2rpx 10rpx;
-  border-radius: 12rpx;
+  border-radius: var(--radius-sm);
   min-height: 100rpx;
   border: 2rpx solid transparent;
   position: relative;

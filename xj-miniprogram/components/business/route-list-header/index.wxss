@@ -131,7 +131,7 @@
 /* 激活态（Figma: bg-[#ec3713] + shadow） */
 .rth-cat-item--active {
   background: var(--color-primary);
-  box-shadow: 0 8rpx 12rpx -2rpx var(--color-primary-border), 0 4rpx 8rpx -4rpx var(--color-primary-border);
+  box-shadow: var(--shadow-primary-md);
 }
 
 .rth-cat-item--active .rth-cat-item__text {

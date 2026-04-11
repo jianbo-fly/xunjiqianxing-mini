@@ -115,16 +115,24 @@ page {
   --card-padding: 32rpx;             /* Airbnb 卡片内边距 */
   --section-gap: 32rpx;
 
-  /* ===== 圆角 ===== */
+  /* ===== 圆角 =====
+   * 语义化收敛：硬编码 8/12/16/24/32/48rpx 请一律使用下面的 token。
+   * 旧值 xs/sm 微调 +2rpx（6→8、10→12），视觉差异不可感知。
+   */
   --radius-none: 0;
-  --radius-xs: 6rpx;
-  --radius-sm: 10rpx;
-  --radius-md: 24rpx;                /* Airbnb 卡片圆角 */
-  --radius-lg: 32rpx;                /* Airbnb 大卡片/弹窗圆角 */
-  --radius-xl: 48rpx;
+  --radius-xs: 8rpx;                 /* 小标签、小徽章 */
+  --radius-sm: 12rpx;                /* chip、小药丸 */
+  --radius-btn: 16rpx;               /* 按钮、输入框、小卡片 */
+  --radius-md: 24rpx;                /* 卡片 */
+  --radius-lg: 32rpx;                /* 大卡片、弹窗 */
+  --radius-xl: 48rpx;                /* hero 元素 */
+  --radius-pill: 40rpx;              /* 胶囊搜索/按钮 */
   --radius-full: 9999rpx;
 
-  /* ===== 阴影（Airbnb 三层柔和阴影） ===== */
+  /* ===== 阴影（Airbnb 三层柔和阴影） =====
+   * 4 档基础：sm / md / lg / xl
+   * 特殊场景：card、card-hover、primary-sm、primary-lg、hero、inset-top、inset-bottom
+   */
   --shadow-none: none;
   --shadow-sm: 0 0 0 1rpx rgba(0,0,0,0.04), 0 2rpx 6rpx rgba(0,0,0,0.04);
   --shadow-md: 0 0 0 1rpx rgba(0,0,0,0.04), 0 4rpx 12rpx rgba(0,0,0,0.06), 0 8rpx 16rpx rgba(0,0,0,0.06);
@@ -132,6 +140,12 @@ page {
   --shadow-xl: 0 0 0 1rpx rgba(0,0,0,0.04), 0 16rpx 40rpx rgba(0,0,0,0.12), 0 24rpx 48rpx rgba(0,0,0,0.10);
   --shadow-card: 0 0 0 1rpx rgba(0,0,0,0.04), 0 4rpx 12rpx rgba(0,0,0,0.05), 0 8rpx 16rpx rgba(0,0,0,0.04);
   --shadow-card-hover: 0 0 0 1rpx rgba(0,0,0,0.06), 0 8rpx 24rpx rgba(0,0,0,0.10), 0 16rpx 32rpx rgba(0,0,0,0.08);
+  --shadow-primary-sm: 0 6rpx 16rpx rgba(236, 55, 19, 0.25);
+  --shadow-primary-md: 0 8rpx 20rpx rgba(236, 55, 19, 0.3);
+  --shadow-primary-lg: 0 20rpx 30rpx -6rpx rgba(236, 55, 19, 0.3), 0 8rpx 12rpx -8rpx rgba(236, 55, 19, 0.3);
+  --shadow-hero: 0 8rpx 32rpx rgba(0, 0, 0, 0.14);
+  --shadow-inset-top: 0 -4rpx 16rpx rgba(0, 0, 0, 0.05);
+  --shadow-inset-bottom: 0 -8rpx 24rpx -4rpx rgba(0, 0, 0, 0.08);
 
   /* ===== 动画 ===== */
   --duration-fast: 150ms;

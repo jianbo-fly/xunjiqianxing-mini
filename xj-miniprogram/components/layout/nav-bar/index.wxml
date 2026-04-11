@@ -1,6 +1,6 @@
 <view
-  class="nav-bar nav-bar--{{theme}} {{fixed ? 'nav-bar--fixed' : ''}} {{border ? 'nav-bar--border' : ''}} {{customClass}}"
-  style="background: {{background}};"
+  class="nav-bar nav-bar--{{theme}} {{fixed ? 'nav-bar--fixed' : ''}} {{border ? 'nav-bar--border' : ''}} {{scrolled ? 'nav-bar--scrolled' : ''}} {{customClass}}"
+  style="background: {{background}}; --nav-scroll-progress: {{scrollProgress}};"
 >
   <!-- 状态栏占位 -->
   <view style="height: {{statusBarHeight}}px;"></view>

@@ -47,12 +47,27 @@ Component({
     customClass: {
       type: String,
       value: ''
+    },
+    // 页面滚动距离：用于驱动滚动响应（背景+阴影渐显）
+    scrollTop: {
+      type: Number,
+      value: 0,
+      observer(val) {
+        // 阈值 40px 内线性过渡 0→1
+        const progress = Math.min(1, Math.max(0, val / 40));
+        const scrolled = val > 4;
+        if (progress !== this.data.scrollProgress || scrolled !== this.data.scrolled) {
+          this.setData({ scrollProgress: progress, scrolled });
+        }
+      }
     }
   },
 
   data: {
     statusBarHeight: 0,
-    navBarHeight: 44
+    navBarHeight: 44,
+    scrollProgress: 0,
+    scrolled: false
   },
 
   lifetimes: {

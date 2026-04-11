@@ -88,9 +88,9 @@
 .order-card {
   width: 100%;
   background: #fff;
-  border-radius: 24rpx;
+  border-radius: var(--radius-md);
   border: 1rpx solid #f3f4f6;
-  box-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-sm);
   overflow: hidden;
   padding: 40rpx;
   box-sizing: border-box;
@@ -206,7 +206,7 @@
 .promo-banner {
   width: 100%;
   height: 192rpx;
-  border-radius: 24rpx;
+  border-radius: var(--radius-md);
   margin-top: 48rpx;
   background: linear-gradient(to right, rgba(236, 55, 19, 0.9), rgba(236, 55, 19, 0.7));
   display: flex;
@@ -257,20 +257,20 @@
 .btn-primary {
   height: 96rpx;
   background: #ec3713;
-  border-radius: 16rpx;
+  border-radius: var(--radius-btn);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 32rpx;
   color: #fff;
   font-weight: 500;
-  box-shadow: 0 20rpx 30rpx -6rpx rgba(236, 55, 19, 0.3), 0 8rpx 12rpx -8rpx rgba(236, 55, 19, 0.3);
+  box-shadow: var(--shadow-primary-lg);
 }
 
 .btn-secondary {
   height: 96rpx;
   border: 1rpx solid #e5e7eb;
-  border-radius: 16rpx;
+  border-radius: var(--radius-btn);
   display: flex;
   align-items: center;
   justify-content: center;

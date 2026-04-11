@@ -22,11 +22,11 @@
   background: var(--color-primary);
   color: var(--color-text-inverse);
   font-size: 28rpx;
-  border-radius: 40rpx;
+  border-radius: var(--radius-pill);
   display: flex;
   align-items: center;
   gap: 8rpx;
-  box-shadow: 0 8rpx 20rpx var(--color-primary-border);
+  box-shadow: var(--shadow-primary-md);
 }
 
 .empty-action__text {
@@ -48,7 +48,7 @@
   background: var(--color-bg-card);
   display: flex;
   border-bottom: 1rpx solid var(--color-border-light);
-  box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.04);
+  box-shadow: var(--shadow-sm);
 }
 
 .tab-item {
@@ -121,7 +121,7 @@
   align-items: center;
   gap: 6rpx;
   padding: 6rpx 14rpx;
-  border-radius: 8rpx;
+  border-radius: var(--radius-xs);
   flex-shrink: 0;
 }
 
@@ -259,7 +259,7 @@
 .action-btn {
   padding: 14rpx 28rpx;
   font-size: 26rpx;
-  border-radius: 40rpx;
+  border-radius: var(--radius-pill);
   white-space: nowrap;
   font-weight: 500;
 }
@@ -290,7 +290,7 @@
   background: var(--color-primary-gradient);
   color: var(--color-text-inverse);
   border: none;
-  box-shadow: 0 6rpx 16rpx rgba(236, 55, 19, 0.35);
+  box-shadow: var(--shadow-primary-sm);
 }
 
 /* ===== 加载更多 ===== */

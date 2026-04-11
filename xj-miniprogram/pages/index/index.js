@@ -30,6 +30,9 @@ Page({
     // 轮播图
     banners: [],
     currentBanner: 0,
+    // 视差轮播
+    bannerOpacity: 1,
+    bannerVisible: true,
     // 功能入口（8个）
     entries: [
       { id: 'travel',   name: '旅游定制', icon: '/assets/icons/custom/travel.png',   type: 'travel', bgColor: 'linear-gradient(135deg,#fff5f3,#ffe8e3)', shadowColor: 'rgba(236,55,19,0.12)' },
@@ -93,6 +96,32 @@ Page({
   },
 
   /**
+   * 页面滚动：驱动轮播视差效果
+   * 视差比例 0.5：滚动 100px，轮播移动 50px
+   */
+  onPageScroll(e) {
+    const scrollTop = e.scrollTop || 0;
+    // 轮播图高度约 358rpx (179px)
+    const maxOffset = 179;
+
+    // 计算透明度：滚动距离 / 最大偏移
+    let progress = scrollTop / maxOffset;
+    // 限制在 0-1 之间
+    if (progress < 0) progress = 0;
+    if (progress > 1) progress = 1;
+
+    // 向上滚动时透明度降低，轮播渐隐
+    const opacity = 1 - progress * 0.8;
+
+    // 滚动超过最大距离后隐藏轮播
+    const visible = scrollTop < maxOffset * 1.2;
+
+    console.log('[onPageScroll]', scrollTop, 'opacity:', opacity, 'visible:', visible);
+
+    this.setData({ bannerOpacity: opacity, bannerVisible: visible });
+  },
+
+  /**
    * 加载首页数据
    */
   async loadHomeData() {
@@ -100,7 +129,16 @@ Page({
 
     try {
       const data = await homeApi.getData();
-      const hotRoutes = data.recommendRoutes || [];
+      const hotRoutes = (data.recommendRoutes || []).map(r => {
+        const minPrice = Number(r.minPrice) || 0;
+        const originalPrice = Number(r.originalPrice) || 0;
+        return {
+          ...r,
+          minPrice,
+          originalPrice,
+          hasOriginal: originalPrice > minPrice,
+        };
+      });
 
       // 瀑布流分列：交替分配到左右列
       const leftRoutes = [];

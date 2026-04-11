@@ -36,8 +36,9 @@
     </view>
 
     <!-- 轮播图 -->
-    <view class="banner-section">
+    <view class="banner-section" style="opacity: {{bannerOpacity}};">
       <swiper
+        wx:if="{{bannerVisible}}"
         class="banner-swiper"
         autoplay
         circular
@@ -153,6 +154,8 @@
                 <view class="route-card__price">
                   <text class="route-card__price-symbol">¥</text>
                   <text class="route-card__price-value">{{item.priceText || item.minPrice || 0}}</text>
+                  <text class="route-card__price-origin" wx:if="{{item.hasOriginal}}">¥{{item.originalPrice}}</text>
+                  <text class="route-card__price-unit">起</text>
                 </view>
               </view>
             </view>
@@ -199,6 +202,8 @@
                 <view class="route-card__price">
                   <text class="route-card__price-symbol">¥</text>
                   <text class="route-card__price-value">{{item.priceText || item.minPrice || 0}}</text>
+                  <text class="route-card__price-origin" wx:if="{{item.hasOriginal}}">¥{{item.originalPrice}}</text>
+                  <text class="route-card__price-unit">起</text>
                 </view>
               </view>
             </view>

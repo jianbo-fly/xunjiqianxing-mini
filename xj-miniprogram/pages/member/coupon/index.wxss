@@ -39,7 +39,7 @@
   width: 40rpx;
   height: 6rpx;
   background: var(--color-primary);
-  border-radius: 99rpx;
+  border-radius: var(--radius-full);
 }
 
 /* ===== 中心加载 ===== */
@@ -66,7 +66,7 @@
   position: relative;
   display: flex;
   background: var(--color-bg-card);
-  border-radius: 20rpx;
+  border-radius: var(--radius-btn);
   overflow: hidden;
   box-shadow: var(--shadow-card);
 }
@@ -187,7 +187,7 @@
   top: 50%;
   transform: translateY(-50%) rotate(-12deg);
   border: 4rpx solid var(--color-border-medium);
-  border-radius: 8rpx;
+  border-radius: var(--radius-xs);
   padding: 8rpx 20rpx;
 }
 

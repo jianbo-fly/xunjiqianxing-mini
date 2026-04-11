@@ -5,7 +5,7 @@
   right: 0;
   background: #ffffff;
   border-top: 1rpx solid #ebebeb;
-  box-shadow: 0 -2rpx 12rpx rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-inset-top);
 }
 
 .tab-bar__content {

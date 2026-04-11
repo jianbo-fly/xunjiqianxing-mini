@@ -23,9 +23,9 @@
   gap: 10rpx;
   max-width: 76%;
   padding: 20rpx 44rpx;
-  border-radius: 100rpx;
+  border-radius: var(--radius-full);
   background: rgba(28, 28, 30, 0.88);
-  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.18);
+  box-shadow: var(--shadow-hero);
 }
 
 .xj-toast--success {

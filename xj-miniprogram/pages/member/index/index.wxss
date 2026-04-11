@@ -62,7 +62,7 @@
   height: 160rpx;
   border-radius: 50%;
   border: 6rpx solid #ffffff;
-  box-shadow: 0 6rpx 16rpx rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-md);
   display: block;
 }
 
@@ -74,7 +74,7 @@
   height: 40rpx;
   border-radius: 50%;
   background: #ffffff;
-  box-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -104,8 +104,8 @@
   gap: 8rpx;
   padding: 8rpx 24rpx;
   background: linear-gradient(to right, #1f2937, #111827);
-  border-radius: 9999rpx;
-  box-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.1);
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-sm);
 }
 
 .vip-badge-star-icon {
@@ -138,8 +138,8 @@
   padding: 26rpx 0;
   background: #ffffff;
   border: 1rpx solid #f3f4f6;
-  border-radius: 24rpx;
-  box-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.05);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
 }
 
 .stat-divider {
@@ -163,9 +163,9 @@
 .section-card {
   margin: 24rpx 32rpx 0;
   background: #ffffff;
-  border-radius: 24rpx;
+  border-radius: var(--radius-md);
   border: 1rpx solid #f3f4f6;
-  box-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-sm);
 }
 
 /* ===== 我的订单卡片 ===== */
@@ -224,17 +224,17 @@
 
 .order-tab-bg--red {
   background: rgba(236, 55, 19, 0.08);
-  border-radius: 16rpx;
+  border-radius: var(--radius-btn);
 }
 
 .order-tab-bg--blue {
   background: rgba(59, 130, 246, 0.08);
-  border-radius: 16rpx;
+  border-radius: var(--radius-btn);
 }
 
 .order-tab-bg--orange {
   background: rgba(249, 115, 22, 0.08);
-  border-radius: 16rpx;
+  border-radius: var(--radius-btn);
 }
 
 .order-tab-icon {
@@ -253,7 +253,7 @@
   color: #ffffff;
   font-size: 18rpx;
   font-weight: 600;
-  border-radius: 9999rpx;
+  border-radius: var(--radius-full);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -269,15 +269,14 @@
 .member-banner {
   margin: 24rpx 32rpx 0;
   background: linear-gradient(to right, #2c2c2c, #1a1a1a);
-  border-radius: 24rpx;
+  border-radius: var(--radius-md);
   padding: 32rpx;
   display: flex;
   align-items: center;
   justify-content: space-between;
   overflow: hidden;
   position: relative;
-  box-shadow: 0 8rpx 12rpx -2rpx rgba(0, 0, 0, 0.2),
-              0 4rpx 8rpx -4rpx rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-md);
 }
 
 /* 右侧金色装饰光晕 */
@@ -315,9 +314,8 @@
   margin-left: 24rpx;
   padding: 16rpx 32rpx;
   background: linear-gradient(to right, #ffd700, #fdb931);
-  border-radius: 9999rpx;
-  box-shadow: 0 20rpx 30rpx -6rpx rgba(0, 0, 0, 0.2),
-              0 8rpx 12rpx -8rpx rgba(0, 0, 0, 0.2);
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-lg);
 }
 
 .member-open-btn-text {
@@ -429,7 +427,7 @@
   position: relative;
   width: 80rpx;
   height: 80rpx;
-  border-radius: 20rpx;
+  border-radius: var(--radius-btn);
   display: flex;
   align-items: center;
   justify-content: center;

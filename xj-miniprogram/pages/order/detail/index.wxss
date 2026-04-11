@@ -48,12 +48,12 @@
 
 .status-banner--orange {
   background: var(--color-primary);
-  box-shadow: 0 20rpx 30rpx -6rpx rgba(236, 55, 19, 0.2), 0 8rpx 12rpx -8rpx rgba(236, 55, 19, 0.2);
+  box-shadow: var(--shadow-primary-lg);
 }
 
 .status-banner--primary {
   background: var(--color-primary-gradient);
-  box-shadow: 0 20rpx 30rpx -6rpx rgba(236, 55, 19, 0.2), 0 8rpx 12rpx -8rpx rgba(236, 55, 19, 0.2);
+  box-shadow: var(--shadow-primary-lg);
 }
 
 .status-banner--green {
@@ -263,7 +263,7 @@
 
 .type-badge {
   padding: 3rpx 12rpx;
-  border-radius: 8rpx;
+  border-radius: var(--radius-xs);
   font-size: 24rpx;
 }
 
@@ -383,7 +383,7 @@
   padding: 6rpx 16rpx;
   background: var(--color-primary-bg);
   border: 1rpx solid var(--color-primary-tint);
-  border-radius: 8rpx;
+  border-radius: var(--radius-xs);
   flex-shrink: 0;
 }
 
@@ -465,7 +465,7 @@
   bottom: 0;
   background: var(--color-bg-card);
   border-top: 1rpx solid var(--color-border-light);
-  box-shadow: 0 -8rpx 12rpx -2rpx rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-inset-top);
   padding: 26rpx 32rpx;
   padding-bottom: calc(26rpx + env(safe-area-inset-bottom));
   z-index: 100;

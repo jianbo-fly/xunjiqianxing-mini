@@ -20,10 +20,9 @@
 /* Figma: red gradient card, rounded-16, shadow red */
 .vip-card {
   position: relative;
-  border-radius: 32rpx;
+  border-radius: var(--radius-lg);
   overflow: hidden;
-  box-shadow: 0px 40rpx 50rpx -24rpx rgba(236, 55, 19, 0.2),
-              0px 16rpx 20rpx -24rpx rgba(236, 55, 19, 0.2);
+  box-shadow: var(--shadow-primary-lg);
 }
 
 /* 渐变底色 */
@@ -119,7 +118,7 @@
 .vip-card__vip-badge {
   background: rgba(255, 255, 255, 0.2);
   border: 2rpx solid rgba(255, 255, 255, 0.1);
-  border-radius: 9999rpx;
+  border-radius: var(--radius-full);
   padding: 10rpx 26rpx;
   flex-shrink: 0;
 }
@@ -175,7 +174,7 @@
 .vip-card__deco-chip {
   width: 96rpx;
   height: 64rpx;
-  border-radius: 8rpx;
+  border-radius: var(--radius-xs);
   background: linear-gradient(146deg, rgba(254, 240, 138, 0.4) 0%, rgba(234, 179, 8, 0.4) 100%);
   border: 2rpx solid rgba(255, 255, 255, 0.2);
   flex-shrink: 0;
@@ -186,7 +185,7 @@
 .vip-banner {
   background: rgba(236, 55, 19, 0.05);
   border: 2rpx solid rgba(236, 55, 19, 0.1);
-  border-radius: 24rpx;
+  border-radius: var(--radius-md);
   padding: 26rpx;
   display: flex;
   align-items: center;
@@ -236,7 +235,7 @@
   width: 8rpx;
   height: 40rpx;
   background: #EC3713;
-  border-radius: 9999rpx;
+  border-radius: var(--radius-full);
   margin-right: 24rpx;
   flex-shrink: 0;
 }
@@ -267,19 +266,19 @@
 .vip-benefit-card {
   background: #FFFFFF;
   border: 2rpx solid #F3F4F6;
-  border-radius: 24rpx;
+  border-radius: var(--radius-md);
   padding: 34rpx;
   display: flex;
   flex-direction: column;
   gap: 0;
-  box-shadow: 0px 2rpx 4rpx 0px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-sm);
 }
 
 /* 图标圆角方块 40×40 */
 .vip-benefit-icon-wrap {
   width: 80rpx;
   height: 80rpx;
-  border-radius: 16rpx;
+  border-radius: var(--radius-btn);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -313,12 +312,12 @@
 .vip-faq {
   background: #FFFFFF;
   border: 2rpx solid #F3F4F6;
-  border-radius: 24rpx;
+  border-radius: var(--radius-md);
   padding: 34rpx;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: 0px 2rpx 4rpx 0px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-sm);
 }
 
 .vip-faq__left {
@@ -358,7 +357,7 @@
   display: flex;
   flex-direction: column;
   gap: 30rpx;
-  box-shadow: 0px -8rpx 40rpx -8rpx rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-inset-top);
   z-index: 100;
 }
 
@@ -374,7 +373,7 @@
 .vip-checkbox {
   width: 36rpx;
   height: 36rpx;
-  border-radius: 8rpx;
+  border-radius: var(--radius-xs);
   border: 2rpx solid #D1D5DB;
   background: #FFFFFF;
   display: flex;
@@ -413,14 +412,13 @@
 /* Figma: bg #ec3713, rounded-8, shadow red, py-14 */
 .vip-cta {
   background: #EC3713;
-  border-radius: 16rpx;
+  border-radius: var(--radius-btn);
   padding: 28rpx 0;
   display: flex;
   align-items: flex-end;
   justify-content: center;
   gap: 0;
-  box-shadow: 0px 20rpx 30rpx -6rpx rgba(236, 55, 19, 0.3),
-              0px 8rpx 12rpx -8rpx rgba(236, 55, 19, 0.3);
+  box-shadow: var(--shadow-primary-lg);
 }
 
 .vip-cta--disabled {
@@ -464,7 +462,7 @@
 .success-card {
   width: 560rpx;
   background: #FFFFFF;
-  border-radius: 24rpx;
+  border-radius: var(--radius-md);
   padding: 60rpx 40rpx;
   text-align: center;
   display: flex;
@@ -496,7 +494,7 @@
   width: 100%;
   background: #EC3713;
   color: #FFFFFF;
-  border-radius: 48rpx;
+  border-radius: var(--radius-xl);
   padding: 20rpx 0;
   font-size: 30rpx;
   font-weight: 600;

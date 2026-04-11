@@ -4,6 +4,17 @@
   /* 磨砂玻璃效果（iOS 原生支持；Android 部分机型不支持，降级为不透明背景） */
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
+  /* 滚动响应：使用 transition 配合 scrollProgress 变量驱动阴影强度 */
+  transition: box-shadow 200ms ease, border-color 200ms ease;
+}
+
+/* 滚动后状态：底部浅阴影替代 border，营造悬浮感 */
+.nav-bar--scrolled {
+  box-shadow: var(--shadow-sm);
+}
+
+.nav-bar--scrolled.nav-bar--border {
+  border-bottom-color: transparent;
 }
 
 .nav-bar--fixed {

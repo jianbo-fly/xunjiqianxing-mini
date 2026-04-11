@@ -30,14 +30,14 @@
   align-items: center;
   height: 80rpx;
   background: #f2ebea;
-  border-radius: 40rpx;
+  border-radius: var(--radius-pill);
   padding: 0 32rpx 0 24rpx;
   gap: 16rpx;
 }
 
 .search-bar--active {
   background: #fff;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-sm);
 }
 
 .search-bar__icon {
@@ -105,7 +105,7 @@
   width: 32rpx;
   height: 8rpx;
   background: #ec3713;
-  border-radius: 9999rpx;
+  border-radius: var(--radius-full);
 }
 
 .filter-btn {
@@ -113,7 +113,7 @@
   align-items: center;
   gap: 8rpx;
   background: #f3f4f6;
-  border-radius: 9999rpx;
+  border-radius: var(--radius-full);
   padding: 12rpx 24rpx;
   font-size: 24rpx;
   color: #6b7280;
@@ -169,7 +169,7 @@
   align-items: center;
   gap: 24rpx;
   padding: 26rpx;
-  border-radius: 16rpx;
+  border-radius: var(--radius-btn);
   border: 2rpx solid transparent;
 }
 
@@ -177,7 +177,7 @@
 .hot-item--rank1 {
   background: #fff;
   border-color: rgba(236, 55, 19, 0.1);
-  box-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-sm);
   background-image: linear-gradient(to right, rgba(236, 55, 19, 0.08), transparent);
 }
 
@@ -185,7 +185,7 @@
 .hot-item--rank2 {
   background: #fff;
   border-color: rgba(236, 55, 19, 0.1);
-  box-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-sm);
   background-image: linear-gradient(to right, rgba(236, 55, 19, 0.04), transparent);
 }
 
@@ -193,7 +193,7 @@
 .hot-item--rank3 {
   background: #fff;
   border-color: rgba(236, 55, 19, 0.1);
-  box-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-sm);
 }
 
 /* Rank 4-6 */
@@ -265,7 +265,7 @@
   align-items: center;
   height: 64rpx;
   padding: 0 12rpx 0 28rpx;
-  border-radius: 8rpx;
+  border-radius: var(--radius-xs);
   background: #f2ebea;
   max-width: 240rpx;
 }
@@ -320,7 +320,7 @@
   color: #ec3713;
   font-size: 20rpx;
   padding: 4rpx 16rpx;
-  border-radius: 8rpx;
+  border-radius: var(--radius-xs);
 }
 
 .result-list {
@@ -330,11 +330,11 @@
 /* 结果卡片 */
 .result-card {
   background: var(--color-bg-card);
-  border-radius: 24rpx;
+  border-radius: var(--radius-md);
   overflow: hidden;
   margin-top: 24rpx;
   border: 1rpx solid #f3f4f6;
-  box-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-sm);
 }
 
 .result-card__cover {
@@ -357,7 +357,7 @@
   align-items: center;
   gap: 8rpx;
   background: rgba(0, 0, 0, 0.6);
-  border-radius: 8rpx;
+  border-radius: var(--radius-xs);
   padding: 8rpx 16rpx;
 }
 
@@ -398,7 +398,7 @@
   color: #ec3713;
   background: rgba(236, 55, 19, 0.07);
   padding: 6rpx 16rpx;
-  border-radius: 8rpx;
+  border-radius: var(--radius-xs);
   border: 1rpx solid rgba(236, 55, 19, 0.15);
 }
 

@@ -1,7 +1,8 @@
 .page-index {
   min-height: 100vh;
   background: var(--color-bg-page);
-  padding-bottom: calc(var(--tab-bar-height) + 120rpx);
+  /* 底部留出 tab-bar 空间 */
+  padding-bottom: var(--tab-bar-height);
 }
 
 /* ===== 顶部栏 ===== */
@@ -80,7 +81,7 @@
   display: flex;
   align-items: center;
   background: var(--color-bg-card);
-  border-radius: 24rpx;
+  border-radius: var(--radius-md);
   box-shadow: var(--shadow-sm);
   overflow: hidden;
 }
@@ -141,11 +142,12 @@
 /* ===== 轮播图 ===== */
 .banner-section {
   position: relative;
+  /* opacity 淡出效果，不影响 layout */
 }
 
 .banner-swiper {
   height: 358rpx;
-  border-radius: 32rpx;
+  border-radius: var(--radius-lg);
   overflow: hidden;
   box-shadow: var(--shadow-lg);
 }
@@ -182,7 +184,7 @@
   display: inline-block;
   padding: 4rpx 16rpx;
   background: rgba(236, 55, 19, 0.85);
-  border-radius: 8rpx;
+  border-radius: var(--radius-xs);
   font-size: 24rpx;
   color: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(4rpx);
@@ -230,7 +232,7 @@
 /* ===== 功能入口 ===== */
 .entry-card {
   background: var(--color-bg-card);
-  border-radius: 24rpx;
+  border-radius: var(--radius-md);
   padding: 28rpx 8rpx;
   box-shadow: var(--shadow-sm);
 }
@@ -346,7 +348,7 @@
 /* ===== 路线卡片 ===== */
 .route-card {
   background: var(--color-bg-card);
-  border-radius: 24rpx;
+  border-radius: var(--radius-md);
   overflow: hidden;
   box-shadow: var(--shadow-card);
 }
@@ -354,11 +356,35 @@
 .route-card__image-wrap {
   position: relative;
   width: 100%;
+  /* 图片加载占位骨架屏 */
+  background: linear-gradient(
+    90deg,
+    var(--color-bg-gray) 25%,
+    var(--color-border-light) 50%,
+    var(--color-bg-gray) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton 1.5s ease infinite;
+}
+
+/* 底部渐变遮罩：提升 location 标签可读性 */
+.route-card__image-wrap::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 50%;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.15) 60%, transparent 100%);
+  pointer-events: none;
+  z-index: 2;
 }
 
 .route-card__image {
   width: 100%;
   height: 340rpx;
+  position: relative;
+  z-index: 1;
 }
 
 .route-card__location {
@@ -371,7 +397,8 @@
   padding: 4rpx 14rpx;
   background: var(--color-overlay-dark);
   backdrop-filter: blur(12rpx);
-  border-radius: 20rpx;
+  border-radius: var(--radius-full);
+  z-index: 3;
 }
 
 .route-card__location-icon {
@@ -411,13 +438,15 @@
 .route-card__tag {
   display: inline-block;
   padding: 4rpx 12rpx;
-  border-radius: 8rpx;
+  border-radius: var(--radius-xs);
   font-size: 20rpx;
 }
 
 .route-card__tag--primary {
-  background: var(--tag-orange-bg);
-  color: var(--tag-orange-text);
+  background: var(--color-primary-bg);
+  border: 2rpx solid var(--color-primary-border);
+  color: var(--color-primary);
+  font-weight: var(--font-weight-medium);
 }
 
 .route-card__tag--gray {
@@ -450,15 +479,26 @@
 
 .route-card__price-value {
   font-size: 36rpx;
-  font-weight: var(--font-weight-medium);
+  font-weight: var(--font-weight-bold);
+  line-height: 1;
+}
+
+.route-card__price-unit {
+  font-size: 20rpx;
+  color: var(--color-primary);
+  font-weight: var(--font-weight-normal);
+  margin-left: 2rpx;
+}
+
+.route-card__price-origin {
+  font-size: 20rpx;
+  color: var(--color-text-placeholder);
+  text-decoration: line-through;
+  margin-left: 6rpx;
+  font-weight: var(--font-weight-normal);
 }
 
 /* ===== 空状态（由 xj-empty 组件处理，此处留余量） ===== */
-
-/* ===== 底部占位 ===== */
-.bottom-placeholder {
-  height: 120rpx;
-}
 
 /* ===== 城市选择弹窗 ===== */
 .city-picker-mask {
@@ -473,7 +513,7 @@
 
 .city-picker-panel {
   background: var(--color-bg-card);
-  border-radius: 32rpx 32rpx 0 0;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
   height: 88vh;
   display: flex;
   flex-direction: column;
@@ -543,7 +583,7 @@
   justify-content: center;
   background: var(--color-bg-gray);
   border: 1rpx solid var(--color-border);
-  border-radius: 12rpx;
+  border-radius: var(--radius-sm);
   font-size: 28rpx;
   color: var(--color-text-body);
 }
