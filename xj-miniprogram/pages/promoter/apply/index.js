@@ -3,7 +3,7 @@
  */
 const app = getApp();
 const promoterApi = require('../../../services/promoter');
-const { navigateBack } = require('../../../utils/router');
+const { navigateBack, redirectTo, routes } = require('../../../utils/router');
 
 Page({
   data: {
@@ -21,9 +21,26 @@ Page({
     const windowInfo = wx.getWindowInfo();
     const deviceInfo = wx.getDeviceInfo();
     const statusBarHeight = windowInfo.statusBarHeight || 0;
-    // nav bar content height
     const navBarHeight = deviceInfo.platform === 'ios' ? 44 : 48;
     this.setData({ statusBarHeight, navBarHeight });
+
+    this.checkExistingApplication();
+  },
+
+  async checkExistingApplication() {
+    try {
+      const info = await promoterApi.getInfo();
+      if (info && info.status === 0) {
+        wx.redirectTo({ url: '/pages/promoter/status/index' });
+        return;
+      }
+      if (info && info.status === 1) {
+        wx.redirectTo({ url: '/pages/promoter/center/index' });
+        return;
+      }
+    } catch (e) {
+      // 未申请过，继续展示申请表单
+    }
 
     // 预填用户信息
     const userInfo = app.globalData.userInfo || wx.getStorageSync('userInfo') || {};
@@ -89,7 +106,7 @@ Page({
       wx.hideLoading();
 
       wx.showToast({ title: '申请已提交', icon: 'success' });
-      setTimeout(() => navigateBack(), 1500);
+      setTimeout(() => redirectTo(routes.promoterStatus), 1500);
     } catch (err) {
       wx.hideLoading();
       wx.showToast({ title: err.message || '提交失败', icon: 'none' });

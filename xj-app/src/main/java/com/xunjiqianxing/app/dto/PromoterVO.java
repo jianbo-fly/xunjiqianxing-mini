@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 /**
  * 推广员信息VO
@@ -53,6 +54,10 @@ public class PromoterVO {
 
     @Schema(description = "状态描述")
     private String statusDesc;
+
+    @Schema(description = "状态描述")
+    private LocalDateTime applyTime;
+
 
     public static String getLevelName(Integer level) {
         if (level == null) return "";

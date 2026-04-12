@@ -264,6 +264,7 @@ public class PromoterController {
         vo.setOrderAmount(promoter.getOrderAmount());
         vo.setStatus(promoter.getStatus());
         vo.setStatusDesc(PromoterVO.getStatusDesc(promoter.getStatus()));
+        vo.setApplyTime(promoter.getCreatedAt());
         return vo;
     }
 

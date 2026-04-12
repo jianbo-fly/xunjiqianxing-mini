@@ -37,6 +37,12 @@ Page({
         return;
       }
 
+      // 审核中，跳转审核状态页
+      if (info.status === 0) {
+        wx.redirectTo({ url: '/pages/promoter/status/index' });
+        return;
+      }
+
       this.setData({
         promoter: {
           ...info,

@@ -37,6 +37,7 @@ const routes = {
   promoterApply: '/pages/promoter/apply/index',
   promoterCenter: '/pages/promoter/center/index',
   promoterBindList: '/pages/promoter/bindList/index',
+  promoterStatus: '/pages/promoter/status/index',
 
   // 消息相关
   messageList: '/pages/message/list/index',
@@ -161,6 +162,7 @@ const go = {
   promoterApply: () => navigateTo(routes.promoterApply),
   promoterCenter: () => navigateTo(routes.promoterCenter),
   promoterBindList: () => navigateTo(routes.promoterBindList),
+  promoterStatus: () => navigateTo(routes.promoterStatus),
 
   messageList: () => navigateTo(routes.messageList),
 

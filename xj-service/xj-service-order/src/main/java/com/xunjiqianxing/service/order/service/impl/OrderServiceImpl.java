@@ -25,7 +25,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -327,6 +329,21 @@ public class OrderServiceImpl implements OrderService {
         orderIds.forEach(id -> addLog(id, null, OrderStatus.TRAVELING.getCode(),
                 OrderStatus.COMPLETED.getCode(), "system", null, "行程结束，自动更新为已完成"));
         return rows;
+    }
+
+    @Override
+    public Map<Integer, Long> countByStatus(Long userId) {
+        List<OrderMain> orders = orderMainMapper.selectList(
+                new LambdaQueryWrapper<OrderMain>()
+                        .select(OrderMain::getStatus)
+                        .eq(OrderMain::getUserId, userId)
+                        .eq(OrderMain::getIsDeleted, 0)
+        );
+        Map<Integer, Long> counts = new HashMap<>();
+        for (OrderMain order : orders) {
+            counts.merge(order.getStatus(), 1L, Long::sum);
+        }
+        return counts;
     }
 
     /**

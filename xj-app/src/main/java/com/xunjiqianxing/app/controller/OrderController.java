@@ -30,7 +30,9 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -247,6 +249,22 @@ public class OrderController {
         }
 
         return Result.success();
+    }
+
+    /**
+     * 订单各状态数量
+     */
+    @GetMapping("/counts")
+    @Operation(summary = "订单各状态数量", description = "返回当前用户各状态订单数量")
+    public Result<Map<String, Long>> counts() {
+        Long userId = StpUtil.getLoginIdAsLong();
+        Map<Integer, Long> statusCounts = orderService.countByStatus(userId);
+
+        Map<String, Long> result = new HashMap<>();
+        result.put("pending", statusCounts.getOrDefault(0, 0L));
+        result.put("confirming", statusCounts.getOrDefault(1, 0L));
+        result.put("travelling", statusCounts.getOrDefault(2, 0L));
+        return Result.success(result);
     }
 
     /**

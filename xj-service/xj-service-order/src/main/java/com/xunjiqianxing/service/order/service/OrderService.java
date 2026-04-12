@@ -8,6 +8,7 @@ import com.xunjiqianxing.service.order.entity.OrderTraveler;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 订单服务
@@ -102,4 +103,9 @@ public interface OrderService {
      * 批量将「出行中」改为「已完成」
      */
     int batchMarkCompleted(List<Long> orderIds);
+
+    /**
+     * 按状态统计用户订单数量
+     */
+    Map<Integer, Long> countByStatus(Long userId);
 }

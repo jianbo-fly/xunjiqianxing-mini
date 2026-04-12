@@ -62,6 +62,7 @@ module.exports = {
       confirm: '/api/order/confirm',  // 订单确认信息
       create: '/api/order/create',
       list: '/api/order/list',
+      counts: '/api/order/counts',
       detail: '/api/order',  // /api/order/{id}
       cancel: '/api/order',  // /api/order/{id}/cancel
       refund: '/api/order',  // /api/order/{id}/refund
@@ -71,6 +72,7 @@ module.exports = {
     custom: {
       submit: '/api/custom/submit',
       list: '/api/custom/list',
+      counts: '/api/custom/counts',
       detail: '/api/custom',  // /api/custom/{id}
       cancel: '/api/custom',  // /api/custom/{id}/cancel
     },

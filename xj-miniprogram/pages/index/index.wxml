@@ -91,7 +91,7 @@
           hover-class="entry-item--hover"
           hover-stay-time="100"
         >
-          <view class="entry-icon-bg">
+          <view class="entry-icon-bg" style="background: {{item.bgColor}}; box-shadow: 0 4rpx 12rpx {{item.shadowColor}};">
             <image class="entry-icon" src="{{item.icon}}" mode="aspectFit" />
           </view>
           <text class="entry-name">{{item.name}}</text>

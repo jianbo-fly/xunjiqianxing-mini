@@ -233,6 +233,7 @@ Page({
             isLogin: false,
             userInfo: null,
             orderCounts: { pending: 0, confirming: 0, travelling: 0 },
+            customCounts: { pending: 0, following: 0, completed: 0 },
           });
         }
       },

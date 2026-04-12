@@ -70,10 +70,9 @@
 
 /* ===== 主内容区 ===== */
 .main-content {
-  padding: 32rpx;
+  padding: var(--spacing-lg);
   display: flex;
   flex-direction: column;
-  gap: 48rpx;
 }
 
 /* ===== 搜索栏 ===== */
@@ -81,9 +80,10 @@
   display: flex;
   align-items: center;
   background: var(--color-bg-card);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-sm);
+  border: 2rpx solid var(--color-border-light);
+  border-radius: var(--radius-pill);
   overflow: hidden;
+  margin-bottom: var(--spacing-md);
 }
 
 /* 左侧城市选择器 */
@@ -142,11 +142,11 @@
 /* ===== 轮播图 ===== */
 .banner-section {
   position: relative;
-  /* opacity 淡出效果，不影响 layout */
+  margin-bottom: var(--spacing-lg);
 }
 
 .banner-swiper {
-  height: 358rpx;
+  height: 400rpx;
   border-radius: var(--radius-lg);
   overflow: hidden;
   box-shadow: var(--shadow-lg);
@@ -233,21 +233,22 @@
 .entry-card {
   background: var(--color-bg-card);
   border-radius: var(--radius-md);
-  padding: 28rpx 8rpx;
+  padding: var(--spacing-lg) var(--spacing-xs);
   box-shadow: var(--shadow-sm);
+  margin-bottom: var(--spacing-xl);
 }
 
 .entry-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 32rpx 0;
+  gap: var(--spacing-lg) 0;
 }
 
 .entry-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10rpx;
+  gap: var(--spacing-sm);
 }
 
 .entry-item--hover .entry-icon-bg {
@@ -260,8 +261,9 @@
 }
 
 .entry-icon-bg {
-  width: 88rpx;
-  height: 88rpx;
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -269,24 +271,22 @@
 }
 
 .entry-icon {
-  width: 48rpx;
-  height: 48rpx;
+  width: 44rpx;
+  height: 44rpx;
 }
 
-
 .entry-name {
-  font-size: 22rpx;
-  font-weight: 500;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-normal);
   color: var(--color-text-body);
-  line-height: 1.4;
+  line-height: var(--line-height-tight);
 }
 
 /* ===== 热门路线 ===== */
 .hot-routes {
   display: flex;
   flex-direction: column;
-  gap: 32rpx;
-  padding-top: 16rpx;
+  gap: var(--spacing-lg);
 }
 
 .section-header {
@@ -325,8 +325,8 @@
 }
 
 .section-more-arrow {
-  width: 28rpx;
-  height: 28rpx;
+  width: 24rpx;
+  height: 24rpx;
   flex-shrink: 0;
   opacity: 0.5;
   margin-left: 4rpx;

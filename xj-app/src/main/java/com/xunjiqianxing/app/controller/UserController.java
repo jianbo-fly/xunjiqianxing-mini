@@ -4,6 +4,7 @@ import cn.binarywang.wx.miniapp.api.WxMaService;
 import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
 import cn.dev33.satoken.stp.StpUtil;
 import com.xunjiqianxing.app.dto.*;
+import com.xunjiqianxing.app.service.SmsService;
 import com.xunjiqianxing.common.exception.BizException;
 import com.xunjiqianxing.common.result.Result;
 import com.xunjiqianxing.service.user.entity.UserInfo;
@@ -31,6 +32,7 @@ public class UserController {
 
     private final WxMaService wxMaService;
     private final UserService userService;
+    private final SmsService smsService;
 
     /**
      * 微信小程序登录
@@ -180,8 +182,7 @@ public class UserController {
     @PostMapping("/phoneLogin")
     @Operation(summary = "手机号验证码登录", description = "验证码登录，用户不存在时自动创建账号")
     public Result<LoginResponse> phoneLogin(@Valid @RequestBody PhoneLoginRequest request) {
-        // TODO: 验证短信验证码
-        // smsService.verifyCode(request.getPhone(), request.getCode());
+        smsService.verifyCode(request.getPhone(), request.getCode());
 
         String phone = request.getPhone();
         UserInfo user = userService.getByPhone(phone);
@@ -335,8 +336,7 @@ public class UserController {
             throw new BizException("用户不存在");
         }
 
-        // TODO: 验证短信验证码
-        // smsService.verifyCode(request.getPhone(), request.getCode());
+        smsService.verifyCode(request.getPhone(), request.getCode());
 
         // 检查手机号是否已被绑定
         UserInfo existUser = userService.getByPhone(request.getPhone());
@@ -358,9 +358,7 @@ public class UserController {
     @PostMapping("/sendCode")
     @Operation(summary = "发送短信验证码")
     public Result<Void> sendCode(@Valid @RequestBody SendCodeRequest request) {
-        // TODO: 实现短信发送
-        // smsService.sendVerifyCode(request.getPhone());
-        log.info("发送验证码到手机号: {}", request.getPhone());
+        smsService.sendVerifyCode(request.getPhone());
         return Result.success();
     }
 }

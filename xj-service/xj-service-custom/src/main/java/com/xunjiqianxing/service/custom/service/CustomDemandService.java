@@ -28,4 +28,9 @@ public interface CustomDemandService {
      * 取消需求
      */
     boolean cancel(Long id, Long userId);
+
+    /**
+     * 按状态统计用户定制需求数量
+     */
+    java.util.Map<Integer, Long> countByStatus(Long userId);
 }

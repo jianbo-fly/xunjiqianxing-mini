@@ -33,6 +33,13 @@ const customApi = {
   },
 
   /**
+   * 获取各状态定制需求数量
+   */
+  getCounts() {
+    return get(paths.custom.counts);
+  },
+
+  /**
    * 取消定制需求
    * @param {number} id - 需求ID
    */

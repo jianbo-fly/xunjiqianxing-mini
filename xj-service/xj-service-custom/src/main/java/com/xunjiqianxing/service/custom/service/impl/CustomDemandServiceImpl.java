@@ -13,6 +13,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * 定制需求服务实现
  */
@@ -70,5 +74,19 @@ public class CustomDemandServiceImpl implements CustomDemandService {
                         .set(CustomDemand::getStatus, 3)
         );
         return rows > 0;
+    }
+
+    @Override
+    public Map<Integer, Long> countByStatus(Long userId) {
+        List<CustomDemand> demands = customDemandMapper.selectList(
+                new LambdaQueryWrapper<CustomDemand>()
+                        .select(CustomDemand::getStatus)
+                        .eq(CustomDemand::getUserId, userId)
+        );
+        Map<Integer, Long> counts = new HashMap<>();
+        for (CustomDemand demand : demands) {
+            counts.merge(demand.getStatus(), 1L, Long::sum);
+        }
+        return counts;
     }
 }

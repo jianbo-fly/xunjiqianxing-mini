@@ -48,7 +48,8 @@
       "pages": [
         "apply/index",
         "center/index",
-        "bindList/index"
+        "bindList/index",
+        "status/index"
       ]
     },
     {

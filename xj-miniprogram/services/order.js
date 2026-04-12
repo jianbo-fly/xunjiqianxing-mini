@@ -67,6 +67,13 @@ const orderApi = {
   },
 
   /**
+   * 获取各状态订单数量
+   */
+  getCounts() {
+    return get(paths.order.counts);
+  },
+
+  /**
    * 申请退款
    * @param {number} id - 订单ID
    * @param {string} reason - 退款原因

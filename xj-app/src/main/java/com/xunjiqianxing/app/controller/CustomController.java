@@ -108,6 +108,22 @@ public class CustomController {
         return Result.success();
     }
 
+    /**
+     * 定制需求各状态数量
+     */
+    @GetMapping("/counts")
+    @Operation(summary = "定制需求各状态数量", description = "返回当前用户各状态定制需求数量")
+    public Result<Map<String, Long>> counts() {
+        Long userId = StpUtil.getLoginIdAsLong();
+        Map<Integer, Long> statusCounts = customDemandService.countByStatus(userId);
+
+        Map<String, Long> result = new HashMap<>();
+        result.put("pending", statusCounts.getOrDefault(0, 0L));
+        result.put("following", statusCounts.getOrDefault(1, 0L));
+        result.put("completed", statusCounts.getOrDefault(2, 0L));
+        return Result.success(result);
+    }
+
     private CustomDemandVO toVO(CustomDemand demand) {
         CustomDemandVO vo = new CustomDemandVO();
         BeanUtils.copyProperties(demand, vo);
