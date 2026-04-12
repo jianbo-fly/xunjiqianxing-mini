@@ -23,4 +23,7 @@ public class LoginResponse {
 
     @Schema(description = "是否需要完善资料（头像或昵称缺失）")
     private Boolean needsProfile;
+
+    @Schema(description = "是否已绑定手机号")
+    private Boolean hasPhone;
 }

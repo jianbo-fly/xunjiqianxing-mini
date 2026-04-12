@@ -17,6 +17,27 @@ const userApi = {
   },
 
   /**
+   * 微信一键登录 + 手机号授权（一次完成登录与手机号绑定）
+   * @param {Object} params
+   * @param {string} params.loginCode - wx.login 返回的 code
+   * @param {string} params.phoneCode - getPhoneNumber 返回的 code
+   * @param {string} [params.promoterCode] - 推广员邀请码
+   */
+  wxLoginWithPhone(params) {
+    return post(paths.user.wxLoginWithPhone, params);
+  },
+
+  /**
+   * 手机号验证码登录（未登录态调用，新用户自动建号）
+   * @param {Object} params
+   * @param {string} params.phone - 手机号
+   * @param {string} params.code - 短信验证码
+   */
+  phoneLogin(params) {
+    return post(paths.user.phoneLogin, params);
+  },
+
+  /**
    * 获取当前用户信息
    */
   getInfo() {
@@ -55,9 +76,10 @@ const userApi = {
    * @param {Object} params
    * @param {string} params.phone - 手机号
    * @param {string} params.code - 验证码
+   * @param {Object} [options] - 额外请求参数（可传 header 覆盖 Authorization）
    */
-  bindPhone(params) {
-    return post(paths.user.bindPhone, params);
+  bindPhone(params, options) {
+    return post(paths.user.bindPhone, params, options);
   },
 
   /**

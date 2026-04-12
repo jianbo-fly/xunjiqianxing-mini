@@ -84,12 +84,143 @@ public class UserController {
                     .token(token)
                     .isNewUser(isNewUser)
                     .needsProfile(needsProfile)
+                    .hasPhone(user.getPhone() != null && !user.getPhone().isEmpty())
                     .build());
 
         } catch (WxErrorException e) {
             log.error("微信登录失败: {}", e.getMessage(), e);
             throw new BizException("微信登录失败: " + e.getMessage());
         }
+    }
+
+    /**
+     * 微信一键登录 + 手机号授权
+     * 前端按钮同时带 open-type="getPhoneNumber" 触发，一次完成登录与手机号绑定
+     */
+    @PostMapping("/loginByWxAll")
+    @Operation(summary = "微信一键登录带手机号", description = "loginCode + phoneCode 同步登录并绑定手机号")
+    public Result<LoginResponse> loginByWxAll(@Valid @RequestBody WxLoginWithPhoneRequest request) {
+        try {
+            // 1. 换 openid
+            WxMaJscode2SessionResult session = wxMaService.getUserService()
+                    .getSessionInfo(request.getLoginCode());
+            String openid = session.getOpenid();
+            String unionid = session.getUnionid();
+
+            // 2. 换手机号
+            String phoneNumber = wxMaService.getUserService()
+                    .getPhoneNoInfo(request.getPhoneCode())
+                    .getPhoneNumber();
+            if (phoneNumber == null || phoneNumber.isEmpty()) {
+                throw new BizException("获取手机号失败");
+            }
+
+            // 3. 查/建用户
+            UserInfo user = userService.getByOpenid(openid);
+            boolean isNewUser = false;
+
+            if (user == null) {
+                // 同一手机号已被其他 openid 占用 → 直接拒绝，避免账号合并的复杂性
+                UserInfo existByPhone = userService.getByPhone(phoneNumber);
+                if (existByPhone != null) {
+                    throw new BizException("该手机号已绑定其他账号,请更换手机号或使用原账号登录");
+                }
+                user = new UserInfo();
+                user.setOpenid(openid);
+                user.setUnionid(unionid);
+                user.setPhone(phoneNumber);
+                user.setNickname("微信用户");
+                user.setLastLoginAt(LocalDateTime.now());
+                user = userService.create(user);
+                isNewUser = true;
+                log.info("一键登录创建新用户, userId: {}, phone: {}", user.getId(), phoneNumber);
+            } else {
+                // 老用户：首次一键登录时补齐手机号；若已有且与本次不一致则拒绝
+                String currentPhone = user.getPhone();
+                if (currentPhone == null || currentPhone.isEmpty()) {
+                    UserInfo existByPhone = userService.getByPhone(phoneNumber);
+                    if (existByPhone != null && !existByPhone.getId().equals(user.getId())) {
+                        throw new BizException("该手机号已绑定其他账号");
+                    }
+                    user.setPhone(phoneNumber);
+                }
+                user.setLastLoginAt(LocalDateTime.now());
+                userService.update(user);
+                log.info("一键登录成功, userId: {}, phone: {}", user.getId(), phoneNumber);
+            }
+
+            // 4. 发 token
+            StpUtil.login(user.getId());
+            String token = StpUtil.getTokenValue();
+
+            String avatar = user.getAvatar();
+            boolean needsProfile = avatar == null || avatar.isEmpty()
+                    || avatar.startsWith("http://tmp")
+                    || avatar.startsWith("http://127.")
+                    || "微信用户".equals(user.getNickname());
+
+            return Result.success(LoginResponse.builder()
+                    .userId(user.getId())
+                    .token(token)
+                    .isNewUser(isNewUser)
+                    .needsProfile(needsProfile)
+                    .hasPhone(true)
+                    .build());
+
+        } catch (WxErrorException e) {
+            log.error("一键登录失败: {}", e.getMessage(), e);
+            throw new BizException("一键登录失败: " + e.getMessage());
+        }
+    }
+
+    /**
+     * 手机号验证码登录
+     * 未登录态下调用：手机号存在则直接登录，不存在则创建新账号
+     */
+    @PostMapping("/phoneLogin")
+    @Operation(summary = "手机号验证码登录", description = "验证码登录，用户不存在时自动创建账号")
+    public Result<LoginResponse> phoneLogin(@Valid @RequestBody PhoneLoginRequest request) {
+        // TODO: 验证短信验证码
+        // smsService.verifyCode(request.getPhone(), request.getCode());
+
+        String phone = request.getPhone();
+        UserInfo user = userService.getByPhone(phone);
+        boolean isNewUser = false;
+
+        if (user == null) {
+            // 新用户：创建账号，openid 使用占位值，后续可由 bindPhoneByWx 或单独接口补全
+            user = new UserInfo();
+            user.setOpenid("phone_" + phone);
+            user.setPhone(phone);
+            user.setNickname("手机用户");
+            user.setLastLoginAt(LocalDateTime.now());
+            user = userService.create(user);
+            isNewUser = true;
+            log.info("手机号登录创建新用户, userId: {}, phone: {}", user.getId(), phone);
+        } else {
+            user.setLastLoginAt(LocalDateTime.now());
+            userService.update(user);
+            log.info("手机号登录成功, userId: {}, phone: {}", user.getId(), phone);
+        }
+
+        // 生成token
+        StpUtil.login(user.getId());
+        String token = StpUtil.getTokenValue();
+
+        String avatar = user.getAvatar();
+        boolean needsProfile = avatar == null || avatar.isEmpty()
+                || avatar.startsWith("http://tmp")
+                || avatar.startsWith("http://127.")
+                || "手机用户".equals(user.getNickname())
+                || "微信用户".equals(user.getNickname());
+
+        return Result.success(LoginResponse.builder()
+                .userId(user.getId())
+                .token(token)
+                .isNewUser(isNewUser)
+                .needsProfile(needsProfile)
+                .hasPhone(true)
+                .build());
     }
 
     /**

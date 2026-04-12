@@ -20,6 +20,9 @@ public class SaTokenConfig implements WebMvcConfigurer {
     private static final String[] WHITE_LIST = {
             "/api/user/login",
             "/api/user/loginByCode",
+            "/api/user/loginByWxAll",
+            "/api/user/phoneLogin",
+            "/api/user/sendCode",
             "/api/user/devLogin",
             "/api/home/**",
             "/api/route/list",

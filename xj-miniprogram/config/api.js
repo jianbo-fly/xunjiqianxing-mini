@@ -30,6 +30,8 @@ module.exports = {
     // 用户模块 /api/user
     user: {
       wxLogin: '/api/user/loginByCode',
+      wxLoginWithPhone: '/api/user/loginByWxAll',
+      phoneLogin: '/api/user/phoneLogin',
       info: '/api/user/info',
       update: '/api/user/info',
       logout: '/api/user/logout',
