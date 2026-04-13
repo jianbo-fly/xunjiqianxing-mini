@@ -1,0 +1,72 @@
+# 测试环境配置 — 使用 H2 内存数据库，禁用外部服务依赖
+
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=MYSQL
+    username: sa
+    password:
+  sql:
+    init:
+      mode: never
+
+  # 禁用 Redis（测试中不需要）
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration
+      - org.redisson.spring.starter.RedissonAutoConfiguration
+
+# MyBatis Plus 适配 H2
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      id-type: assign_id
+      logic-delete-field: isDeleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+# Sa-Token 测试配置
+sa-token:
+  token-name: Authorization
+  timeout: 2592000
+  is-concurrent: true
+  is-share: false
+  token-style: uuid
+  is-log: false
+
+# 微信配置（测试占位）
+wechat:
+  miniapp:
+    appid: test-appid
+    secret: test-secret
+
+wechat-pay:
+  appid: test-appid
+  mchid: test-mchid
+  api-v3-key: test-api-v3-key
+  cert-path: ""
+  key-path: ""
+  notify-url: http://localhost:8080/api/pay/notify
+
+# 腾讯云COS（测试占位）
+tencent:
+  cos:
+    secret-id: test-secret-id
+    secret-key: test-secret-key
+    region: ap-chengdu
+    bucket: test-bucket
+
+# 应用配置
+app:
+  idcard-encrypt-key: test_key_16bytes
+
+logging:
+  level:
+    com.xunjiqianxing: debug

@@ -1,0 +1,197 @@
+.page-status {
+  min-height: 100vh;
+  background: var(--color-bg-page);
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== 主内容区 ===== */
+.status-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--spacing-xl) var(--page-padding) 0;
+}
+
+/* ===== 沙漏图标 ===== */
+.icon-section {
+  margin-top: var(--spacing-xl);
+  margin-bottom: var(--spacing-lg);
+}
+
+.icon-circle-outer {
+  position: relative;
+  width: 280rpx;
+  height: 280rpx;
+  border-radius: var(--radius-full);
+  background: var(--color-primary-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-circle-inner {
+  width: 220rpx;
+  height: 220rpx;
+  border-radius: var(--radius-full);
+  background: var(--color-primary-tint);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-hourglass {
+  width: 80rpx;
+  height: 80rpx;
+}
+
+.icon-badge {
+  position: absolute;
+  right: var(--spacing-sm);
+  bottom: var(--spacing-sm);
+  padding: 4rpx var(--spacing-sm);
+  background: var(--color-primary);
+  border-radius: var(--radius-full);
+  font-size: 20rpx;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-inverse);
+  letter-spacing: 1rpx;
+  box-shadow: var(--shadow-primary-sm);
+}
+
+/* ===== 状态标题 ===== */
+.status-title {
+  font-size: var(--font-size-xxl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-md);
+}
+
+/* ===== 描述文字 ===== */
+.status-desc {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xs);
+  margin-bottom: var(--spacing-xl);
+}
+
+.status-desc-text {
+  font-size: var(--font-size-md);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-loose);
+}
+
+.status-desc-timeline {
+  display: flex;
+  align-items: center;
+}
+
+.status-desc-highlight {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+  line-height: var(--line-height-loose);
+}
+
+/* ===== 提交信息卡片 ===== */
+.detail-card {
+  width: 100%;
+  background: var(--color-bg-page);
+  border: 2rpx solid var(--color-border-light);
+  border-radius: var(--radius-btn);
+  padding: var(--spacing-md) var(--spacing-lg);
+}
+
+.detail-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: var(--spacing-md);
+  border-bottom: 2rpx dashed var(--color-border-light);
+  margin-bottom: var(--spacing-lg);
+}
+
+.detail-header-label {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-tertiary);
+  letter-spacing: 1rpx;
+  text-transform: uppercase;
+}
+
+.detail-header-icon {
+  width: 28rpx;
+  height: 28rpx;
+  opacity: 0.4;
+}
+
+.detail-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-lg);
+}
+
+.detail-row--last {
+  margin-bottom: 0;
+}
+
+.detail-label {
+  font-size: var(--font-size-md);
+  color: var(--color-text-secondary);
+}
+
+.detail-value {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+}
+
+.detail-tag {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background: var(--color-primary-tint);
+  border-radius: var(--radius-btn);
+  font-size: var(--font-size-xs);
+  color: var(--color-primary);
+  font-weight: var(--font-weight-medium);
+}
+
+/* ===== 底部操作区 ===== */
+.footer-actions {
+  padding: var(--spacing-lg) var(--page-padding) var(--spacing-xl);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-lg);
+}
+
+.btn-contact {
+  width: 100%;
+  height: var(--button-height-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  background: var(--color-primary);
+  border-radius: var(--radius-sm);
+  border: none;
+  color: var(--color-text-inverse);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-medium);
+  box-shadow: var(--shadow-primary-md);
+}
+
+.btn-contact::after {
+  border: none;
+}
+
+.btn-contact-icon {
+  width: var(--icon-size-sm);
+  height: var(--icon-size-sm);
+}
+
+.footer-hint {
+  font-size: 20rpx;
+  color: var(--color-text-placeholder);
+}

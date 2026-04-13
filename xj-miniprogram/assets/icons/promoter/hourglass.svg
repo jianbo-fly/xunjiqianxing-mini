@@ -1,0 +1,23 @@
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 62 92.9062" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Hourglass Icon (Using Material Icon as base, styled)" filter="url(#filter0_dd_0_8)">
+<path id="Icon" d="M19.0469 0C15.6719 0 13 2.67188 13 5.90625V15.4688C13 17.0156 13.7031 18.5625 14.8281 19.6875L24.9531 29.9531L14.8281 40.2188C13.7031 41.3438 13 42.8906 13 44.4375V54C13 57.2344 15.6719 59.9062 19.0469 59.9062H42.9531C46.3281 59.9062 49 57.2344 49 54V44.4375C49 42.8906 48.4375 41.3438 47.3125 40.2188L37.0469 29.9531L47.1719 19.6875C48.4375 18.5625 49 17.0156 49 15.4688V5.90625C49 2.67188 46.3281 0 42.9531 0H19.0469V0M42.9531 44.7188V50.9062C42.9531 52.5938 41.6875 54 40 54H22C20.3125 54 19.0469 52.5938 19.0469 50.9062V44.7188C19.0469 43.875 19.3281 43.1719 19.8906 42.6094L31 31.5L42.1094 42.6094C42.6719 43.1719 42.9531 43.875 42.9531 44.7188V44.7188" fill="var(--fill-0, #EC3713)"/>
+</g>
+<defs>
+<filter id="filter0_dd_0_8" x="0" y="0" width="62" height="92.9062" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dy="20"/>
+<feGaussianBlur stdDeviation="6.5"/>
+<feComposite in2="hardAlpha" operator="out"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.03 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_0_8"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dy="8"/>
+<feGaussianBlur stdDeviation="2.5"/>
+<feComposite in2="hardAlpha" operator="out"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.08 0"/>
+<feBlend mode="normal" in2="effect1_dropShadow_0_8" result="effect2_dropShadow_0_8"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect2_dropShadow_0_8" result="shape"/>
+</filter>
+</defs>
+</svg>
