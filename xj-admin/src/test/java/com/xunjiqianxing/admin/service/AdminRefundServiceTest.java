@@ -321,4 +321,54 @@ class AdminRefundServiceTest {
                 () -> adminRefundService.audit(req));
         assertTrue(ex.getMessage().contains("退款记录不存在"));
     }
+
+    // ==================== #119 按时间范围+状态组合筛选 ====================
+
+    @Test
+    @DisplayName("#119 按时间范围+状态组合筛选")
+    void shouldQueryByDateRangeAndStatus() {
+        Page<OrderRefund> page = new Page<>(1, 10);
+        page.setRecords(List.of(buildRefund(1L, 1L, 0)));
+        page.setTotal(1);
+        when(orderRefundMapper.selectPage(any(Page.class), any())).thenReturn(page);
+        when(userInfoMapper.selectById(anyLong())).thenReturn(null);
+        when(orderMainMapper.selectById(anyLong())).thenReturn(null);
+
+        RefundQueryRequest req = new RefundQueryRequest();
+        req.setStatus(0);
+        req.setCreateDateBegin(java.time.LocalDate.of(2026, 4, 1));
+        req.setCreateDateEnd(java.time.LocalDate.of(2026, 4, 30));
+
+        PageResult<RefundListVO> result = adminRefundService.pageList(req);
+
+        assertEquals(1, result.getTotal());
+    }
+
+    // ==================== #129 支付服务退款失败 ====================
+
+    @Test
+    @DisplayName("#129 支付服务退款失败 → 退款仍然通过（warn log）")
+    void shouldHandlePaymentServiceFailure() {
+        OrderRefund refund = buildRefund(1L, 1L, 0);
+        when(orderRefundMapper.selectById(1L)).thenReturn(refund);
+        OrderMain order = buildOrder(1L, OrderStatus.REFUND_APPLY.getCode());
+        when(orderMainMapper.selectById(1L)).thenReturn(order);
+        when(orderMainMapper.updateById(any())).thenReturn(1);
+        when(orderRefundMapper.updateById(any())).thenReturn(1);
+
+        com.xunjiqianxing.service.payment.entity.PaymentRecord payRecord =
+                new com.xunjiqianxing.service.payment.entity.PaymentRecord();
+        payRecord.setPaymentNo("PAY001");
+        when(paymentService.getByBiz("order", 1L)).thenReturn(payRecord);
+        when(paymentService.refund(any(), any(), any()))
+                .thenThrow(new RuntimeException("支付通道异常"));
+
+        RefundAuditRequest req = new RefundAuditRequest();
+        req.setId(1L);
+        req.setStatus(1);
+
+        assertDoesNotThrow(() -> adminRefundService.audit(req));
+        assertEquals(OrderStatus.REFUNDED.getCode(), order.getStatus());
+        assertNull(refund.getRefundTradeNo());
+    }
 }
